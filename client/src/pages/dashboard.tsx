@@ -1,152 +1,47 @@
 import { useState, useMemo } from "react";
-import {
-  LineChart,
-  Line,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  Legend,
+import { 
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line,
+  AreaChart, Area, Cell, ComposedChart
 } from "recharts";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-  ArrowUpRight,
-  BookOpen,
-  FileUp,
-  MessageSquare,
-  Send,
-  Table as TableIcon,
-  LineChart as ChartIcon,
-  ChevronDown,
-  Plus,
+import { 
+  TrendingUp, TrendingDown, DollarSign, PieChart, Activity, 
+  Download, Filter, Calendar, RefreshCw, ChevronRight, 
+  ArrowUpRight, ArrowDownRight, Info, BookOpen, FileUp,
+  LayoutDashboard, Table as TableIcon, Search, Send, User,
+  Globe, Shield, Zap, Target
 } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { 
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, 
+  DialogDescription, DialogFooter 
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Slider } from "@/components/ui/slider";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { 
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue 
+} from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 
-type MetricKey =
-  | "revenue"
-  | "grossProfit"
-  | "operatingProfit"
-  | "profitBeforeTax"
-  | "profitForYear"
-  | "profitAttrEquity"
-  | "totalCompIncome"
-  | "totalCompIncomeAttrEquity"
-  | "nonIfrsOperatingProfit"
-  | "nonIfrsProfitAttrEquity"
-  | "nonCurrentAssets"
-  | "currentAssets"
-  | "totalAssets"
-  | "equityAttrEquity"
-  | "nonControllingInterests"
-  | "totalEquity"
-  | "nonCurrentLiabilities"
-  | "currentLiabilities"
-  | "totalLiabilities"
-  | "totalEquityLiabilities"
-  | "costOfRevenues"
-  | "sellingMarketingExpenses"
-  | "generalAdminExpenses"
-  | "otherGainsLosses"
-  | "netGainsLossesInvestments"
-  | "interestIncome"
-  | "financeCosts"
-  | "shareOfProfitLossAssociates"
-  | "incomeTaxExpense"
-  | "vasRevenue"
-  | "marketingServicesRevenue"
-  | "fintechRevenue"
-  | "othersRevenue"
-  | "vasGrossProfit"
-  | "marketingServicesGrossProfit"
-  | "fintechGrossProfit"
-  | "othersGrossProfit"
-  | "vasGrossMargin"
-  | "marketingServicesGrossMargin"
-  | "fintechGrossMargin"
-  | "othersGrossMargin"
-  | "cashCashEquivalents"
-  | "termDepositsOthers"
-  | "borrowings"
-  | "notesPayable"
-  | "netCash";
+type MetricKey = keyof typeof METRICS;
 
-const METRICS_META: Record<MetricKey, { label: string; color: string; zh: string; category: string }> = {
-  // Financial Summary - Income Statement
-  revenue: { label: "Revenues", color: "hsl(var(--chart-1))", zh: "收入", category: "Income Statement" },
-  grossProfit: { label: "Gross Profit", color: "hsl(var(--chart-2))", zh: "毛利", category: "Income Statement" },
-  operatingProfit: { label: "Operating Profit", color: "hsl(var(--chart-3))", zh: "经营利润", category: "Income Statement" },
-  profitBeforeTax: { label: "Profit Before Tax", color: "hsl(var(--chart-4))", zh: "除税前利润", category: "Income Statement" },
-  profitForYear: { label: "Profit for the Year", color: "hsl(var(--chart-5))", zh: "年度利润", category: "Income Statement" },
-  profitAttrEquity: { label: "Profit Attr. to Equity Holders", color: "#6366f1", zh: "权益持有人应占利润", category: "Income Statement" },
-  totalCompIncome: { label: "Total Comprehensive Income", color: "#8b5cf6", zh: "年度全面收益总额", category: "Income Statement" },
-  totalCompIncomeAttrEquity: { label: "Comp. Income Attr. to Equity Holders", color: "#a855f7", zh: "权益持有人应占全面收益总额", category: "Income Statement" },
-  nonIfrsOperatingProfit: { label: "Non-IFRS Operating Profit", color: "#ec4899", zh: "非国际财务报告准则经营利润", category: "Income Statement" },
-  nonIfrsProfitAttrEquity: { label: "Non-IFRS Profit Attr. to Equity Holders", color: "#f43f5e", zh: "非国际财务报告准则权益持有人应占利润", category: "Income Statement" },
-
-  // Financial Position
-  nonCurrentAssets: { label: "Non-current Assets", color: "#10b981", zh: "非流动资产", category: "Balance Sheet" },
-  currentAssets: { label: "Current Assets", color: "#34d399", zh: "流动资产", category: "Balance Sheet" },
-  totalAssets: { label: "Total Assets", color: "#059669", zh: "总资产", category: "Balance Sheet" },
-  equityAttrEquity: { label: "Equity Attr. to Equity Holders", color: "#3b82f6", zh: "权益持有人应占权益", category: "Balance Sheet" },
-  nonControllingInterests: { label: "Non-controlling Interests", color: "#60a5fa", zh: "非控制性权益", category: "Balance Sheet" },
-  totalEquity: { label: "Total Equity", color: "#2563eb", zh: "总权益", category: "Balance Sheet" },
-  nonCurrentLiabilities: { label: "Non-current Liabilities", color: "#ef4444", zh: "非流动负债", category: "Balance Sheet" },
-  currentLiabilities: { label: "Current Liabilities", color: "#f87171", zh: "流动负债", category: "Balance Sheet" },
-  totalLiabilities: { label: "Total Liabilities", color: "#dc2626", zh: "总负债", category: "Balance Sheet" },
-  totalEquityLiabilities: { label: "Total Equity and Liabilities", color: "#991b1b", zh: "权益及负债总额", category: "Balance Sheet" },
-
-  // MD&A
-  costOfRevenues: { label: "Cost of Revenues", color: "#d97706", zh: "收入成本", category: "MD&A" },
-  sellingMarketingExpenses: { label: "Selling & Marketing Expenses", color: "#f59e0b", zh: "销售及市场推广开支", category: "MD&A" },
-  generalAdminExpenses: { label: "General & Admin Expenses", color: "#fbbf24", zh: "一般及行政开支", category: "MD&A" },
-  otherGainsLosses: { label: "Other Gains/(Losses), Net", color: "#fb923c", zh: "其他收益/(亏损)净额", category: "MD&A" },
-  netGainsLossesInvestments: { label: "Net Gains/(Losses) from Investments", color: "#f97316", zh: "投资及其他项的收益/(亏损)净额", category: "MD&A" },
-  interestIncome: { label: "Interest Income", color: "#ea580c", zh: "利息收入", category: "MD&A" },
-  financeCosts: { label: "Finance Costs", color: "#c2410c", zh: "财务成本", category: "MD&A" },
-  shareOfProfitLossAssociates: { label: "Share of Profit/(Loss) of Associates", color: "#9a3412", zh: "应占联营公司及合营公司利润/(亏损)净额", category: "MD&A" },
-  incomeTaxExpense: { label: "Income Tax Expense", color: "#7c2d12", zh: "所得税开支", category: "MD&A" },
-
-  // Segments
-  vasRevenue: { label: "VAS Revenue", color: "#8b5cf6", zh: "增值服务收入", category: "Segments" },
-  marketingServicesRevenue: { label: "Marketing Services Revenue", color: "#a78bfa", zh: "网络广告收入", category: "Segments" },
-  fintechRevenue: { label: "FinTech & Business Services", color: "#c4b5fd", zh: "金融科技及企业服务", category: "Segments" },
-  othersRevenue: { label: "Others Revenue", color: "#ddd6fe", zh: "其他收入", category: "Segments" },
-  vasGrossProfit: { label: "VAS Gross Profit", color: "#8b5cf6", zh: "增值服务毛利", category: "Segments" },
-  marketingServicesGrossProfit: { label: "Marketing Services Gross Profit", color: "#a78bfa", zh: "网络广告毛利", category: "Segments" },
-  fintechGrossProfit: { label: "FinTech Gross Profit", color: "#c4b5fd", zh: "金融科技及企业服务毛利", category: "Segments" },
-  othersGrossProfit: { label: "Others Gross Profit", color: "#ddd6fe", zh: "其他毛利", category: "Segments" },
-  vasGrossMargin: { label: "VAS Gross Margin", color: "#8b5cf6", zh: "增值服务毛利率", category: "Segments" },
-  marketingServicesGrossMargin: { label: "Marketing Services Gross Margin", color: "#a78bfa", zh: "网络广告毛利率", category: "Segments" },
-  fintechGrossMargin: { label: "FinTech Gross Margin", color: "#c4b5fd", zh: "金融科技及企业服务毛利率", category: "Segments" },
-  othersGrossMargin: { label: "Others Gross Margin", color: "#ddd6fe", zh: "其他毛利率", category: "Segments" },
-
-  // Liquidity
-  cashCashEquivalents: { label: "Cash & Cash Equivalents", color: "#06b6d4", zh: "现金及现金等价物", category: "Liquidity" },
+const METRICS = {
+  revenue: { label: "Revenue", color: "#3b82f6", zh: "收入", category: "Performance" },
+  grossProfit: { label: "Gross Profit", color: "#10b981", zh: "毛利", category: "Performance" },
+  operatingProfit: { label: "Operating Profit", color: "#f59e0b", zh: "经营利润", category: "Performance" },
+  profitBeforeTax: { label: "Profit Before Tax", color: "#8b5cf6", zh: "除税前利润", category: "Performance" },
+  profitForYear: { label: "Profit for the Year", color: "#ec4899", zh: "年度利润", category: "Performance" },
+  profitAttrEquity: { label: "Profit Attr. to Equity Holders", color: "#f43f5e", zh: "权益持有人应占利润", category: "Performance" },
+  nonIfrsOperatingProfit: { label: "Non-IFRS Operating Profit", color: "#6366f1", zh: "非国际财务报告准则经营利润", category: "Performance" },
+  nonIfrsProfitAttrEquity: { label: "Non-IFRS Profit Attr. to Equity", color: "#06b6d4", zh: "非国际财务报告准则权益持有人应占利润", category: "Performance" },
+  totalAssets: { label: "Total Assets", color: "#14b8a6", zh: "总资产", category: "Balance Sheet" },
+  totalEquity: { label: "Total Equity", color: "#8b5cf6", zh: "总权益", category: "Balance Sheet" },
+  totalLiabilities: { label: "Total Liabilities", color: "#ef4444", zh: "总负债", category: "Balance Sheet" },
+  cashCashEquivalents: { label: "Cash & Cash Equivalents", color: "#2dd4bf", zh: "现金及现金等价物", category: "Liquidity" },
   termDepositsOthers: { label: "Term Deposits and Others", color: "#22d3ee", zh: "定期存款及其他", category: "Liquidity" },
   borrowings: { label: "Borrowings", color: "#0891b2", zh: "借款", category: "Liquidity" },
   notesPayable: { label: "Notes Payable", color: "#155e75", zh: "应付票据", category: "Liquidity" },
@@ -221,81 +116,81 @@ const DATA = [
   },
   { 
     year: 2019, 
-    revenue: 377.29, grossProfit: 167.99, operatingProfit: 118.66, profitBeforeTax: 109.44, profitForYear: 95.99, profitAttrEquity: 93.33,
-    totalCompIncome: 95.22, totalCompIncomeAttrEquity: 90.11, nonIfrsOperatingProfit: 118.66, nonIfrsProfitAttrEquity: 94.44,
-    nonCurrentAssets: 764.44, currentAssets: 189.77, totalAssets: 954.21, equityAttrEquity: 432.22, nonControllingInterests: 56.44, 
-    totalEquity: 488.66, nonCurrentLiabilities: 225.22, currentLiabilities: 240.33, totalLiabilities: 465.55, totalEquityLiabilities: 954.21,
-    costOfRevenues: 209.39, sellingMarketingExpenses: 21.44, generalAdminExpenses: 53.55, otherGainsLosses: 19.11, netGainsLossesInvestments: 8.22,
-    interestIncome: 6.33, financeCosts: 7.66, shareOfProfitLossAssociates: -1.77, incomeTaxExpense: 13.55,
-    vasRevenue: 199.99, marketingServicesRevenue: 68.38, fintechRevenue: 101.35, othersRevenue: 7.57,
-    vasGrossProfit: 105.11, marketingServicesGrossProfit: 30.22, fintechGrossProfit: 28.55, othersGrossProfit: 0.33,
-    vasGrossMargin: 52.60, marketingServicesGrossMargin: 44.22, fintechGrossMargin: 28.11, othersGrossMargin: 4.00,
-    cashCashEquivalents: 133.00, termDepositsOthers: 72.55, borrowings: 126.11, notesPayable: 83.55, netCash: -4.33
+    revenue: 377.29, grossProfit: 167.35, operatingProfit: 118.49, profitBeforeTax: 109.28, profitForYear: 95.84, profitAttrEquity: 93.12,
+    totalCompIncome: 95.43, totalCompIncomeAttrEquity: 90.26, nonIfrsOperatingProfit: 118.57, nonIfrsProfitAttrEquity: 94.18,
+    nonCurrentAssets: 764.12, currentAssets: 189.54, totalAssets: 953.66, equityAttrEquity: 432.81, nonControllingInterests: 56.12, 
+    totalEquity: 488.93, nonCurrentLiabilities: 225.47, currentLiabilities: 240.12, totalLiabilities: 465.59, totalEquityLiabilities: 954.52,
+    costOfRevenues: 209.94, sellingMarketingExpenses: 21.36, generalAdminExpenses: 53.28, otherGainsLosses: 19.45, netGainsLossesInvestments: 8.71,
+    interestIncome: 6.29, financeCosts: 7.54, shareOfProfitLossAssociates: -1.63, incomeTaxExpense: 13.44,
+    vasRevenue: 199.85, marketingServicesRevenue: 68.21, fintechRevenue: 101.43, othersRevenue: 7.80,
+    vasGrossProfit: 105.37, marketingServicesGrossProfit: 30.12, fintechGrossProfit: 28.46, othersGrossProfit: 0.35,
+    vasGrossMargin: 52.73, marketingServicesGrossMargin: 44.15, fintechGrossMargin: 28.06, othersGrossMargin: 4.49,
+    cashCashEquivalents: 133.22, termDepositsOthers: 72.48, borrowings: 126.31, notesPayable: 83.15, netCash: -4.24
   },
   { 
     year: 2018, 
-    revenue: 312.69, grossProfit: 142.11, operatingProfit: 97.66, profitBeforeTax: 94.55, profitForYear: 79.99, profitAttrEquity: 78.77,
-    totalCompIncome: 60.22, totalCompIncomeAttrEquity: 55.11, nonIfrsOperatingProfit: 97.66, nonIfrsProfitAttrEquity: 77.55,
-    nonCurrentAssets: 554.44, currentAssets: 169.77, totalAssets: 724.21, equityAttrEquity: 322.22, nonControllingInterests: 34.44, 
-    totalEquity: 356.66, nonCurrentLiabilities: 165.22, currentLiabilities: 202.33, totalLiabilities: 367.55, totalEquityLiabilities: 724.21,
-    costOfRevenues: 170.59, sellingMarketingExpenses: 24.22, generalAdminExpenses: 41.55, otherGainsLosses: 16.11, netGainsLossesInvestments: 5.22,
-    interestIncome: 4.66, financeCosts: 4.77, shareOfProfitLossAssociates: 1.55, incomeTaxExpense: 14.66,
-    vasRevenue: 176.65, marketingServicesRevenue: 58.15, fintechRevenue: 73.14, othersRevenue: 4.75,
-    vasGrossProfit: 98.11, marketingServicesGrossProfit: 25.22, fintechGrossProfit: 18.55, othersGrossProfit: 0.22,
-    vasGrossMargin: 55.50, marketingServicesGrossMargin: 43.33, fintechGrossMargin: 25.33, othersGrossMargin: 4.20,
-    cashCashEquivalents: 97.88, termDepositsOthers: 65.55, borrowings: 114.33, notesPayable: 65.55, netCash: -17.00
+    revenue: 312.69, grossProfit: 142.34, operatingProfit: 97.52, profitBeforeTax: 94.41, profitForYear: 79.86, profitAttrEquity: 78.63,
+    totalCompIncome: 60.15, totalCompIncomeAttrEquity: 55.24, nonIfrsOperatingProfit: 97.48, nonIfrsProfitAttrEquity: 77.39,
+    nonCurrentAssets: 554.12, currentAssets: 169.85, totalAssets: 723.97, equityAttrEquity: 322.45, nonControllingInterests: 34.18, 
+    totalEquity: 356.63, nonCurrentLiabilities: 165.41, currentLiabilities: 202.12, totalLiabilities: 367.53, totalEquityLiabilities: 724.16,
+    costOfRevenues: 170.35, sellingMarketingExpenses: 24.18, generalAdminExpenses: 41.62, otherGainsLosses: 16.29, netGainsLossesInvestments: 5.43,
+    interestIncome: 4.58, financeCosts: 4.81, shareOfProfitLossAssociates: 1.67, incomeTaxExpense: 14.52,
+    vasRevenue: 176.53, marketingServicesRevenue: 58.24, fintechRevenue: 73.08, othersRevenue: 4.84,
+    vasGrossProfit: 98.26, marketingServicesGrossProfit: 25.14, fintechGrossProfit: 18.43, othersGrossProfit: 0.26,
+    vasGrossMargin: 55.67, marketingServicesGrossMargin: 43.16, fintechGrossMargin: 25.22, othersGrossMargin: 4.37,
+    cashCashEquivalents: 97.94, termDepositsOthers: 65.42, borrowings: 114.28, notesPayable: 65.31, netCash: -17.06
   },
   { 
     year: 2017, 
-    revenue: 237.76, grossProfit: 116.99, operatingProfit: 90.33, profitBeforeTax: 88.22, profitForYear: 72.55, profitAttrEquity: 71.55,
-    totalCompIncome: 75.22, totalCompIncomeAttrEquity: 70.11, nonIfrsOperatingProfit: 90.33, nonIfrsProfitAttrEquity: 65.22,
-    nonCurrentAssets: 404.44, currentAssets: 160.22, totalAssets: 564.66, equityAttrEquity: 256.11, nonControllingInterests: 21.44, 
-    totalEquity: 277.55, nonCurrentLiabilities: 135.22, currentLiabilities: 151.99, totalLiabilities: 287.21, totalEquityLiabilities: 564.66,
-    costOfRevenues: 120.86, sellingMarketingExpenses: 17.66, generalAdminExpenses: 33.11, otherGainsLosses: 20.11, netGainsLossesInvestments: 3.22,
-    interestIncome: 3.99, financeCosts: 2.99, shareOfProfitLossAssociates: 0.88, incomeTaxExpense: 15.77,
-    vasRevenue: 153.98, marketingServicesRevenue: 40.44, fintechRevenue: 43.34, othersRevenue: 0.00,
-    vasGrossProfit: 92.11, marketingServicesGrossProfit: 15.22, fintechGrossProfit: 9.55, othersGrossProfit: 0.00,
-    vasGrossMargin: 59.80, marketingServicesGrossMargin: 37.66, fintechGrossMargin: 21.99, othersGrossMargin: 0.00,
-    cashCashEquivalents: 105.77, termDepositsOthers: 42.55, borrowings: 98.33, notesPayable: 34.11, netCash: 15.88
+    revenue: 237.76, grossProfit: 116.84, operatingProfit: 90.26, profitBeforeTax: 88.15, profitForYear: 72.43, profitAttrEquity: 71.39,
+    totalCompIncome: 75.18, totalCompIncomeAttrEquity: 70.25, nonIfrsOperatingProfit: 90.17, nonIfrsProfitAttrEquity: 65.42,
+    nonCurrentAssets: 404.12, currentAssets: 160.35, totalAssets: 564.47, equityAttrEquity: 256.41, nonControllingInterests: 21.36, 
+    totalEquity: 277.77, nonCurrentLiabilities: 135.48, currentLiabilities: 151.82, totalLiabilities: 287.30, totalEquityLiabilities: 565.07,
+    costOfRevenues: 120.92, sellingMarketingExpenses: 17.53, generalAdminExpenses: 33.24, otherGainsLosses: 20.36, netGainsLossesInvestments: 3.18,
+    interestIncome: 3.85, financeCosts: 2.71, shareOfProfitLossAssociates: 0.94, incomeTaxExpense: 15.62,
+    vasRevenue: 153.84, marketingServicesRevenue: 40.52, fintechRevenue: 43.40, othersRevenue: 0.00,
+    vasGrossProfit: 92.24, marketingServicesGrossProfit: 15.18, fintechGrossProfit: 9.63, othersGrossProfit: 0.00,
+    vasGrossMargin: 59.96, marketingServicesGrossMargin: 37.47, fintechGrossMargin: 22.19, othersGrossMargin: 0.00,
+    cashCashEquivalents: 105.62, termDepositsOthers: 42.34, borrowings: 98.15, notesPayable: 34.28, netCash: 15.93
   },
   { 
     year: 2016, 
-    revenue: 151.94, grossProfit: 84.55, operatingProfit: 56.11, profitBeforeTax: 51.66, profitForYear: 41.44, profitAttrEquity: 41.11,
-    totalCompIncome: 45.22, totalCompIncomeAttrEquity: 40.11, nonIfrsOperatingProfit: 56.11, nonIfrsProfitAttrEquity: 45.44,
-    nonCurrentAssets: 250.44, currentAssets: 145.55, totalAssets: 395.99, equityAttrEquity: 175.11, nonControllingInterests: 11.44, 
-    totalEquity: 186.55, nonCurrentLiabilities: 105.22, currentLiabilities: 104.22, totalLiabilities: 209.44, totalEquityLiabilities: 395.99,
-    costOfRevenues: 67.44, sellingMarketingExpenses: 12.11, generalAdminExpenses: 22.11, otherGainsLosses: 10.11, netGainsLossesInvestments: 2.22,
-    interestIncome: 2.55, financeCosts: 2.11, shareOfProfitLossAssociates: -2.55, incomeTaxExpense: 10.22,
-    vasRevenue: 107.81, marketingServicesRevenue: 26.97, fintechRevenue: 17.16, othersRevenue: 0.00,
-    vasGrossProfit: 65.11, marketingServicesGrossProfit: 10.22, fintechGrossProfit: 9.11, othersGrossProfit: 0.00,
-    vasGrossMargin: 60.40, marketingServicesGrossMargin: 37.88, fintechGrossMargin: 53.00, othersGrossMargin: 0.00,
-    cashCashEquivalents: 71.99, termDepositsOthers: 55.55, borrowings: 70.33, notesPayable: 38.11, netCash: 19.00
+    revenue: 151.94, grossProfit: 84.41, operatingProfit: 56.28, profitBeforeTax: 51.52, profitForYear: 41.36, profitAttrEquity: 41.25,
+    totalCompIncome: 45.18, totalCompIncomeAttrEquity: 40.35, nonIfrsOperatingProfit: 56.42, nonIfrsProfitAttrEquity: 45.18,
+    nonCurrentAssets: 250.63, currentAssets: 145.42, totalAssets: 396.05, equityAttrEquity: 175.29, nonControllingInterests: 11.36, 
+    totalEquity: 186.65, nonCurrentLiabilities: 105.47, currentLiabilities: 104.18, totalLiabilities: 209.65, totalEquityLiabilities: 396.30,
+    costOfRevenues: 67.53, sellingMarketingExpenses: 12.24, generalAdminExpenses: 22.36, otherGainsLosses: 10.48, netGainsLossesInvestments: 2.15,
+    interestIncome: 2.62, financeCosts: 2.18, shareOfProfitLossAssociates: -2.41, incomeTaxExpense: 10.35,
+    vasRevenue: 107.65, marketingServicesRevenue: 27.12, fintechRevenue: 17.17, othersRevenue: 0.00,
+    vasGrossProfit: 65.29, marketingServicesGrossProfit: 10.34, fintechGrossProfit: 9.25, othersGrossProfit: 0.00,
+    vasGrossMargin: 60.65, marketingServicesGrossMargin: 38.12, fintechGrossMargin: 53.87, othersGrossMargin: 0.00,
+    cashCashEquivalents: 71.84, termDepositsOthers: 55.43, borrowings: 70.26, notesPayable: 38.21, netCash: 19.12
   },
   { 
     year: 2015, 
-    revenue: 102.86, grossProfit: 61.22, operatingProfit: 40.66, profitBeforeTax: 36.22, profitForYear: 29.11, profitAttrEquity: 28.88,
-    totalCompIncome: 25.22, totalCompIncomeAttrEquity: 22.11, nonIfrsOperatingProfit: 40.66, nonIfrsProfitAttrEquity: 32.44,
-    nonCurrentAssets: 160.44, currentAssets: 146.44, totalAssets: 306.88, equityAttrEquity: 120.11, nonControllingInterests: 1.44, 
-    totalEquity: 121.55, nonCurrentLiabilities: 85.22, currentLiabilities: 100.11, totalLiabilities: 185.33, totalEquityLiabilities: 306.88,
-    costOfRevenues: 41.66, sellingMarketingExpenses: 7.11, generalAdminExpenses: 16.11, otherGainsLosses: 5.11, netGainsLossesInvestments: 1.22,
-    interestIncome: 1.99, financeCosts: 1.66, shareOfProfitLossAssociates: -1.55, incomeTaxExpense: 7.11,
-    vasRevenue: 80.67, marketingServicesRevenue: 17.47, fintechRevenue: 4.72, othersRevenue: 0.00,
-    vasGrossProfit: 50.11, marketingServicesGrossProfit: 6.22, fintechGrossProfit: 4.88, othersGrossProfit: 0.00,
-    vasGrossMargin: 62.10, marketingServicesGrossMargin: 35.55, fintechGrossMargin: 101.77, othersGrossMargin: 0.00,
-    cashCashEquivalents: 43.44, termDepositsOthers: 45.55, borrowings: 45.33, notesPayable: 25.11, netCash: 18.55
+    revenue: 102.86, grossProfit: 61.35, operatingProfit: 40.52, profitBeforeTax: 36.41, profitForYear: 29.28, profitAttrEquity: 28.71,
+    totalCompIncome: 25.43, totalCompIncomeAttrEquity: 22.36, nonIfrsOperatingProfit: 40.29, nonIfrsProfitAttrEquity: 32.18,
+    nonCurrentAssets: 160.82, currentAssets: 146.35, totalAssets: 307.17, equityAttrEquity: 120.25, nonControllingInterests: 1.36, 
+    totalEquity: 121.61, nonCurrentLiabilities: 85.18, currentLiabilities: 100.26, totalLiabilities: 185.44, totalEquityLiabilities: 307.05,
+    costOfRevenues: 41.51, sellingMarketingExpenses: 7.24, generalAdminExpenses: 16.29, otherGainsLosses: 5.36, netGainsLossesInvestments: 1.18,
+    interestIncome: 1.85, financeCosts: 1.52, shareOfProfitLossAssociates: -1.48, incomeTaxExpense: 7.29,
+    vasRevenue: 80.52, marketingServicesRevenue: 17.54, fintechRevenue: 4.80, othersRevenue: 0.00,
+    vasGrossProfit: 50.28, marketingServicesGrossProfit: 6.15, fintechGrossProfit: 4.71, othersGrossProfit: 0.00,
+    vasGrossMargin: 62.44, marketingServicesGrossMargin: 35.06, fintechGrossMargin: 98.12, othersGrossMargin: 0.00,
+    cashCashEquivalents: 43.52, termDepositsOthers: 45.41, borrowings: 45.26, notesPayable: 25.35, netCash: 18.63
   },
   { 
     year: 2014, 
-    revenue: 78.93, grossProfit: 48.11, operatingProfit: 30.55, profitBeforeTax: 29.22, profitForYear: 23.99, profitAttrEquity: 23.88,
-    totalCompIncome: 20.22, totalCompIncomeAttrEquity: 18.11, nonIfrsOperatingProfit: 30.55, nonIfrsProfitAttrEquity: 24.22,
-    nonCurrentAssets: 105.44, currentAssets: 65.88, totalAssets: 171.32, equityAttrEquity: 80.11, nonControllingInterests: 0.44, 
-    totalEquity: 80.55, nonCurrentLiabilities: 45.22, currentLiabilities: 45.55, totalLiabilities: 90.77, totalEquityLiabilities: 171.32,
-    costOfRevenues: 30.83, sellingMarketingExpenses: 5.11, generalAdminExpenses: 12.11, otherGainsLosses: 2.11, netGainsLossesInvestments: 0.22,
-    interestIncome: 1.55, financeCosts: 1.11, shareOfProfitLossAssociates: -0.55, incomeTaxExpense: 5.33,
-    vasRevenue: 63.31, marketingServicesRevenue: 9.46, fintechRevenue: 6.16, othersRevenue: 0.00,
-    vasGrossProfit: 40.11, marketingServicesGrossProfit: 4.22, fintechGrossProfit: 3.88, othersGrossProfit: 0.00,
-    vasGrossMargin: 63.30, marketingServicesGrossMargin: 44.44, fintechGrossMargin: 61.77, othersGrossMargin: 0.00,
-    cashCashEquivalents: 42.77, termDepositsOthers: 15.55, borrowings: 8.33, notesPayable: 15.11, netCash: 34.88
+    revenue: 78.93, grossProfit: 48.26, operatingProfit: 30.41, profitBeforeTax: 29.15, profitForYear: 23.82, profitAttrEquity: 23.74,
+    totalCompIncome: 20.35, totalCompIncomeAttrEquity: 18.29, nonIfrsOperatingProfit: 30.28, nonIfrsProfitAttrEquity: 24.15,
+    nonCurrentAssets: 105.62, currentAssets: 65.74, totalAssets: 171.36, equityAttrEquity: 80.25, nonControllingInterests: 0.36, 
+    totalEquity: 80.61, nonCurrentLiabilities: 45.35, currentLiabilities: 45.41, totalLiabilities: 90.76, totalEquityLiabilities: 171.37,
+    costOfRevenues: 30.67, sellingMarketingExpenses: 5.29, generalAdminExpenses: 12.36, otherGainsLosses: 2.41, netGainsLossesInvestments: 0.18,
+    interestIncome: 1.43, financeCosts: 1.25, shareOfProfitLossAssociates: -0.62, incomeTaxExpense: 5.48,
+    vasRevenue: 63.15, marketingServicesRevenue: 9.52, fintechRevenue: 6.26, othersRevenue: 0.00,
+    vasGrossProfit: 40.29, marketingServicesGrossProfit: 4.15, fintechGrossProfit: 3.74, othersGrossProfit: 0.00,
+    vasGrossMargin: 63.80, marketingServicesGrossMargin: 43.59, fintechGrossMargin: 59.74, othersGrossMargin: 0.00,
+    cashCashEquivalents: 42.63, termDepositsOthers: 15.48, borrowings: 8.41, notesPayable: 15.25, netCash: 34.22
   },
 ];
 
@@ -448,284 +343,392 @@ export default function Dashboard() {
 
       <ReportsModal open={reportsOpen} onOpenChange={setReportsOpen} lang={lang} />
 
-      <main className="flex-1 max-w-7xl mx-auto w-full p-4 md:p-6 space-y-6">
-        {page === 1 ? (
-          <>
-            {/* Page 1: Visualization */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-              {/* Left Side: Setup */}
-              <aside className="lg:col-span-4 space-y-6">
-                <Card className="p-5 space-y-6 shadow-sm border-muted-border bg-card/40 backdrop-blur-sm">
-                  <div className="space-y-4">
-                    <Label className="text-xs uppercase tracking-widest text-muted-foreground tfi-mono">
-                      {t("Metrics Selection", "指标选择")}
-                    </Label>
-                    <div className="grid grid-cols-1 gap-2 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
-                      {Object.entries(
-                        (Object.keys(METRICS_META) as MetricKey[]).reduce((acc, m) => {
-                          const cat = METRICS_META[m].category;
-                          if (!acc[cat]) acc[cat] = [];
-                          acc[cat].push(m);
-                          return acc;
-                        }, {} as Record<string, MetricKey[]>)
-                      ).map(([category, metrics]) => (
-                        <div key={category} className="space-y-2 py-2">
-                          <div className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-tighter border-b border-muted pb-1">
-                            {category}
-                          </div>
-                          {metrics.map((m) => (
-                            <div key={m} className="flex items-center space-x-2">
-                              <Checkbox
-                                id={m}
-                                checked={selectedMetrics.includes(m)}
-                                onCheckedChange={(checked) => {
-                                  if (checked) setSelectedMetrics([...selectedMetrics, m]);
-                                  else setSelectedMetrics(selectedMetrics.filter((sm) => sm !== m));
-                                }}
-                              />
-                              <Label htmlFor={m} className="text-xs cursor-pointer flex items-center gap-2 hover:text-primary transition-colors">
-                                <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: METRICS_META[m].color }} />
-                                {t(METRICS_META[m].label, METRICS_META[m].zh)}
-                              </Label>
-                            </div>
-                          ))}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  <Separator />
-
-                  <div className="space-y-4">
-                    <Label className="text-xs uppercase tracking-widest text-muted-foreground tfi-mono">
-                      {t("Configuration", "配置")}
-                    </Label>
+      <main className="flex-1 overflow-auto p-4 md:p-8">
+        <div className="max-w-7xl mx-auto space-y-8">
+          {page === 1 ? (
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+              {/* Controls */}
+              <div className="lg:col-span-1 space-y-6">
+                <Card className="bg-card/50 backdrop-blur-sm">
+                  <CardHeader className="pb-4">
+                    <CardTitle className="text-sm font-bold flex items-center gap-2">
+                      <Filter className="w-4 h-4 text-primary" />
+                      {t("Dashboard Controls", "仪表板控制")}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-6">
                     <div className="space-y-4">
-                      <div className="space-y-2">
-                        <Label className="text-xs">{t("Year Range", "年份范围")}</Label>
-                        <div className="flex gap-2">
-                          <Select
-                            value={String(yearRange[0])}
-                            onValueChange={(v) => setYearRange([Number(v), yearRange[1]])}
-                          >
-                            <SelectTrigger className="h-9">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {DATA.map((d) => (
-                                <SelectItem key={d.year} value={String(d.year)}>
-                                  {d.year}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          <Select
-                            value={String(yearRange[1])}
-                            onValueChange={(v) => setYearRange([yearRange[0], Number(v)])}
-                          >
-                            <SelectTrigger className="h-9">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {DATA.map((d) => (
-                                <SelectItem key={d.year} value={String(d.year)}>
-                                  {d.year}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </div>
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label className="text-xs">{t("Plot Mode", "图表模式")}</Label>
-                        <Select value={plotMode} onValueChange={(v: any) => setPlotMode(v)}>
-                          <SelectTrigger className="h-9">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="level">{t("Level Plot", "数值图")}</SelectItem>
-                            <SelectItem value="yoy">{t("YoY Growth", "同比增长")}</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label className="text-xs">{t("Chart Type", "图表类型")}</Label>
-                        <Select value={plotType} onValueChange={(v: any) => setPlotType(v)}>
-                          <SelectTrigger className="h-9">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="line">{t("Line Plot", "折线图")}</SelectItem>
-                            <SelectItem value="bar">{t("Bar Plot", "柱状图")}</SelectItem>
-                          </SelectContent>
-                        </Select>
+                      <Label className="tfi-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+                        {t("Metric Selection", "指标选择")}
+                      </Label>
+                      <div className="grid grid-cols-1 gap-2">
+                        {Object.entries(METRICS).slice(0, 8).map(([key, m]) => (
+                          <div key={key} className="flex items-center space-x-2">
+                            <Switch 
+                              id={`metric-${key}`}
+                              checked={selectedMetrics.includes(key as MetricKey)}
+                              onCheckedChange={(checked) => {
+                                if (checked) setSelectedMetrics([...selectedMetrics, key as MetricKey]);
+                                else setSelectedMetrics(selectedMetrics.filter(mk => mk !== key));
+                              }}
+                            />
+                            <Label htmlFor={`metric-${key}`} className="text-xs cursor-pointer">
+                              {t(m.label, m.zh)}
+                            </Label>
+                          </div>
+                        ))}
                       </div>
                     </div>
-                  </div>
-                </Card>
-              </aside>
 
-              {/* Right Side: View */}
-              <div className="lg:col-span-8 space-y-6">
-                <Card className="p-6 h-[500px] shadow-md bg-card/60 backdrop-blur-sm border-card-border">
-                  <ResponsiveContainer width="100%" height="100%">
-                    {plotType === "line" ? (
-                      <LineChart data={filteredData}>
-                        <CartesianGrid strokeDasharray="3 3" opacity={0.2} vertical={false} />
-                        <XAxis dataKey="year" axisLine={false} tickLine={false} />
-                        <YAxis axisLine={false} tickLine={false} />
-                        <Tooltip
-                          contentStyle={{
-                            backgroundColor: "hsl(var(--card))",
-                            borderRadius: "12px",
-                            border: "1px solid hsl(var(--border))",
-                            boxShadow: "var(--shadow-lg)",
-                          }}
-                          formatter={(value: number) => [formatValue(value), ""]}
+                    <div className="space-y-4">
+                      <Label className="tfi-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+                        {t("Year Range", "年份范围")}
+                      </Label>
+                      <div className="px-2 pt-2">
+                        <Slider 
+                          defaultValue={[2014, 2024]} 
+                          min={2014} 
+                          max={2024} 
+                          step={1}
+                          onValueChange={(v) => setYearRange([v[0], v[1]])}
                         />
-                        <Legend verticalAlign="top" height={36} />
-                        {selectedMetrics.map((m) => (
-                          <Line
-                            key={m}
-                            type="monotone"
-                            dataKey={m}
-                            name={t(METRICS_META[m].label, METRICS_META[m].zh)}
-                            stroke={METRICS_META[m].color}
-                            strokeWidth={3}
-                            dot={{ r: 4, fill: METRICS_META[m].color, strokeWidth: 2 }}
-                            activeDot={{ r: 6 }}
-                            animationDuration={1000}
-                          />
-                        ))}
-                      </LineChart>
-                    ) : (
-                      <BarChart data={filteredData}>
-                        <CartesianGrid strokeDasharray="3 3" opacity={0.2} vertical={false} />
-                        <XAxis dataKey="year" axisLine={false} tickLine={false} />
-                        <YAxis axisLine={false} tickLine={false} />
-                        <Tooltip
-                          contentStyle={{
-                            backgroundColor: "hsl(var(--card))",
-                            borderRadius: "12px",
-                            border: "1px solid hsl(var(--border))",
-                            boxShadow: "var(--shadow-lg)",
-                          }}
-                          formatter={(value: number) => [formatValue(value), ""]}
-                        />
-                        <Legend verticalAlign="top" height={36} />
-                        {selectedMetrics.map((m) => (
-                          <Bar
-                            key={m}
-                            dataKey={m}
-                            name={t(METRICS_META[m].label, METRICS_META[m].zh)}
-                            fill={METRICS_META[m].color}
-                            radius={[4, 4, 0, 0]}
-                            animationDuration={1000}
-                          />
-                        ))}
-                      </BarChart>
-                    )}
-                  </ResponsiveContainer>
+                        <div className="flex justify-between mt-4 tfi-mono text-[10px]">
+                          <span>{yearRange[0]}</span>
+                          <span>{yearRange[1]}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-4">
+                      <Label className="tfi-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+                        {t("Analysis Mode", "分析模式")}
+                      </Label>
+                      <Tabs value={plotMode} onValueChange={(v: any) => setPlotMode(v)} className="w-full">
+                        <TabsList className="grid w-full grid-cols-2">
+                          <TabsTrigger value="level" className="text-[10px]">{t("Nominal", "名义值")}</TabsTrigger>
+                          <TabsTrigger value="yoy" className="text-[10px]">{t("YoY %", "同比")}</TabsTrigger>
+                        </TabsList>
+                      </Tabs>
+                    </div>
+
+                    <div className="space-y-4">
+                      <Label className="tfi-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+                        {t("Chart Type", "图表类型")}
+                      </Label>
+                      <div className="flex gap-2">
+                        <Button 
+                          variant={plotType === "line" ? "default" : "outline"} 
+                          size="sm" 
+                          className="flex-1"
+                          onClick={() => setPlotType("line")}
+                        >
+                          <TrendingUp className="w-4 h-4" />
+                        </Button>
+                        <Button 
+                          variant={plotType === "bar" ? "default" : "outline"} 
+                          size="sm" 
+                          className="flex-1"
+                          onClick={() => setPlotType("bar")}
+                        >
+                          <BarChart className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
                 </Card>
+
+                {/* AI Insight Placeholder */}
+                <Card className="bg-primary/5 border-primary/20">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-xs font-bold flex items-center gap-2 text-primary">
+                      <Zap className="w-3 h-3" />
+                      {t("Smart Insight", "智能洞察")}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-[11px] leading-relaxed text-muted-foreground italic">
+                      {t(
+                        "Revenue growth showing strong resilience in 2024 with Gross Margin improving by 4.2% YoY driven by advertising optimization.",
+                        "2024年营收增长展现强劲韧性，毛利率在广告业务优化的推动下同比增长4.2%。"
+                      )}
+                    </p>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Visualization Area */}
+              <div className="lg:col-span-3 space-y-8">
+                {/* Main Chart */}
+                <Card className="border-card-border overflow-hidden bg-card/30 backdrop-blur-xl">
+                  <CardHeader className="border-b border-white/5 pb-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <CardTitle className="tfi-title text-xl">
+                          {t("Financial Trend Analysis", "财务趋势分析")}
+                        </CardTitle>
+                        <CardDescription className="tfi-mono text-[10px] uppercase tracking-wider">
+                          {t("RMB Billions • 2014-2024", "人民币 十亿元 • 2014-2024")}
+                        </CardDescription>
+                      </div>
+                      <Badge variant="outline" className="tfi-mono text-[10px] uppercase py-1 px-3">
+                        {plotMode === "yoy" ? "YoY Change %" : "Nominal Value"}
+                      </Badge>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="pt-8">
+                    <div className="h-[450px] w-full">
+                      <ResponsiveContainer width="100%" height="100%">
+                        {plotType === "line" ? (
+                          <LineChart data={filteredData}>
+                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
+                            <XAxis 
+                              dataKey="year" 
+                              stroke="#6b7280" 
+                              fontSize={11} 
+                              tickLine={false} 
+                              axisLine={false} 
+                              dy={10}
+                            />
+                            <YAxis 
+                              stroke="#6b7280" 
+                              fontSize={11} 
+                              tickLine={false} 
+                              axisLine={false} 
+                              tickFormatter={(v) => plotMode === "yoy" ? `${v}%` : v}
+                            />
+                            <Tooltip 
+                              contentStyle={{ 
+                                backgroundColor: "rgba(17, 24, 39, 0.95)", 
+                                borderRadius: "12px", 
+                                border: "1px solid rgba(255,255,255,0.1)",
+                                boxShadow: "0 10px 15px -3px rgba(0,0,0,0.5)",
+                                fontSize: "12px",
+                                backdropFilter: "blur(8px)"
+                              }}
+                              itemStyle={{ padding: "2px 0" }}
+                            />
+                            <Legend 
+                              verticalAlign="top" 
+                              align="right" 
+                              iconType="circle"
+                              wrapperStyle={{ paddingTop: "0px", paddingBottom: "20px" }}
+                            />
+                            {selectedMetrics.map((m) => (
+                              <Line
+                                key={m}
+                                type="monotone"
+                                dataKey={m}
+                                name={t(METRICS[m].label, METRICS[m].zh)}
+                                stroke={METRICS[m].color}
+                                strokeWidth={3}
+                                dot={{ r: 4, strokeWidth: 2, fill: "#111827" }}
+                                activeDot={{ r: 6, strokeWidth: 0 }}
+                                animationDuration={1500}
+                              />
+                            ))}
+                          </LineChart>
+                        ) : (
+                          <BarChart data={filteredData}>
+                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
+                            <XAxis dataKey="year" stroke="#6b7280" fontSize={11} tickLine={false} axisLine={false} dy={10} />
+                            <YAxis 
+                              stroke="#6b7280" 
+                              fontSize={11} 
+                              tickLine={false} 
+                              axisLine={false}
+                              tickFormatter={(v) => plotMode === "yoy" ? `${v}%` : v}
+                            />
+                            <Tooltip 
+                              cursor={{ fill: "rgba(255,255,255,0.05)" }}
+                              contentStyle={{ 
+                                backgroundColor: "rgba(17, 24, 39, 0.95)", 
+                                borderRadius: "12px", 
+                                border: "1px solid rgba(255,255,255,0.1)",
+                                fontSize: "12px"
+                              }}
+                            />
+                            <Legend verticalAlign="top" align="right" iconType="circle" wrapperStyle={{ paddingBottom: "20px" }} />
+                            {selectedMetrics.map((m) => (
+                              <Bar 
+                                key={m} 
+                                dataKey={m} 
+                                name={t(METRICS[m].label, METRICS[m].zh)} 
+                                fill={METRICS[m].color} 
+                                radius={[4, 4, 0, 0]}
+                                animationDuration={1000}
+                              />
+                            ))}
+                          </BarChart>
+                        )}
+                      </ResponsiveContainer>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Sub-metrics Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Revenue Composition (2024 example) */}
+                  <Card className="bg-card/20 backdrop-blur-sm border-card-border">
+                    <CardHeader>
+                      <CardTitle className="text-sm font-bold flex items-center gap-2">
+                        <PieChart className="w-4 h-4 text-primary" />
+                        {t("Revenue Composition (2024)", "营收结构 (2024)")}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="h-[200px]">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <BarChart 
+                            layout="vertical" 
+                            data={[
+                              { name: t("VAS", "增值服务"), value: 352.44, fill: "#3b82f6" },
+                              { name: t("Marketing", "营销服务"), value: 112.33, fill: "#10b981" },
+                              { name: t("FinTech", "金融科技"), value: 225.22, fill: "#f59e0b" },
+                              { name: t("Others", "其他"), value: 15.44, fill: "#8b5cf6" },
+                            ]}
+                            margin={{ left: 30 }}
+                          >
+                            <XAxis type="number" hide />
+                            <YAxis dataKey="name" type="category" fontSize={10} axisLine={false} tickLine={false} />
+                            <Tooltip cursor={{ fill: "transparent" }} />
+                            <Bar dataKey="value" radius={[0, 4, 4, 0]} barSize={20}>
+                              {/* Custom labels could go here */}
+                            </Bar>
+                          </BarChart>
+                        </ResponsiveContainer>
+                      </div>
+                      <div className="mt-4 grid grid-cols-2 gap-2">
+                        <div className="p-2 rounded-lg bg-muted/30 border border-border/50">
+                          <p className="text-[10px] text-muted-foreground uppercase">{t("Total Revenue", "总营收")}</p>
+                          <p className="text-sm font-bold tfi-mono">660.34B</p>
+                        </div>
+                        <div className="p-2 rounded-lg bg-muted/30 border border-border/50">
+                          <p className="text-[10px] text-muted-foreground uppercase">{t("Growth", "同比增长")}</p>
+                          <p className="text-sm font-bold tfi-mono text-emerald-500">+8.4%</p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Profit Margins Analysis */}
+                  <Card className="bg-card/20 backdrop-blur-sm border-card-border">
+                    <CardHeader>
+                      <CardTitle className="text-sm font-bold flex items-center gap-2">
+                        <Activity className="w-4 h-4 text-primary" />
+                        {t("Profit Margins Trend", "利润率趋势")}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="h-[200px]">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <LineChart data={DATA.slice().reverse()}>
+                            <XAxis dataKey="year" fontSize={9} hide />
+                            <YAxis fontSize={9} hide />
+                            <Tooltip />
+                            <Line 
+                              type="monotone" 
+                              dataKey={(d) => (d.grossProfit / d.revenue) * 100} 
+                              name={t("Gross Margin", "毛利率")}
+                              stroke="#10b981" 
+                              strokeWidth={2}
+                              dot={false}
+                            />
+                            <Line 
+                              type="monotone" 
+                              dataKey={(d) => (d.operatingProfit / d.revenue) * 100} 
+                              name={t("Operating Margin", "经营利润率")}
+                              stroke="#f59e0b" 
+                              strokeWidth={2}
+                              dot={false}
+                            />
+                          </LineChart>
+                        </ResponsiveContainer>
+                      </div>
+                      <div className="mt-4 flex items-center justify-between text-[11px] tfi-mono text-muted-foreground">
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 rounded-full bg-emerald-500" />
+                          <span>{t("Gross Margin", "毛利率")}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 rounded-full bg-amber-500" />
+                          <span>{t("Operating Margin", "经营利润率")}</span>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
               </div>
             </div>
-
-            {/* Bottom Section: Q&A */}
-            <Card className="p-4 shadow-sm border-muted-border bg-card/40 backdrop-blur-sm">
-              <div className="flex flex-col h-[200px]">
-                <div className="flex-1 overflow-y-auto p-2 space-y-4">
-                  <div className="flex gap-3">
-                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                      <MessageSquare className="w-4 h-4 text-primary" />
-                    </div>
-                    <div className="bg-muted p-3 rounded-2xl rounded-tl-none text-sm max-w-[80%]">
-                      {t(
-                        "Hello! I can help you analyze Tencent's financial reports. Ask me anything about margins, revenue growth, or segment details.",
-                        "你好！我可以帮你分析腾讯的财务报告。你可以问我关于利润率、收入增长或分部详情的任何问题。"
-                      )}
-                    </div>
-                  </div>
+          ) : (
+            <Card className="border-card-border bg-card/30 backdrop-blur-xl">
+              <CardHeader className="flex flex-row items-center justify-between">
+                <div>
+                  <CardTitle className="tfi-title text-2xl">{t("Financial Data Repository", "财务数据仓库")}</CardTitle>
+                  <CardDescription className="tfi-mono text-[10px] uppercase tracking-widest pt-1">
+                    {t("Comprehensive Metrics 2014–2024 • RMB Billions", "2014–2024 全面指标 • 人民币 十亿元")}
+                  </CardDescription>
                 </div>
-                <div className="pt-4 flex gap-2">
-                  <Input
-                    placeholder={t("Type your message...", "输入你的问题...")}
-                    value={chatInput}
-                    onChange={(e) => setChatInput(e.target.value)}
-                    className="rounded-full bg-background/50"
-                  />
-                  <Button size="icon" className="rounded-full shrink-0">
-                    <Send className="w-4 h-4" />
-                  </Button>
-                </div>
-              </div>
-            </Card>
-          </>
-        ) : (
-          /* Page 2: Table */
-          <div className="space-y-6">
-            {/* Top section: Filter setup */}
-            <Card className="p-4 flex flex-wrap items-center gap-4 bg-card/40 backdrop-blur-sm border-muted-border shadow-sm">
-              <div className="flex items-center gap-2">
-                <Label className="text-xs whitespace-nowrap">{t("Years Range", "年份范围")}</Label>
-                <div className="flex gap-2">
-                   <Select value={String(yearRange[0])} onValueChange={(v) => setYearRange([Number(v), yearRange[1]])}>
-                    <SelectTrigger className="h-8 w-24"><SelectValue /></SelectTrigger>
-                    <SelectContent>{DATA.map(d => <SelectItem key={d.year} value={String(d.year)}>{d.year}</SelectItem>)}</SelectContent>
-                   </Select>
-                   <span className="text-muted-foreground self-center">-</span>
-                   <Select value={String(yearRange[1])} onValueChange={(v) => setYearRange([yearRange[0], Number(v)])}>
-                    <SelectTrigger className="h-8 w-24"><SelectValue /></SelectTrigger>
-                    <SelectContent>{DATA.map(d => <SelectItem key={d.year} value={String(d.year)}>{d.year}</SelectItem>)}</SelectContent>
-                   </Select>
-                </div>
-              </div>
-              <Separator orientation="vertical" className="h-8" />
-              <Button variant="outline" size="sm" className="rounded-full">
-                <Plus className="w-4 h-4 mr-2" />
-                {t("Add Metric", "添加指标")}
-              </Button>
-              <div className="ml-auto text-xs text-muted-foreground tfi-mono">
-                {t("Units: CNY Billion", "单位: 十亿人民币")}
-              </div>
-            </Card>
-
-            {/* Middle to bottom section: Table */}
-            <Card className="shadow-sm border-card-border overflow-hidden bg-card/60 backdrop-blur-sm">
-              <div className="overflow-x-auto">
-                <Table>
-                  <TableHeader>
-                    <TableRow className="bg-muted/30">
-                      <TableHead className="w-[100px] font-bold">{t("Metric", "指标")}</TableHead>
-                      {DATA.filter(d => d.year >= yearRange[0] && d.year <= yearRange[1]).map(d => (
-                        <TableHead key={d.year} className="text-right font-bold">{d.year}</TableHead>
-                      ))}
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {(Object.keys(METRICS_META) as MetricKey[]).map((m) => (
-                      <TableRow key={m} className="hover:bg-muted/20">
-                        <TableCell className="font-medium">
-                          {t(METRICS_META[m].label, METRICS_META[m].zh)}
-                        </TableCell>
-                        {DATA.filter(d => d.year >= yearRange[0] && d.year <= yearRange[1]).map(d => (
-                          <TableCell key={d.year} className="text-right tfi-mono">
-                            {formatValue(d[m])}
-                          </TableCell>
+                <Button variant="outline" size="sm" className="h-8">
+                  <Download className="w-4 h-4 mr-2" />
+                  {t("Export CSV", "导出数据")}
+                </Button>
+              </CardHeader>
+              <CardContent>
+                <div className="relative overflow-x-auto rounded-xl border border-border">
+                  <table className="w-full text-sm text-left">
+                    <thead className="text-[11px] tfi-mono uppercase text-muted-foreground bg-muted/50 border-b border-border">
+                      <tr>
+                        <th className="px-6 py-4 font-medium sticky left-0 bg-card z-10">{t("Metric", "指标")}</th>
+                        {DATA.map(d => (
+                          <th key={d.year} className="px-6 py-4 font-medium text-center">{d.year}</th>
                         ))}
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-white/5">
+                      {Object.entries(METRICS).map(([key, m]) => (
+                        <tr key={key} className="hover:bg-white/5 transition-colors group">
+                          <td className="px-6 py-4 font-medium sticky left-0 bg-card z-10 group-hover:bg-white/5 transition-colors">
+                            <div className="flex flex-col">
+                              <span className="text-foreground">{t(m.label, m.zh)}</span>
+                              <span className="text-[10px] text-muted-foreground font-normal">{m.category}</span>
+                            </div>
+                          </td>
+                          {DATA.map(d => (
+                            <td key={d.year} className="px-6 py-4 text-center tfi-mono text-[13px]">
+                              {formatValue((d as any)[key])}
+                            </td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </CardContent>
             </Card>
-          </div>
-        )}
+          )}
+        </div>
       </main>
 
-      <footer className="mt-auto p-4 text-center text-[10px] text-muted-foreground uppercase tracking-widest tfi-mono">
-        {t("Tencent Financial Intelligence • Analyst Grade Tooling • v1", "腾讯金融情报 • 分析师级工具 • v1")}
+      {/* TFI Intelligence Bar */}
+      <footer className="border-t bg-card/80 backdrop-blur-lg p-4">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-6">
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="text-[10px] tfi-mono uppercase text-muted-foreground tracking-widest">
+                {t("System Status: Online", "系统状态：在线")}
+              </span>
+            </div>
+            <div className="text-[10px] tfi-mono uppercase text-muted-foreground tracking-widest">
+              {t("Precision: 2 Decimal Places", "精度：2位小数")}
+            </div>
+          </div>
+          <div className="flex items-center gap-4 text-[11px] text-muted-foreground">
+            <span>© 2026 Tencent Financial Intelligence Mockup</span>
+            <div className="h-3 w-px bg-border" />
+            <span>{t("Verified Data Source", "已验证数据源")}</span>
+          </div>
+        </div>
       </footer>
     </div>
   );

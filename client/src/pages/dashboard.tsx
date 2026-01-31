@@ -190,7 +190,7 @@ function SparklineHeader({ title, subtitle }: { title: string; subtitle: string 
   );
 }
 
-function TopNav({ active }: { active: string }) {
+function TopNav({ active, onChange }: { active: string; onChange: (id: string) => void }) {
   const items = [
     { id: "overview", label: "Overview" },
     { id: "financials", label: "Financials" },
@@ -206,6 +206,7 @@ function TopNav({ active }: { active: string }) {
           key={it.id}
           type="button"
           data-testid={`tab-${it.id}`}
+          onClick={() => onChange(it.id)}
           className={
             "relative rounded-full px-3.5 py-2 text-sm transition-all hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-ring/40 " +
             (active === it.id
@@ -437,7 +438,7 @@ export default function Dashboard() {
             </div>
 
             <div className="hidden md:block">
-              <TopNav active={active} />
+              <TopNav active={active} onChange={setActive} />
               <div className="sr-only" aria-live="polite" data-testid="status-active-tab">
                 {active}
               </div>

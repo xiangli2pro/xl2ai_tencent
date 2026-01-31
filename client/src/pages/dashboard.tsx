@@ -26,21 +26,65 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 type MetricKey = keyof typeof METRICS;
 
 const METRICS = {
+  // Performance / Profitability
   revenue: { label: "Revenue", color: "#3b82f6", zh: "收入", category: "Performance" },
   grossProfit: { label: "Gross Profit", color: "#10b981", zh: "毛利", category: "Performance" },
   operatingProfit: { label: "Operating Profit", color: "#f59e0b", zh: "经营利润", category: "Performance" },
   profitBeforeTax: { label: "Profit Before Tax", color: "#8b5cf6", zh: "除税前利润", category: "Performance" },
   profitForYear: { label: "Profit for the Year", color: "#ec4899", zh: "年度利润", category: "Performance" },
   profitAttrEquity: { label: "Profit Attr. to Equity Holders", color: "#f43f5e", zh: "权益持有人应占利润", category: "Performance" },
+  totalCompIncome: { label: "Total Comprehensive Income", color: "#fb7185", zh: "综合收益总额", category: "Performance" },
+  totalCompIncomeAttrEquity: { label: "Total Comp. Income Attr. to Equity", color: "#f472b6", zh: "权益持有人应占综合收益总额", category: "Performance" },
   nonIfrsOperatingProfit: { label: "Non-IFRS Operating Profit", color: "#6366f1", zh: "非国际财务报告准则经营利润", category: "Performance" },
   nonIfrsProfitAttrEquity: { label: "Non-IFRS Profit Attr. to Equity", color: "#06b6d4", zh: "非国际财务报告准则权益持有人应占利润", category: "Performance" },
-  totalAssets: { label: "Total Assets", color: "#14b8a6", zh: "总资产", category: "Balance Sheet" },
+
+  // Balance Sheet
+  nonCurrentAssets: { label: "Non-current Assets", color: "#14b8a6", zh: "非流动资产", category: "Balance Sheet" },
+  currentAssets: { label: "Current Assets", color: "#2dd4bf", zh: "流动资产", category: "Balance Sheet" },
+  totalAssets: { label: "Total Assets", color: "#0ea5e9", zh: "总资产", category: "Balance Sheet" },
+  equityAttrEquity: { label: "Equity Attr. to Equity Holders", color: "#a78bfa", zh: "权益持有人应占权益", category: "Balance Sheet" },
+  nonControllingInterests: { label: "Non-controlling Interests", color: "#c4b5fd", zh: "非控股权益", category: "Balance Sheet" },
   totalEquity: { label: "Total Equity", color: "#8b5cf6", zh: "总权益", category: "Balance Sheet" },
+  nonCurrentLiabilities: { label: "Non-current Liabilities", color: "#f97316", zh: "非流动负债", category: "Balance Sheet" },
+  currentLiabilities: { label: "Current Liabilities", color: "#fb7185", zh: "流动负债", category: "Balance Sheet" },
   totalLiabilities: { label: "Total Liabilities", color: "#ef4444", zh: "总负债", category: "Balance Sheet" },
+  totalEquityLiabilities: { label: "Total Equity & Liabilities", color: "#f43f5e", zh: "权益及负债总额", category: "Balance Sheet" },
+
+  // Costs / Income Statement Detail
+  costOfRevenues: { label: "Cost of Revenues", color: "#60a5fa", zh: "收入成本", category: "Costs" },
+  sellingMarketingExpenses: { label: "Selling & Marketing Expenses", color: "#34d399", zh: "销售及市场推广开支", category: "Costs" },
+  generalAdminExpenses: { label: "General & Administrative Expenses", color: "#fbbf24", zh: "一般及行政开支", category: "Costs" },
+  otherGainsLosses: { label: "Other Gains / (Losses)", color: "#a78bfa", zh: "其他收益/(亏损)", category: "Costs" },
+  netGainsLossesInvestments: { label: "Net Gains / (Losses) on Investments", color: "#fb7185", zh: "投资净收益/(亏损)", category: "Costs" },
+  interestIncome: { label: "Interest Income", color: "#22d3ee", zh: "利息收入", category: "Costs" },
+  financeCosts: { label: "Finance Costs", color: "#38bdf8", zh: "财务成本", category: "Costs" },
+  shareOfProfitLossAssociates: { label: "Share of Profit/(Loss) of Associates", color: "#93c5fd", zh: "应占联营公司利润/(亏损)", category: "Costs" },
+  incomeTaxExpense: { label: "Income Tax Expense", color: "#f87171", zh: "所得税开支", category: "Costs" },
+
+  // Segment Revenue
+  vasRevenue: { label: "VAS Revenue", color: "#3b82f6", zh: "增值服务收入", category: "Segments" },
+  marketingServicesRevenue: { label: "Marketing Services Revenue", color: "#10b981", zh: "营销服务收入", category: "Segments" },
+  fintechRevenue: { label: "FinTech & Business Services Revenue", color: "#f59e0b", zh: "金融科技及企业服务收入", category: "Segments" },
+  othersRevenue: { label: "Others Revenue", color: "#8b5cf6", zh: "其他收入", category: "Segments" },
+
+  // Segment Gross Profit
+  vasGrossProfit: { label: "VAS Gross Profit", color: "#60a5fa", zh: "增值服务毛利", category: "Segments" },
+  marketingServicesGrossProfit: { label: "Marketing Services Gross Profit", color: "#34d399", zh: "营销服务毛利", category: "Segments" },
+  fintechGrossProfit: { label: "FinTech & Business Services Gross Profit", color: "#fbbf24", zh: "金融科技及企业服务毛利", category: "Segments" },
+  othersGrossProfit: { label: "Others Gross Profit", color: "#a78bfa", zh: "其他毛利", category: "Segments" },
+
+  // Segment Margins
+  vasGrossMargin: { label: "VAS Gross Margin (%)", color: "#93c5fd", zh: "增值服务毛利率(%)", category: "Segments" },
+  marketingServicesGrossMargin: { label: "Marketing Services Gross Margin (%)", color: "#6ee7b7", zh: "营销服务毛利率(%)", category: "Segments" },
+  fintechGrossMargin: { label: "FinTech & Business Services Gross Margin (%)", color: "#fde68a", zh: "金融科技及企业服务毛利率(%)", category: "Segments" },
+  othersGrossMargin: { label: "Others Gross Margin (%)", color: "#ddd6fe", zh: "其他毛利率(%)", category: "Segments" },
+
+  // Liquidity / Cash
   cashCashEquivalents: { label: "Cash & Cash Equivalents", color: "#2dd4bf", zh: "现金及现金等价物", category: "Liquidity" },
   termDepositsOthers: { label: "Term Deposits and Others", color: "#22d3ee", zh: "定期存款及其他", category: "Liquidity" },
   borrowings: { label: "Borrowings", color: "#0891b2", zh: "借款", category: "Liquidity" },
@@ -364,23 +408,53 @@ export default function Dashboard() {
                       <Label className="tfi-mono text-[10px] uppercase tracking-widest text-muted-foreground">
                         {t("Metric Selection", "指标选择")}
                       </Label>
-                      <div className="grid grid-cols-1 gap-2">
-                        {Object.entries(METRICS).slice(0, 8).map(([key, m]) => (
-                          <div key={key} className="flex items-center space-x-2">
-                            <Switch 
-                              id={`metric-${key}`}
-                              checked={selectedMetrics.includes(key as MetricKey)}
-                              onCheckedChange={(checked) => {
-                                if (checked) setSelectedMetrics([...selectedMetrics, key as MetricKey]);
-                                else setSelectedMetrics(selectedMetrics.filter(mk => mk !== key));
-                              }}
-                            />
-                            <Label htmlFor={`metric-${key}`} className="text-xs cursor-pointer">
-                              {t(m.label, m.zh)}
-                            </Label>
-                          </div>
+                      <Accordion type="multiple" defaultValue={["Performance", "Balance Sheet", "Costs", "Segments", "Liquidity"]} className="w-full">
+                        {Array.from(
+                          Object.entries(METRICS).reduce((acc, [key, m]) => {
+                            const arr = acc.get(m.category) ?? [];
+                            arr.push([key, m] as const);
+                            acc.set(m.category, arr);
+                            return acc;
+                          }, new Map<string, Array<readonly [string, (typeof METRICS)[MetricKey]]>>())
+                        ).map(([category, items]) => (
+                          <AccordionItem key={category} value={category} className="border-border/50">
+                            <AccordionTrigger
+                              data-testid={`accordion-${category.toLowerCase().replace(/\s+/g, "-")}`}
+                              className="py-3 text-xs font-semibold text-foreground hover:no-underline"
+                            >
+                              <span className="flex items-center gap-2">
+                                <span className="inline-block w-2 h-2 rounded-full bg-primary/70" />
+                                {category}
+                                <span className="ml-2 text-[10px] tfi-mono text-muted-foreground">({items.length})</span>
+                              </span>
+                            </AccordionTrigger>
+                            <AccordionContent className="pb-3">
+                              <div className="grid grid-cols-1 gap-2">
+                                {items.map(([key, m]) => (
+                                  <div key={key} className="flex items-center space-x-2">
+                                    <Switch 
+                                      data-testid={`switch-metric-${key}`}
+                                      id={`metric-${key}`}
+                                      checked={selectedMetrics.includes(key as MetricKey)}
+                                      onCheckedChange={(checked) => {
+                                        if (checked) setSelectedMetrics([...selectedMetrics, key as MetricKey]);
+                                        else setSelectedMetrics(selectedMetrics.filter(mk => mk !== key));
+                                      }}
+                                    />
+                                    <Label
+                                      data-testid={`label-metric-${key}`}
+                                      htmlFor={`metric-${key}`}
+                                      className="text-xs cursor-pointer"
+                                    >
+                                      {t(m.label, m.zh)}
+                                    </Label>
+                                  </div>
+                                ))}
+                              </div>
+                            </AccordionContent>
+                          </AccordionItem>
                         ))}
-                      </div>
+                      </Accordion>
                     </div>
 
                     <div className="space-y-4">
@@ -389,6 +463,7 @@ export default function Dashboard() {
                       </Label>
                       <div className="px-2 pt-2">
                         <Slider 
+                          data-testid="slider-year-range"
                           defaultValue={[2014, 2024]} 
                           min={2014} 
                           max={2024} 

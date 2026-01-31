@@ -1,0 +1,195 @@
+Love this constraint — it makes v1 **much sharper, faster to build, and higher quality**. Below is the **updated PRP**, rewritten to reflect a **Tencent-only, preloaded v1** while keeping the path open for expansion later.
+
+You can paste this directly into Lovable.
+
+---
+
+## 📊 Product Requirements Prompt (PRP) — **V1 Updated**
+
+### Product Name (Working Title)
+
+**Tencent Financial Intelligence**
+
+---
+
+### One-Sentence Idea
+
+An AI-powered financial analysis platform that preloads Tencent’s annual reports (2015–2024), automatically extracts standardized financial metrics, visualizes long-term performance, enables analyst-grade custom calculations, and supports interactive Q&A grounded in official filings.
+
+---
+
+### Scope Definition (V1 – Explicit)
+
+* **Single company only:** Tencent
+* **Preloaded data:** Annual reports from **2015–2024**
+* **Predefined metrics:** Canonical metric set already specified (income statement, balance sheet, segments, liquidity)
+* **No manual historical uploads required by users**
+* Users may upload **new future reports** (e.g., 2025+) to extend the dataset
+
+This v1 is optimized for **depth, accuracy, and longitudinal insight**, not breadth.
+
+---
+
+### Target Audience
+
+**Primary**
+
+* Public market investors
+* Equity researchers covering Tencent / China tech
+
+Users are financially sophisticated and expect:
+
+* Metric consistency across years
+* Clear sourcing back to original reports
+* Flexible, analyst-grade tooling
+
+---
+
+### Core User Journey (V1)
+
+1. **Landing / Overview**
+
+   * User lands on Tencent dashboard
+   * Sees headline metrics and long-term trends (2015–2024)
+
+2. **Explore Financials**
+
+   * Navigate structured sections:
+
+     * Income statement
+     * Balance sheet
+     * Segment performance
+     * Liquidity & financial resources
+   * All metrics are already extracted and normalized
+
+3. **Visualize Trends**
+
+   * Interactive charts:
+
+     * YoY growth
+     * Margins
+     * Segment mix over time
+     * Multi-year trend lines
+   * Users can customize:
+
+     * Chart type
+     * Time range
+     * Metrics displayed
+
+4. **Custom Calculations (Analyst-Grade)**
+
+   * Users define custom formulas using extracted metrics
+   * Supports:
+
+     * Multi-metric expressions
+     * Ratios, spreads, growth rates, rolling windows
+   * Results update dynamically across years
+
+5. **AI-Powered Analysis & Q&A**
+
+   * Pre-generated AI analysis summarizing Tencent’s performance over time
+   * Users can ask follow-up questions such as:
+
+     * “What drove margin expansion after 2020?”
+     * “Compare VAS vs FinTech revenue growth”
+   * Answers are grounded in:
+
+     * Extracted metrics
+     * Tables and management discussion context
+
+6. **Future Updates**
+
+   * User can upload a new Tencent annual report
+   * System extracts metrics and appends to existing time series
+
+---
+
+### Default Metric Set (V1)
+
+Metrics are **predefined and auto-extracted**, including:
+
+* **Income Statement**
+
+  * Revenue, gross profit, operating profit
+  * Net profit (IFRS & non-IFRS)
+  * Expense breakdowns
+* **Balance Sheet**
+
+  * Assets, liabilities, equity
+* **Segment Metrics**
+
+  * Revenue, gross profit, margins by segment
+* **Liquidity**
+
+  * Cash, deposits, borrowings, net cash
+
+(All metrics use a canonical metric dictionary with deduplication.)
+
+---
+
+### Core Features (V1)
+
+* Preloaded Tencent annual reports (2015–2024)
+* Automated table extraction & metric normalization
+* Persistent time-series database
+* Interactive financial dashboards
+* Analyst-grade custom calculation builder (no code)
+* AI-generated performance analysis
+* Interactive Q&A grounded in report content
+* Source traceability (page/table references)
+
+---
+
+### Data Stored
+
+* Tencent company metadata
+* Annual report PDFs (2015–2024)
+* Extracted metrics (metric_id, year, segment, value, unit, source_page)
+* User-defined calculations
+* Visualization configurations
+* Q&A interaction context
+
+---
+
+### Suggested Stack (Conceptual)
+
+* **Supabase** – auth, database, file storage
+* **LLM (e.g., OpenAI)** – table understanding, analysis, Q&A
+* **Frontend** – dashboard-style web app with rich chart interactions
+
+(Stack choices are flexible; data accuracy and explainability are priorities.)
+
+---
+
+### Design / UX Vibe
+
+* Professional, research-grade
+* Data-dense but clean
+* “Equity research terminal” feel
+* Emphasis on:
+
+  * Long-term trends
+  * Metric consistency
+  * Analytical freedom
+
+---
+
+### Future Expansion (Post-V1)
+
+* Add more companies (peer comparison)
+* Industry-specific templates
+* Quarterly report ingestion
+* Export to Excel / PPT
+* Saved scenarios and valuation models
+* Alerts on metric changes
+
+---
+
+If you want, next I can:
+
+* Break this into **Lovable build steps**
+* Define **success metrics for v1**
+* Help you write a **one-paragraph investor pitch**
+* Design the **custom calculation UX** (formula builder logic)
+
+Just say the word 👌

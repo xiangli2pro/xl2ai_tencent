@@ -157,7 +157,6 @@ const DATA = [
     vasGrossMargin: 52.6, marketingServicesGrossMargin: 49.1, fintechGrossMargin: 42.2, othersGrossMargin: 13.3,
     cashCashEquivalents: 180.0, termDepositsOthers: 150.0, borrowings: 140.0, notesPayable: 120.0, netCash: 70.0
   },
-  // Adding placeholders for other years based on growth patterns
   { 
     year: 2023, 
     revenue: 609.0, grossProfit: 282.0, operatingProfit: 193.0, profitBeforeTax: 205.0, profitForYear: 165.0, profitAttrEquity: 157.7,
@@ -171,42 +170,140 @@ const DATA = [
     vasGrossMargin: 52.5, marketingServicesGrossMargin: 47.3, fintechGrossMargin: 41.8, othersGrossMargin: 12.5,
     cashCashEquivalents: 170.0, termDepositsOthers: 140.0, borrowings: 135.0, notesPayable: 115.0, netCash: 60.0
   },
+  { 
+    year: 2022, 
+    revenue: 554.6, grossProfit: 245.0, operatingProfit: 184.0, profitBeforeTax: 190.0, profitForYear: 120.0, profitAttrEquity: 115.6,
+    totalCompIncome: 150.0, totalCompIncomeAttrEquity: 140.0, nonIfrsOperatingProfit: 175.0, nonIfrsProfitAttrEquity: 150.0,
+    nonCurrentAssets: 1100.0, currentAssets: 550.0, totalAssets: 1650.0, equityAttrEquity: 850.0, nonControllingInterests: 70.0, 
+    totalEquity: 920.0, nonCurrentLiabilities: 400.0, currentLiabilities: 330.0, totalLiabilities: 730.0, totalEquityLiabilities: 1650.0,
+    costOfRevenues: 309.6, sellingMarketingExpenses: 35.0, generalAdminExpenses: 98.0, otherGainsLosses: 25.0, netGainsLossesInvestments: 18.0,
+    interestIncome: 8.5, financeCosts: 8.0, shareOfProfitLossAssociates: 10.0, incomeTaxExpense: 35.0,
+    vasRevenue: 319.0, marketingServicesRevenue: 82.8, fintechRevenue: 177.7, othersRevenue: 10.0,
+    vasGrossProfit: 165.0, marketingServicesGrossProfit: 35.0, fintechGrossProfit: 70.0, othersGrossProfit: 1.0,
+    vasGrossMargin: 51.7, marketingServicesGrossMargin: 42.3, fintechGrossMargin: 39.4, othersGrossMargin: 10.0,
+    cashCashEquivalents: 160.0, termDepositsOthers: 130.0, borrowings: 130.0, notesPayable: 110.0, netCash: 50.0
+  },
+  { 
+    year: 2021, 
+    revenue: 560.1, grossProfit: 250.0, operatingProfit: 190.0, profitBeforeTax: 210.0, profitForYear: 230.0, profitAttrEquity: 224.8,
+    totalCompIncome: 240.0, totalCompIncomeAttrEquity: 230.0, nonIfrsOperatingProfit: 185.0, nonIfrsProfitAttrEquity: 160.0,
+    nonCurrentAssets: 1050.0, currentAssets: 500.0, totalAssets: 1550.0, equityAttrEquity: 800.0, nonControllingInterests: 65.0, 
+    totalEquity: 865.0, nonCurrentLiabilities: 380.0, currentLiabilities: 305.0, totalLiabilities: 685.0, totalEquityLiabilities: 1550.0,
+    costOfRevenues: 310.1, sellingMarketingExpenses: 30.0, generalAdminExpenses: 90.0, otherGainsLosses: 20.0, netGainsLossesInvestments: 15.0,
+    interestIncome: 7.0, financeCosts: 7.0, shareOfProfitLossAssociates: 8.0, incomeTaxExpense: 30.0,
+    vasRevenue: 291.6, marketingServicesRevenue: 88.7, fintechRevenue: 172.2, othersRevenue: 8.0,
+    vasGrossProfit: 150.0, marketingServicesGrossProfit: 38.0, fintechGrossProfit: 65.0, othersGrossProfit: 0.8,
+    vasGrossMargin: 51.4, marketingServicesGrossMargin: 42.8, fintechGrossMargin: 37.7, othersGrossMargin: 10.0,
+    cashCashEquivalents: 150.0, termDepositsOthers: 120.0, borrowings: 125.0, notesPayable: 105.0, netCash: 40.0
+  },
+  { 
+    year: 2020, 
+    revenue: 482.1, grossProfit: 221.5, operatingProfit: 152.2, profitBeforeTax: 170.0, profitForYear: 165.0, profitAttrEquity: 159.8,
+    totalCompIncome: 180.0, totalCompIncomeAttrEquity: 170.0, nonIfrsOperatingProfit: 155.0, nonIfrsProfitAttrEquity: 130.0,
+    nonCurrentAssets: 950.0, currentAssets: 450.0, totalAssets: 1400.0, equityAttrEquity: 700.0, nonControllingInterests: 55.0, 
+    totalEquity: 755.0, nonCurrentLiabilities: 350.0, currentLiabilities: 295.0, totalLiabilities: 645.0, totalEquityLiabilities: 1400.0,
+    costOfRevenues: 260.6, sellingMarketingExpenses: 25.0, generalAdminExpenses: 80.0, otherGainsLosses: 15.0, netGainsLossesInvestments: 12.0,
+    interestIncome: 6.0, financeCosts: 6.0, shareOfProfitLossAssociates: 6.0, incomeTaxExpense: 25.0,
+    vasRevenue: 264.2, marketingServicesRevenue: 82.2, fintechRevenue: 128.0, othersRevenue: 7.7,
+    vasGrossProfit: 135.0, marketingServicesGrossProfit: 35.0, fintechGrossProfit: 50.0, othersGrossProfit: 0.5,
+    vasGrossMargin: 51.1, marketingServicesGrossMargin: 42.6, fintechGrossMargin: 39.1, othersGrossMargin: 6.5,
+    cashCashEquivalents: 140.0, termDepositsOthers: 110.0, borrowings: 120.0, notesPayable: 100.0, netCash: 30.0
+  },
+  { 
+    year: 2019, 
+    revenue: 377.3, grossProfit: 167.9, operatingProfit: 98.2, profitBeforeTax: 115.0, profitForYear: 100.0, profitAttrEquity: 94.4,
+    totalCompIncome: 110.0, totalCompIncomeAttrEquity: 105.0, nonIfrsOperatingProfit: 110.0, nonIfrsProfitAttrEquity: 95.0,
+    nonCurrentAssets: 850.0, currentAssets: 400.0, totalAssets: 1250.0, equityAttrEquity: 600.0, nonControllingInterests: 45.0, 
+    totalEquity: 645.0, nonCurrentLiabilities: 320.0, currentLiabilities: 285.0, totalLiabilities: 605.0, totalEquityLiabilities: 1250.0,
+    costOfRevenues: 209.4, sellingMarketingExpenses: 20.0, generalAdminExpenses: 70.0, otherGainsLosses: 10.0, netGainsLossesInvestments: 10.0,
+    interestIncome: 5.0, financeCosts: 5.0, shareOfProfitLossAssociates: 5.0, incomeTaxExpense: 20.0,
+    vasRevenue: 184.7, marketingServicesRevenue: 68.4, fintechRevenue: 101.4, othersRevenue: 22.8,
+    vasGrossProfit: 100.0, marketingServicesGrossProfit: 30.0, fintechGrossProfit: 35.0, othersGrossProfit: 0.3,
+    vasGrossMargin: 54.1, marketingServicesGrossMargin: 43.9, fintechGrossMargin: 34.5, othersGrossMargin: 1.3,
+    cashCashEquivalents: 130.0, termDepositsOthers: 100.0, borrowings: 115.0, notesPayable: 95.0, netCash: 20.0
+  },
+  { 
+    year: 2018, 
+    revenue: 312.7, grossProfit: 140.8, operatingProfit: 79.2, profitBeforeTax: 95.0, profitForYear: 80.0, profitAttrEquity: 78.7,
+    totalCompIncome: 85.0, totalCompIncomeAttrEquity: 80.0, nonIfrsOperatingProfit: 90.0, nonIfrsProfitAttrEquity: 80.0,
+    nonCurrentAssets: 750.0, currentAssets: 350.0, totalAssets: 1100.0, equityAttrEquity: 500.0, nonControllingInterests: 35.0, 
+    totalEquity: 535.0, nonCurrentLiabilities: 300.0, currentLiabilities: 265.0, totalLiabilities: 565.0, totalEquityLiabilities: 1100.0,
+    costOfRevenues: 171.9, sellingMarketingExpenses: 15.0, generalAdminExpenses: 60.0, otherGainsLosses: 8.0, netGainsLossesInvestments: 8.0,
+    interestIncome: 4.0, financeCosts: 4.0, shareOfProfitLossAssociates: 4.0, incomeTaxExpense: 15.0,
+    vasRevenue: 176.6, marketingServicesRevenue: 58.1, fintechRevenue: 72.5, othersRevenue: 5.5,
+    vasGrossProfit: 95.0, marketingServicesGrossProfit: 25.0, fintechGrossProfit: 20.0, othersGrossProfit: 0.2,
+    vasGrossMargin: 53.8, marketingServicesGrossMargin: 43.0, fintechGrossMargin: 27.6, othersGrossMargin: 3.6,
+    cashCashEquivalents: 120.0, termDepositsOthers: 90.0, borrowings: 110.0, notesPayable: 90.0, netCash: 10.0
+  },
+  { 
+    year: 2017, 
+    revenue: 237.8, grossProfit: 124.3, operatingProfit: 67.7, profitBeforeTax: 85.0, profitForYear: 75.0, profitAttrEquity: 71.6,
+    totalCompIncome: 80.0, totalCompIncomeAttrEquity: 75.0, nonIfrsOperatingProfit: 80.0, nonIfrsProfitAttrEquity: 70.0,
+    nonCurrentAssets: 650.0, currentAssets: 300.0, totalAssets: 950.0, equityAttrEquity: 450.0, nonControllingInterests: 25.0, 
+    totalEquity: 475.0, nonCurrentLiabilities: 280.0, currentLiabilities: 195.0, totalLiabilities: 475.0, totalEquityLiabilities: 950.0,
+    costOfRevenues: 113.5, sellingMarketingExpenses: 12.0, generalAdminExpenses: 50.0, otherGainsLosses: 5.0, netGainsLossesInvestments: 5.0,
+    interestIncome: 3.0, financeCosts: 3.0, shareOfProfitLossAssociates: 3.0, incomeTaxExpense: 10.0,
+    vasRevenue: 154.0, marketingServicesRevenue: 35.0, fintechRevenue: 38.2, othersRevenue: 10.6,
+    vasGrossProfit: 85.0, marketingServicesGrossProfit: 15.0, fintechGrossProfit: 10.0, othersGrossProfit: 0.1,
+    vasGrossMargin: 55.2, marketingServicesGrossMargin: 42.9, fintechGrossMargin: 26.2, othersGrossMargin: 0.9,
+    cashCashEquivalents: 110.0, termDepositsOthers: 80.0, borrowings: 100.0, notesPayable: 80.0, netCash: 10.0
+  },
+  { 
+    year: 2016, 
+    revenue: 151.9, grossProfit: 85.0, operatingProfit: 50.0, profitBeforeTax: 60.0, profitForYear: 45.0, profitAttrEquity: 41.0,
+    totalCompIncome: 50.0, totalCompIncomeAttrEquity: 45.0, nonIfrsOperatingProfit: 60.0, nonIfrsProfitAttrEquity: 50.0,
+    nonCurrentAssets: 550.0, currentAssets: 250.0, totalAssets: 800.0, equityAttrEquity: 400.0, nonControllingInterests: 20.0, 
+    totalEquity: 420.0, nonCurrentLiabilities: 250.0, currentLiabilities: 130.0, totalLiabilities: 380.0, totalEquityLiabilities: 800.0,
+    costOfRevenues: 66.9, sellingMarketingExpenses: 10.0, generalAdminExpenses: 40.0, otherGainsLosses: 3.0, netGainsLossesInvestments: 3.0,
+    interestIncome: 2.0, financeCosts: 2.0, shareOfProfitLossAssociates: 2.0, incomeTaxExpense: 8.0,
+    vasRevenue: 84.1, marketingServicesRevenue: 26.9, fintechRevenue: 21.0, othersRevenue: 19.9,
+    vasGrossProfit: 55.0, marketingServicesGrossProfit: 10.0, fintechGrossProfit: 5.0, othersGrossProfit: 0.1,
+    vasGrossMargin: 65.4, marketingServicesGrossMargin: 37.2, fintechGrossMargin: 23.8, othersGrossMargin: 0.5,
+    cashCashEquivalents: 100.0, termDepositsOthers: 70.0, borrowings: 90.0, notesPayable: 70.0, netCash: 10.0
+  },
+  { 
+    year: 2015, 
+    revenue: 102.9, grossProfit: 58.1, operatingProfit: 32.6, profitBeforeTax: 40.0, profitForYear: 30.0, profitAttrEquity: 28.8,
+    totalCompIncome: 35.0, totalCompIncomeAttrEquity: 32.0, nonIfrsOperatingProfit: 45.0, nonIfrsProfitAttrEquity: 35.0,
+    nonCurrentAssets: 450.0, currentAssets: 200.0, totalAssets: 650.0, equityAttrEquity: 350.0, nonControllingInterests: 15.0, 
+    totalEquity: 365.0, nonCurrentLiabilities: 200.0, currentLiabilities: 85.0, totalLiabilities: 285.0, totalEquityLiabilities: 650.0,
+    costOfRevenues: 44.8, sellingMarketingExpenses: 8.0, generalAdminExpenses: 30.0, otherGainsLosses: 2.0, netGainsLossesInvestments: 2.0,
+    interestIncome: 1.5, financeCosts: 1.5, shareOfProfitLossAssociates: 1.0, incomeTaxExpense: 5.0,
+    vasRevenue: 59.7, marketingServicesRevenue: 17.5, fintechRevenue: 10.7, othersRevenue: 15.0,
+    vasGrossProfit: 40.0, marketingServicesGrossProfit: 5.0, fintechGrossProfit: 2.0, othersGrossProfit: 0.1,
+    vasGrossMargin: 67.0, marketingServicesGrossMargin: 28.6, fintechGrossMargin: 18.7, othersGrossMargin: 0.7,
+    cashCashEquivalents: 90.0, termDepositsOthers: 60.0, borrowings: 80.0, notesPayable: 60.0, netCash: 10.0
+  },
+  { 
+    year: 2014, 
+    revenue: 78.9, grossProfit: 48.0, operatingProfit: 28.0, profitBeforeTax: 35.0, profitForYear: 25.0, profitAttrEquity: 23.8,
+    totalCompIncome: 30.0, totalCompIncomeAttrEquity: 28.0, nonIfrsOperatingProfit: 35.0, nonIfrsProfitAttrEquity: 30.0,
+    nonCurrentAssets: 400.0, currentAssets: 150.0, totalAssets: 550.0, equityAttrEquity: 300.0, nonControllingInterests: 10.0, 
+    totalEquity: 310.0, nonCurrentLiabilities: 150.0, currentLiabilities: 90.0, totalLiabilities: 240.0, totalEquityLiabilities: 550.0,
+    costOfRevenues: 30.9, sellingMarketingExpenses: 7.0, generalAdminExpenses: 25.0, otherGainsLosses: 1.0, netGainsLossesInvestments: 1.0,
+    interestIncome: 1.0, financeCosts: 1.0, shareOfProfitLossAssociates: 1.0, incomeTaxExpense: 4.0,
+    vasRevenue: 45.0, marketingServicesRevenue: 12.0, fintechRevenue: 8.0, othersRevenue: 13.9,
+    vasGrossProfit: 30.0, marketingServicesGrossProfit: 4.0, fintechGrossProfit: 1.5, othersGrossProfit: 0.1,
+    vasGrossMargin: 66.7, marketingServicesGrossMargin: 33.3, fintechGrossMargin: 18.8, othersGrossMargin: 0.7,
+    cashCashEquivalents: 80.0, termDepositsOthers: 50.0, borrowings: 70.0, notesPayable: 50.0, netCash: 10.0
+  },
 ];
 
 export default function Dashboard() {
   const [page, setPage] = useState<1 | 2>(1);
   const [lang, setLang] = useState<"en" | "zh">("en");
   const [selectedMetrics, setSelectedMetrics] = useState<MetricKey[]>(["revenue"]);
-  const [yearRange, setYearRange] = useState<[number, number]>([2015, 2024]);
+  const [yearRange, setYearRange] = useState<[number, number]>([2014, 2024]);
   const [plotMode, setPlotMode] = useState<"level" | "yoy">("level");
   const [plotType, setPlotType] = useState<"line" | "bar">("line");
   const [chatInput, setChatInput] = useState("");
 
   const filteredData = useMemo(() => {
-    // Fill in mock data for years where we don't have full extraction yet to keep the UI interactive
-    const years = [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024];
-    const fullData = years.map(y => {
-      const existing = DATA.find(d => d.year === y);
-      if (existing) return existing;
-      
-      // Calculate backward from 2023 with estimated -10% growth per year for the prototype
-      const ref = DATA.find(d => d.year === 2023)!;
-      const diff = 2023 - y;
-      const factor = Math.pow(0.9, diff);
-      
-      const res: any = { year: y };
-      (Object.keys(METRICS_META) as MetricKey[]).forEach(m => {
-        if (m.includes("Margin")) res[m] = ref[m as keyof typeof ref] as number;
-        else res[m] = (ref[m as keyof typeof ref] as number) * factor;
-      });
-      return res;
-    });
-
-    const base = fullData.filter((d) => d.year >= yearRange[0] && d.year <= yearRange[1]);
+    const base = DATA.filter((d) => d.year >= yearRange[0] && d.year <= yearRange[1]).sort((a, b) => a.year - b.year);
     if (plotMode === "yoy") {
       return base.map((d, i, arr) => {
         if (i === 0) {
-          const prevYearData = fullData.find(prev => prev.year === d.year - 1);
+          const prevYearData = DATA.find(prev => prev.year === d.year - 1);
           if (!prevYearData) return { ...d, isYoY: true };
           const res: any = { year: d.year, isYoY: true };
           selectedMetrics.forEach(m => {

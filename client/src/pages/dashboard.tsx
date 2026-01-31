@@ -1,36 +1,41 @@
-import { useMemo, useState } from "react";
-import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { useState, useMemo } from "react";
 import {
-  ArrowUpRight,
-  BookOpen,
-  Calculator,
-  CheckCircle2,
-  ChevronDown,
-  FileUp,
   LineChart,
+  Line,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Legend,
+} from "recharts";
+import {
+  BookOpen,
+  FileUp,
   MessageSquare,
-  Search,
-  SlidersHorizontal,
+  Send,
+  Table as TableIcon,
+  LineChart as ChartIcon,
+  ChevronDown,
+  Plus,
 } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-
-type YearPoint = {
-  year: number;
-  revenue: number;
-  grossProfit: number;
-  operatingProfit: number;
-  netProfit: number;
-  vasRevenue: number;
-  fintechRevenue: number;
-  adsRevenue: number;
-  margin: number;
-};
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 type MetricKey =
   | "revenue"
@@ -39,1004 +44,378 @@ type MetricKey =
   | "netProfit"
   | "vasRevenue"
   | "fintechRevenue"
-  | "adsRevenue"
-  | "margin";
+  | "adsRevenue";
 
-type MetricDef = {
-  key: MetricKey;
-  label: string;
-  unit: "CNYb" | "%";
-  description: string;
+const METRICS_META: Record<MetricKey, { label: string; color: string; zh: string }> = {
+  revenue: { label: "Revenue", color: "hsl(var(--chart-1))", zh: "总收入" },
+  grossProfit: { label: "Gross Profit", color: "hsl(var(--chart-2))", zh: "毛利润" },
+  operatingProfit: { label: "Operating Profit", color: "hsl(var(--chart-3))", zh: "经营利润" },
+  netProfit: { label: "Net Profit", color: "hsl(var(--chart-4))", zh: "净利润" },
+  vasRevenue: { label: "VAS Revenue", color: "hsl(var(--chart-5))", zh: "增值服务收入" },
+  fintechRevenue: { label: "FinTech Revenue", color: "#10b981", zh: "金融科技收入" },
+  adsRevenue: { label: "Ads Revenue", color: "#f59e0b", zh: "广告收入" },
 };
 
-const METRICS: MetricDef[] = [
-  {
-    key: "revenue",
-    label: "Revenue",
-    unit: "CNYb",
-    description: "Total revenue (normalized across 2015–2024).",
-  },
-  {
-    key: "grossProfit",
-    label: "Gross profit",
-    unit: "CNYb",
-    description: "Revenue less cost of revenue.",
-  },
-  {
-    key: "operatingProfit",
-    label: "Operating profit",
-    unit: "CNYb",
-    description: "Operating profit (IFRS).",
-  },
-  {
-    key: "netProfit",
-    label: "Net profit (IFRS)",
-    unit: "CNYb",
-    description: "Profit attributable to equity holders.",
-  },
-  {
-    key: "margin",
-    label: "Operating margin",
-    unit: "%",
-    description: "Operating profit / revenue.",
-  },
-  {
-    key: "vasRevenue",
-    label: "VAS revenue",
-    unit: "CNYb",
-    description: "Value-added services segment revenue.",
-  },
-  {
-    key: "fintechRevenue",
-    label: "FinTech & Business Services revenue",
-    unit: "CNYb",
-    description: "FinTech & Business Services segment revenue.",
-  },
-  {
-    key: "adsRevenue",
-    label: "Online advertising revenue",
-    unit: "CNYb",
-    description: "Advertising segment revenue.",
-  },
+const DATA = [
+  { year: 2015, revenue: 102.9, grossProfit: 58.1, operatingProfit: 32.6, netProfit: 28.8, vasRevenue: 59.7, fintechRevenue: 10.7, adsRevenue: 17.5 },
+  { year: 2016, revenue: 151.9, grossProfit: 85.0, operatingProfit: 50.0, netProfit: 41.0, vasRevenue: 84.1, fintechRevenue: 21.0, adsRevenue: 26.9 },
+  { year: 2017, revenue: 237.8, grossProfit: 124.3, operatingProfit: 67.7, netProfit: 71.6, vasRevenue: 154.0, fintechRevenue: 38.2, adsRevenue: 35.0 },
+  { year: 2018, revenue: 312.7, grossProfit: 140.8, operatingProfit: 79.2, netProfit: 78.7, vasRevenue: 176.6, fintechRevenue: 72.5, adsRevenue: 58.1 },
+  { year: 2019, revenue: 377.3, grossProfit: 167.9, operatingProfit: 98.2, netProfit: 94.4, vasRevenue: 184.7, fintechRevenue: 101.4, adsRevenue: 68.4 },
+  { year: 2020, revenue: 482.1, grossProfit: 221.5, operatingProfit: 152.2, netProfit: 159.8, vasRevenue: 264.2, fintechRevenue: 128.0, adsRevenue: 82.2 },
+  { year: 2021, revenue: 560.1, grossProfit: 250.0, operatingProfit: 190.0, netProfit: 224.8, vasRevenue: 291.6, fintechRevenue: 172.2, adsRevenue: 88.7 },
+  { year: 2022, revenue: 554.6, grossProfit: 245.0, operatingProfit: 184.0, netProfit: 115.6, vasRevenue: 319.0, fintechRevenue: 177.7, adsRevenue: 82.8 },
+  { year: 2023, revenue: 609.0, grossProfit: 282.0, operatingProfit: 193.0, netProfit: 157.7, vasRevenue: 333.2, fintechRevenue: 203.6, adsRevenue: 101.5 },
+  { year: 2024, revenue: 660.0, grossProfit: 310.0, operatingProfit: 215.0, netProfit: 175.0, vasRevenue: 352.0, fintechRevenue: 225.0, adsRevenue: 112.0 },
 ];
 
-function clamp(n: number, min: number, max: number) {
-  return Math.min(max, Math.max(min, n));
-}
-
-function formatCNYb(v: number) {
-  return new Intl.NumberFormat("en-US", {
-    maximumFractionDigits: 1,
-    minimumFractionDigits: 1,
-  }).format(v);
-}
-
-function formatPct(v: number) {
-  return `${new Intl.NumberFormat("en-US", {
-    maximumFractionDigits: 1,
-    minimumFractionDigits: 1,
-  }).format(v)}%`;
-}
-
-function computeYoY(series: YearPoint[], key: MetricKey) {
-  const out: Array<YearPoint & { yoy?: number }> = series.map((p) => ({ ...p }));
-  for (let i = 1; i < out.length; i++) {
-    const prev = (out[i - 1] as any)[key] as number;
-    const cur = (out[i] as any)[key] as number;
-    if (prev === 0) continue;
-    (out[i] as any).yoy = ((cur - prev) / Math.abs(prev)) * 100;
-  }
-  return out;
-}
-
-function evalFormula(expr: string, ctx: Record<string, number>) {
-  const safe = expr
-    .replace(/\s+/g, " ")
-    .trim()
-    .replace(/[^0-9a-zA-Z_+\-*/().,% ]/g, "");
-
-  const replaced = safe.replace(/[a-zA-Z_][a-zA-Z0-9_]*/g, (token) => {
-    if (Object.prototype.hasOwnProperty.call(ctx, token)) return String(ctx[token]);
-    return "NaN";
-  });
-
-  // eslint-disable-next-line no-new-func
-  const fn = new Function(`return (${replaced});`);
-  const v = fn();
-  return typeof v === "number" && Number.isFinite(v) ? v : NaN;
-}
-
-function calcSeries(series: YearPoint[], formula: string) {
-  return series.map((p) => {
-    const v = evalFormula(formula, {
-      revenue: p.revenue,
-      grossProfit: p.grossProfit,
-      operatingProfit: p.operatingProfit,
-      netProfit: p.netProfit,
-      vasRevenue: p.vasRevenue,
-      fintechRevenue: p.fintechRevenue,
-      adsRevenue: p.adsRevenue,
-      margin: p.margin,
-    });
-    return { year: p.year, value: v };
-  });
-}
-
-function SparklineHeader({ title, subtitle, lang, setLang }: { title: string; subtitle: string; lang: "en" | "zh"; setLang: (l: "en" | "zh") => void }) {
-  return (
-    <div className="flex items-start justify-between gap-6">
-      <div className="space-y-1">
-        <div className="tfi-mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
-          {subtitle}
-        </div>
-        <h1 className="tfi-title text-3xl sm:text-4xl leading-[1.05]">{title}</h1>
-      </div>
-
-      <div className="flex items-center gap-2">
-        <Button
-          variant="secondary"
-          size="sm"
-          className="shadow-sm tfi-mono text-xs h-8"
-          onClick={() => setLang(lang === "en" ? "zh" : "en")}
-          data-testid="button-language-switch"
-        >
-          {lang === "en" ? "中文 (简体)" : "English"}
-        </Button>
-        <div className="hidden md:flex items-center gap-2">
-          <Button
-            variant="secondary"
-            size="sm"
-            className="shadow-sm h-8"
-            data-testid="button-open-reports"
-          >
-            <BookOpen className="mr-2 h-4 w-4" />
-            {lang === "en" ? "Reports (2015–2024)" : "年度报告 (2015–2024)"}
-          </Button>
-          <Button size="sm" className="shadow-sm h-8" data-testid="button-upload-report">
-            <FileUp className="mr-2 h-4 w-4" />
-            {lang === "en" ? "Upload 2025+" : "上传 2025+"}
-          </Button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function TopNav({ active, onChange, lang }: { active: string; onChange: (id: string) => void; lang: "en" | "zh" }) {
-  const items = [
-    { id: "overview", label: lang === "en" ? "Overview" : "总览" },
-    { id: "financials", label: lang === "en" ? "Financials" : "财务报表" },
-    { id: "trends", label: lang === "en" ? "Trends" : "趋势分析" },
-    { id: "calculations", label: lang === "en" ? "Calculations" : "自定义计算" },
-    { id: "qa", label: lang === "en" ? "Q&A" : "智能问答" },
-  ];
-
-  return (
-    <div className="flex items-center gap-2">
-      {items.map((it) => (
-        <button
-          key={it.id}
-          type="button"
-          data-testid={`tab-${it.id}`}
-          onClick={() => onChange(it.id)}
-          className={
-            "relative rounded-full px-3.5 py-2 text-sm transition-all hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-ring/40 " +
-            (active === it.id
-              ? "bg-primary text-primary-foreground shadow-sm"
-              : "bg-card/60 text-foreground border border-card-border hover-elevate")
-          }
-        >
-          {it.label}
-        </button>
-      ))}
-    </div>
-  );
-}
-
-function StatCard({
-  label,
-  value,
-  sub,
-  trend,
-  lang,
-}: {
-  label: string;
-  value: string;
-  sub: string;
-  trend: "up" | "down" | "flat";
-  lang: "en" | "zh";
-}) {
-  const displayLabel = useMemo(() => {
-    if (lang === "zh") {
-      if (label === "Revenue") return "总收入";
-      if (label === "Operating profit") return "经营利润";
-      if (label === "FinTech") return "金融科技";
-      if (label === "Online ads") return "网络广告";
-    }
-    return label;
-  }, [label, lang]);
-
-  return (
-    <Card className="border-card-border bg-card/70 backdrop-blur supports-[backdrop-filter]:bg-card/55 shadow-sm">
-      <div className="p-4">
-        <div className="flex items-start justify-between gap-3">
-          <div>
-            <div className="tfi-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
-              {displayLabel}
-            </div>
-            <div className="mt-1 text-2xl font-semibold" data-testid={`text-${label.toLowerCase().replace(/\s+/g, "-")}`}>
-              {value}
-            </div>
-            <div className="mt-1 text-sm text-muted-foreground">{sub}</div>
-          </div>
-
-          <div
-            className={
-              "flex h-9 w-9 items-center justify-center rounded-full border " +
-              (trend === "up"
-                ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-600"
-                : trend === "down"
-                  ? "border-rose-500/30 bg-rose-500/10 text-rose-600"
-                  : "border-border bg-muted text-muted-foreground")
-            }
-            aria-hidden
-          >
-            <ArrowUpRight className={"h-4 w-4 " + (trend === "down" ? "rotate-90" : "")}></ArrowUpRight>
-          </div>
-        </div>
-      </div>
-    </Card>
-  );
-}
-
-function TerminalCard({
-  children,
-  title,
-  icon,
-  right,
-}: {
-  children: React.ReactNode;
-  title: string;
-  icon: React.ReactNode;
-  right?: React.ReactNode;
-}) {
-  return (
-    <Card className="border-card-border bg-card/70 backdrop-blur supports-[backdrop-filter]:bg-card/55 shadow-md">
-      <div className="p-4">
-        <div className="flex items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-muted/60 border border-border">
-              {icon}
-            </span>
-            <div>
-              <div className="text-sm font-semibold" data-testid={`text-section-${title.toLowerCase().replace(/\s+/g, "-")}`}>
-                {title}
-              </div>
-              <div className="tfi-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
-                Tencent • 2015–2024
-              </div>
-            </div>
-          </div>
-          {right}
-        </div>
-        <div className="mt-4">{children}</div>
-      </div>
-    </Card>
-  );
-}
-
 export default function Dashboard() {
+  const [page, setPage] = useState<1 | 2>(1);
   const [lang, setLang] = useState<"en" | "zh">("en");
-  const [active, setActive] = useState("overview");
-  const [metric, setMetric] = useState<MetricKey>("revenue");
-  const [range, setRange] = useState<[number, number]>([2015, 2024]);
-  const [chartMode, setChartMode] = useState<"level" | "yoy">("level");
+  const [selectedMetrics, setSelectedMetrics] = useState<MetricKey[]>(["revenue"]);
+  const [yearRange, setYearRange] = useState<[number, number]>([2015, 2024]);
+  const [plotMode, setPlotMode] = useState<"level" | "yoy">("level");
+  const [plotType, setPlotType] = useState<"line" | "bar">("line");
+  const [chatInput, setChatInput] = useState("");
 
-  const [formulaName, setFormulaName] = useState("Custom metric");
-  const [formulaExpr, setFormulaExpr] = useState("(operatingProfit / revenue) * 100");
-
-  const seriesAll: YearPoint[] = useMemo(() => {
-    // Mock, plausible series for UI prototyping only.
-    const base: YearPoint[] = [
-      { year: 2015, revenue: 102.9, grossProfit: 58.1, operatingProfit: 32.6, netProfit: 28.8, vasRevenue: 59.7, fintechRevenue: 10.7, adsRevenue: 17.5, margin: 31.7 },
-      { year: 2016, revenue: 151.9, grossProfit: 85.0, operatingProfit: 50.0, netProfit: 41.0, vasRevenue: 84.1, fintechRevenue: 21.0, adsRevenue: 26.9, margin: 32.9 },
-      { year: 2017, revenue: 237.8, grossProfit: 124.3, operatingProfit: 67.7, netProfit: 71.6, vasRevenue: 154.0, fintechRevenue: 38.2, adsRevenue: 35.0, margin: 28.5 },
-      { year: 2018, revenue: 312.7, grossProfit: 140.8, operatingProfit: 79.2, netProfit: 78.7, vasRevenue: 176.6, fintechRevenue: 72.5, adsRevenue: 58.1, margin: 25.3 },
-      { year: 2019, revenue: 377.3, grossProfit: 167.9, operatingProfit: 98.2, netProfit: 94.4, vasRevenue: 184.7, fintechRevenue: 101.4, adsRevenue: 68.4, margin: 26.0 },
-      { year: 2020, revenue: 482.1, grossProfit: 221.5, operatingProfit: 152.2, netProfit: 159.8, vasRevenue: 264.2, fintechRevenue: 128.0, adsRevenue: 82.2, margin: 31.6 },
-      { year: 2021, revenue: 560.1, grossProfit: 250.0, operatingProfit: 190.0, netProfit: 224.8, vasRevenue: 291.6, fintechRevenue: 172.2, adsRevenue: 88.7, margin: 33.9 },
-      { year: 2022, revenue: 554.6, grossProfit: 245.0, operatingProfit: 184.0, netProfit: 115.6, vasRevenue: 319.0, fintechRevenue: 177.7, adsRevenue: 82.8, margin: 33.2 },
-      { year: 2023, revenue: 609.0, grossProfit: 282.0, operatingProfit: 193.0, netProfit: 157.7, vasRevenue: 333.2, fintechRevenue: 203.6, adsRevenue: 101.5, margin: 31.7 },
-      { year: 2024, revenue: 660.0, grossProfit: 310.0, operatingProfit: 215.0, netProfit: 175.0, vasRevenue: 352.0, fintechRevenue: 225.0, adsRevenue: 112.0, margin: 32.6 },
-    ];
-
-    return base;
-  }, []);
-
-  const series = useMemo(() => {
-    const [a, b] = range;
-    return seriesAll.filter((p) => p.year >= a && p.year <= b);
-  }, [range, seriesAll]);
-
-  const metricDef = useMemo(() => METRICS.find((m) => m.key === metric)!, [metric]);
-
-  const chartData = useMemo(() => {
-    if (chartMode === "yoy") {
-      const withYoY = computeYoY(series, metric);
-      return withYoY.map((p) => ({ year: p.year, value: (p as any).yoy ?? null }));
+  const filteredData = useMemo(() => {
+    const base = DATA.filter((d) => d.year >= yearRange[0] && d.year <= yearRange[1]);
+    if (plotMode === "yoy") {
+      return base.map((d, i, arr) => {
+        if (i === 0) {
+          const prevYearData = DATA.find(prev => prev.year === d.year - 1);
+          if (!prevYearData) return { ...d, isYoY: true };
+          const res: any = { year: d.year, isYoY: true };
+          selectedMetrics.forEach(m => {
+             res[m] = ((d[m] - prevYearData[m]) / prevYearData[m]) * 100;
+          });
+          return res;
+        }
+        const prev = arr[i - 1];
+        const res: any = { year: d.year, isYoY: true };
+        selectedMetrics.forEach(m => {
+          res[m] = ((d[m] - prev[m]) / prev[m]) * 100;
+        });
+        return res;
+      });
     }
+    return base;
+  }, [yearRange, plotMode, selectedMetrics]);
 
-    return series.map((p) => ({ year: p.year, value: (p as any)[metric] as number }));
-  }, [chartMode, metric, series]);
-
-  const customSeries = useMemo(() => calcSeries(series, formulaExpr), [series, formulaExpr]);
-
-  const last = series[series.length - 1];
-  const first = series[0];
-  const revDelta = ((last.revenue - first.revenue) / first.revenue) * 100;
+  const t = (en: string, zh: string) => (lang === "en" ? en : zh);
 
   return (
-    <div className="min-h-screen">
-      <div className="relative overflow-hidden">
-        <div className="pointer-events-none absolute inset-0 opacity-[0.55] tfi-grid" />
-        <div className="pointer-events-none absolute inset-0 opacity-[0.08] tfi-noise" />
-        <div className="pointer-events-none absolute -top-40 left-1/2 h-[520px] w-[820px] -translate-x-1/2 rounded-full bg-gradient-to-b from-primary/20 via-primary/10 to-transparent blur-3xl" />
-
-        <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 pt-10 pb-6">
-          <SparklineHeader
-            title={lang === "en" ? "Tencent Financial Intelligence" : "腾讯金融情报"}
-            subtitle={lang === "en" ? "Preloaded annual reports • grounded metrics • analyst-grade tooling" : "预载年度报告 • 落地指标 • 分析师级工具"}
-            lang={lang}
-            setLang={setLang}
-          />
-
-          <div className="mt-6 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-            <div className="rounded-2xl border border-card-border bg-card/70 backdrop-blur supports-[backdrop-filter]:bg-card/55 shadow-sm px-4 py-3">
-              <div className="flex flex-wrap items-center gap-3">
-                <div className="flex items-center gap-2">
-                  <Search className="h-4 w-4 text-muted-foreground" />
-                  <Input
-                    placeholder={lang === "en" ? "Search metrics, segments, or ask a question…" : "搜索指标、业务板块或提问..."}
-                    className="h-9 w-[260px] md:w-[340px] bg-transparent"
-                    data-testid="input-global-search"
-                  />
-                </div>
-
-                <Separator orientation="vertical" className="hidden md:block h-6" />
-
-                <div className="flex items-center gap-2">
-                  <SlidersHorizontal className="h-4 w-4 text-muted-foreground" />
-                  <Select
-                    value={`${range[0]}-${range[1]}`}
-                    onValueChange={(v) => {
-                      const [a, b] = v.split("-").map((x) => Number(x));
-                      setRange([a, b]);
-                    }}
-                  >
-                    <SelectTrigger className="h-9 w-[160px]" data-testid="select-time-range">
-                      <SelectValue placeholder={lang === "en" ? "Time range" : "时间范围"} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="2015-2024" data-testid="option-range-2015-2024">
-                        2015–2024
-                      </SelectItem>
-                      <SelectItem value="2018-2024" data-testid="option-range-2018-2024">
-                        2018–2024
-                      </SelectItem>
-                      <SelectItem value="2020-2024" data-testid="option-range-2020-2024">
-                        2020–2024
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-
-                  <button
-                    type="button"
-                    className="ml-1 inline-flex items-center gap-2 rounded-full border border-border bg-muted/50 px-3 py-2 text-sm hover-elevate"
-                    onClick={() => setChartMode((m) => (m === "level" ? "yoy" : "level"))}
-                    data-testid="button-toggle-yoy"
-                  >
-                    <LineChart className="h-4 w-4" />
-                    {chartMode === "level" ? (lang === "en" ? "Level" : "数值") : (lang === "en" ? "YoY" : "同比")}
-                    <ChevronDown className="h-4 w-4 opacity-60" />
-                  </button>
-                </div>
-
-                <div className="ml-auto hidden lg:flex items-center gap-2">
-                  <span className="tfi-mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
-                    {lang === "en" ? "Source integrity" : "数据合规"}
-                  </span>
-                  <span className="inline-flex items-center gap-1 rounded-full border border-emerald-500/25 bg-emerald-500/10 px-3 py-1.5 text-sm text-emerald-700">
-                    <CheckCircle2 className="h-4 w-4" />
-                    {lang === "en" ? "Page-referenced" : "源文件追溯"}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex md:hidden items-center gap-2">
-              <Button variant="secondary" className="flex-1" data-testid="button-open-reports-mobile">
-                <BookOpen className="mr-2 h-4 w-4" />
-                Reports
+    <div className="min-h-screen bg-background text-foreground flex flex-col">
+      {/* Top Section */}
+      <header className="border-b bg-card/50 backdrop-blur-md sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <h1 className="tfi-title text-xl font-bold tracking-tight">
+              {t("Tencent Financial Intelligence", "腾讯金融情报")}
+            </h1>
+            <nav className="hidden md:flex items-center ml-8 gap-1">
+              <Button 
+                variant={page === 1 ? "secondary" : "ghost"} 
+                size="sm" 
+                onClick={() => setPage(1)}
+                className="rounded-full px-4"
+              >
+                {t("Visualization", "可视化")}
               </Button>
-              <Button className="flex-1" data-testid="button-upload-report-mobile">
-                <FileUp className="mr-2 h-4 w-4" />
-                Upload
+              <Button 
+                variant={page === 2 ? "secondary" : "ghost"} 
+                size="sm" 
+                onClick={() => setPage(2)}
+                className="rounded-full px-4"
+              >
+                {t("Data Table", "数据表格")}
               </Button>
-            </div>
-
-            <div className="hidden md:block">
-              <TopNav active={active} onChange={setActive} lang={lang} />
-              <div className="sr-only" aria-live="polite" data-testid="status-active-tab">
-                {active}
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-            <StatCard
-              label="Revenue"
-              value={`${formatCNYb(last.revenue)}B`}
-              sub={lang === "en" ? `${revDelta >= 0 ? "+" : ""}${formatPct(revDelta)} since ${first.year}` : `${revDelta >= 0 ? "+" : ""}${formatPct(revDelta)} 自 ${first.year}`}
-              trend={revDelta >= 0 ? "up" : "down"}
-              lang={lang}
-            />
-            <StatCard
-              label="Operating profit"
-              value={`${formatCNYb(last.operatingProfit)}B`}
-              sub={lang === "en" ? `Margin ${formatPct(last.margin)}` : `利润率 ${formatPct(last.margin)}`}
-              trend="up"
-              lang={lang}
-            />
-            <StatCard
-              label="FinTech"
-              value={`${formatCNYb(last.fintechRevenue)}B`}
-              sub={lang === "en" ? `Segment scale • ${range[0]}–${range[1]}` : `业务规模 • ${range[0]}–${range[1]}`}
-              trend="up"
-              lang={lang}
-            />
-            <StatCard
-              label="Online ads"
-              value={lang === "en" ? `${formatCNYb(last.adsRevenue)}B` : `${formatCNYb(last.adsRevenue)}B`}
-              sub={lang === "en" ? `Mix shift tracking` : `结构变化追踪`}
-              trend="flat"
-              lang={lang}
-            />
-          </div>
-        </div>
-      </div>
-
-      <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 pb-14">
-        <Tabs value={active} onValueChange={setActive}>
-          <TabsList className="hidden" />
-
-          <TabsContent value="overview" className="mt-6 space-y-4">
-            <TerminalCard
-              title={lang === "en" ? "Long-term performance" : "长期业绩表现"}
-              icon={<LineChart className="h-4 w-4" />}
-              right={
-                <div className="flex items-center gap-2">
-                  <Select value={metric} onValueChange={(v) => setMetric(v as MetricKey)}>
-                    <SelectTrigger className="h-9 w-[220px]" data-testid="select-metric">
-                      <SelectValue placeholder={lang === "en" ? "Metric" : "指标"} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {METRICS.map((m) => (
-                        <SelectItem
-                          key={m.key}
-                          value={m.key}
-                          data-testid={`option-metric-${m.key}`}
-                        >
-                          {lang === "en" ? m.label : (
-                            m.key === "revenue" ? "总收入" :
-                            m.key === "grossProfit" ? "毛利润" :
-                            m.key === "operatingProfit" ? "经营利润" :
-                            m.key === "netProfit" ? "净利润" :
-                            m.key === "margin" ? "经营利润率" :
-                            m.key === "vasRevenue" ? "增值服务收入" :
-                            m.key === "fintechRevenue" ? "金融科技收入" :
-                            m.key === "adsRevenue" ? "广告收入" : m.label
-                          )}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              }
-            >
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-                <div className="lg:col-span-8 rounded-2xl border border-border bg-muted/20 overflow-hidden">
-                  <div className="flex items-center justify-between px-4 py-3">
-                    <div>
-                      <div className="text-sm font-medium" data-testid="text-chart-title">
-                        {lang === "en" ? metricDef.label : (
-                          metricDef.key === "revenue" ? "总收入" :
-                          metricDef.key === "grossProfit" ? "毛利润" :
-                          metricDef.key === "operatingProfit" ? "经营利润" :
-                          metricDef.key === "netProfit" ? "净利润" :
-                          metricDef.key === "margin" ? "经营利润率" :
-                          metricDef.key === "vasRevenue" ? "增值服务收入" :
-                          metricDef.key === "fintechRevenue" ? "金融科技收入" :
-                          metricDef.key === "adsRevenue" ? "广告收入" : metricDef.label
-                        )}
-                      </div>
-                      <div className="text-sm text-muted-foreground" data-testid="text-chart-subtitle">
-                        {chartMode === "yoy" ? (lang === "en" ? "Year-over-year growth" : "同比增长") : (lang === "en" ? "Level" : "数值")} • {range[0]}–{range[1]}
-                      </div>
-                    </div>
-                    <div className="tfi-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground" data-testid="text-chart-unit">
-                      {chartMode === "yoy" ? "%" : (lang === "en" ? metricDef.unit : (metricDef.unit === "CNYb" ? "十亿人民币" : "%"))}
-                    </div>
-                  </div>
-                  <div className="h-[320px] px-2 pb-3">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <AreaChart data={chartData} margin={{ top: 12, right: 18, left: 4, bottom: 0 }}>
-                        <defs>
-                          <linearGradient id="tfiGrad" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.35} />
-                            <stop offset="65%" stopColor="hsl(var(--primary))" stopOpacity={0.08} />
-                            <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0} />
-                          </linearGradient>
-                        </defs>
-                        <CartesianGrid strokeDasharray="4 6" stroke="hsl(var(--border) / 0.7)" />
-                        <XAxis
-                          dataKey="year"
-                          tickLine={false}
-                          axisLine={false}
-                          tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }}
-                        />
-                        <YAxis
-                          tickLine={false}
-                          axisLine={false}
-                          tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }}
-                          width={40}
-                        />
-                        <Tooltip
-                          cursor={{ stroke: "hsl(var(--border))", strokeWidth: 1 }}
-                          content={({ active: a, payload, label }) => {
-                            if (!a || !payload?.length) return null;
-                            const v = payload[0]?.value as number;
-                            const formatted =
-                              chartMode === "yoy"
-                                ? v == null
-                                  ? "—"
-                                  : `${formatPct(v)}`
-                                : metricDef.unit === "%"
-                                  ? formatPct(v)
-                                  : `${formatCNYb(v)}B`;
-                            return (
-                              <div className="rounded-xl border border-border bg-card/95 px-3 py-2 shadow-lg">
-                                <div className="tfi-mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
-                                  {label}
-                                </div>
-                                <div className="mt-0.5 text-sm font-semibold" data-testid={`text-tooltip-${label}`}>
-                                  {formatted}
-                                </div>
-                              </div>
-                            );
-                          }}
-                        />
-                        <Area
-                          type="monotone"
-                          dataKey="value"
-                          stroke="hsl(var(--primary))"
-                          strokeWidth={2}
-                          fill="url(#tfiGrad)"
-                          dot={false}
-                        />
-                      </AreaChart>
-                    </ResponsiveContainer>
-                  </div>
-                </div>
-
-                <div className="lg:col-span-4 space-y-3">
-                  <div className="rounded-2xl border border-border bg-muted/20 p-4">
-                    <div className="tfi-mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
-                      What you get
-                    </div>
-                    <ul className="mt-3 space-y-2 text-sm">
-                      <li className="flex items-start gap-2" data-testid="text-feature-1">
-                        <CheckCircle2 className="mt-0.5 h-4 w-4 text-emerald-600" />
-                        Canonical metric dictionary (income, balance sheet, segments, liquidity)
-                      </li>
-                      <li className="flex items-start gap-2" data-testid="text-feature-2">
-                        <CheckCircle2 className="mt-0.5 h-4 w-4 text-emerald-600" />
-                        Longitudinal charts with level + YoY modes
-                      </li>
-                      <li className="flex items-start gap-2" data-testid="text-feature-3">
-                        <CheckCircle2 className="mt-0.5 h-4 w-4 text-emerald-600" />
-                        Custom calculations that recompute across years
-                      </li>
-                      <li className="flex items-start gap-2" data-testid="text-feature-4">
-                        <CheckCircle2 className="mt-0.5 h-4 w-4 text-emerald-600" />
-                        Answers grounded in official filings with traceable citations
-                      </li>
-                    </ul>
-                  </div>
-
-                  <div className="rounded-2xl border border-border bg-muted/20 p-4">
-                    <div className="tfi-mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
-                      Metric notes
-                    </div>
-                    <div className="mt-2 text-sm" data-testid="text-metric-description">
-                      {metricDef.description}
-                    </div>
-                    <div className="mt-3 flex items-center gap-2">
-                      <button
-                        type="button"
-                        className="inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-2 text-sm hover-elevate"
-                        data-testid="button-view-sources"
-                      >
-                        <BookOpen className="h-4 w-4" />
-                        View sources
-                      </button>
-                      <button
-                        type="button"
-                        className="inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-2 text-sm hover-elevate"
-                        data-testid="button-compare-metrics"
-                      >
-                        <SlidersHorizontal className="h-4 w-4" />
-                        Compare
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </TerminalCard>
-          </TabsContent>
-
-          <TabsContent value="financials" className="mt-6 space-y-4">
-            <TerminalCard title={lang === "en" ? "Financial statements" : "财务报表"} icon={<BookOpen className="h-4 w-4" />}>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {[
-                  { id: "income", title: lang === "en" ? "Income statement" : "损益表", desc: lang === "en" ? "Revenue, gross profit, operating profit, IFRS vs non-IFRS." : "收入、毛利、经营利润，IFRS与非IFRS对比。" },
-                  { id: "balance", title: lang === "en" ? "Balance sheet" : "资产负债表", desc: lang === "en" ? "Assets, liabilities, equity with normalized line items." : "资产、负债、权益，标准化会计科目。" },
-                  { id: "segments", title: lang === "en" ? "Segment performance" : "分部业绩", desc: lang === "en" ? "VAS, FinTech, Ads with mix and margin context." : "增值服务、金融科技、广告，包含业务结构与利润率。" },
-                  { id: "liquidity", title: lang === "en" ? "Liquidity" : "流动性与财务资源", desc: lang === "en" ? "Cash, deposits, borrowings, net cash dynamics." : "现金、定期存款、借款、净现金动态。" },
-                ].map((c, idx) => (
-                  <div
-                    key={c.id}
-                    className="rounded-2xl border border-border bg-muted/20 p-4 hover-elevate cursor-pointer"
-                    onClick={() => {
-                      setMetric(c.id === "income" ? "revenue" : c.id === "segments" ? "vasRevenue" : "revenue");
-                      setActive("overview");
-                    }}
-                    data-testid={`card-financial-${idx}`}
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="text-sm font-semibold" data-testid={`text-financial-title-${idx}`}>
-                        {c.title}
-                      </div>
-                      <button
-                        type="button"
-                        className="inline-flex items-center gap-1 text-sm text-primary hover:opacity-90"
-                        data-testid={`button-open-financial-${idx}`}
-                      >
-                        {lang === "en" ? "Open" : "查看"}
-                        <ArrowUpRight className="h-4 w-4" />
-                      </button>
-                    </div>
-                    <div className="mt-2 text-sm text-muted-foreground" data-testid={`text-financial-desc-${idx}`}>
-                      {c.desc}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </TerminalCard>
-          </TabsContent>
-
-          <TabsContent value="trends" className="mt-6 space-y-4">
-            <TerminalCard title="Trend builder" icon={<SlidersHorizontal className="h-4 w-4" />}>
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-                <div className="lg:col-span-5 rounded-2xl border border-border bg-muted/20 p-4">
-                  <div className="tfi-mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
-                    Configure
-                  </div>
-                  <div className="mt-3 space-y-3">
-                    <div className="space-y-2">
-                      <div className="text-sm font-medium">Metric</div>
-                      <Select value={metric} onValueChange={(v) => setMetric(v as MetricKey)}>
-                        <SelectTrigger className="h-10" data-testid="select-trends-metric">
-                          <SelectValue placeholder="Choose metric" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {METRICS.map((m) => (
-                            <SelectItem
-                              key={m.key}
-                              value={m.key}
-                              data-testid={`option-trends-metric-${m.key}`}
-                            >
-                              {m.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="space-y-2">
-                      <div className="text-sm font-medium">Chart style</div>
-                      <Select value={chartMode} onValueChange={(v) => setChartMode(v as any)}>
-                        <SelectTrigger className="h-10" data-testid="select-trends-mode">
-                          <SelectValue placeholder="Mode" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="level" data-testid="option-trends-mode-level">
-                            Level
-                          </SelectItem>
-                          <SelectItem value="yoy" data-testid="option-trends-mode-yoy">
-                            YoY growth
-                          </SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="lg:col-span-7 rounded-2xl border border-border bg-muted/20 overflow-hidden">
-                  <div className="flex items-center justify-between px-4 py-3">
-                    <div className="text-sm font-medium" data-testid="text-trends-preview-title">
-                      Preview
-                    </div>
-                    <div className="tfi-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground" data-testid="text-trends-preview-meta">
-                      {metricDef.unit} • {range[0]}–{range[1]}
-                    </div>
-                  </div>
-                  <div className="h-[300px] px-2 pb-3">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <AreaChart data={chartData} margin={{ top: 12, right: 18, left: 4, bottom: 0 }}>
-                        <defs>
-                          <linearGradient id="tfiGrad2" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stopColor="hsl(var(--accent))" stopOpacity={0.55} />
-                            <stop offset="70%" stopColor="hsl(var(--accent))" stopOpacity={0.14} />
-                            <stop offset="100%" stopColor="hsl(var(--accent))" stopOpacity={0} />
-                          </linearGradient>
-                        </defs>
-                        <CartesianGrid strokeDasharray="4 6" stroke="hsl(var(--border) / 0.7)" />
-                        <XAxis
-                          dataKey="year"
-                          tickLine={false}
-                          axisLine={false}
-                          tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }}
-                        />
-                        <YAxis
-                          tickLine={false}
-                          axisLine={false}
-                          tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }}
-                          width={40}
-                        />
-                        <Tooltip
-                          cursor={{ stroke: "hsl(var(--border))", strokeWidth: 1 }}
-                          content={({ active: a, payload, label }) => {
-                            if (!a || !payload?.length) return null;
-                            const v = payload[0]?.value as number;
-                            const formatted =
-                              chartMode === "yoy"
-                                ? v == null
-                                  ? "—"
-                                  : `${formatPct(v)}`
-                                : metricDef.unit === "%"
-                                  ? formatPct(v)
-                                  : `${formatCNYb(v)}B`;
-                            return (
-                              <div className="rounded-xl border border-border bg-card/95 px-3 py-2 shadow-lg">
-                                <div className="tfi-mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
-                                  {label}
-                                </div>
-                                <div className="mt-0.5 text-sm font-semibold" data-testid={`text-tooltip-trends-${label}`}>
-                                  {formatted}
-                                </div>
-                              </div>
-                            );
-                          }}
-                        />
-                        <Area
-                          type="monotone"
-                          dataKey="value"
-                          stroke="hsl(var(--accent))"
-                          strokeWidth={2}
-                          fill="url(#tfiGrad2)"
-                          dot={false}
-                        />
-                      </AreaChart>
-                    </ResponsiveContainer>
-                  </div>
-                </div>
-              </div>
-            </TerminalCard>
-          </TabsContent>
-
-          <TabsContent value="calculations" className="mt-6 space-y-4">
-            <TerminalCard title="Custom calculations" icon={<Calculator className="h-4 w-4" />}>
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-                <div className="lg:col-span-5 rounded-2xl border border-border bg-muted/20 p-4">
-                  <div className="tfi-mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
-                    Formula builder
-                  </div>
-
-                  <div className="mt-3 space-y-3">
-                    <div className="space-y-2">
-                      <div className="text-sm font-medium">Name</div>
-                      <Input
-                        value={formulaName}
-                        onChange={(e) => setFormulaName(e.target.value)}
-                        className="h-10"
-                        data-testid="input-formula-name"
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <div className="text-sm font-medium">Expression</div>
-                      <Input
-                        value={formulaExpr}
-                        onChange={(e) => setFormulaExpr(e.target.value)}
-                        className="h-10 tfi-mono"
-                        data-testid="input-formula-expr"
-                      />
-                      <div className="text-sm text-muted-foreground" data-testid="text-formula-hint">
-                        Use metric keys like <span className="tfi-mono">revenue</span>, <span className="tfi-mono">operatingProfit</span>, <span className="tfi-mono">vasRevenue</span>.
-                      </div>
-                    </div>
-
-                    <div className="rounded-2xl border border-border bg-card/60 p-3">
-                      <div className="tfi-mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
-                        Available keys
-                      </div>
-                      <div className="mt-2 flex flex-wrap gap-2">
-                        {["revenue", "grossProfit", "operatingProfit", "netProfit", "vasRevenue", "fintechRevenue", "adsRevenue", "margin"].map(
-                          (k) => (
-                            <button
-                              key={k}
-                              type="button"
-                              className="rounded-full border border-border bg-muted/40 px-3 py-1.5 text-sm tfi-mono hover-elevate"
-                              onClick={() => setFormulaExpr((s) => (s.trim().length ? `${s} ${k}` : k))}
-                              data-testid={`button-insert-key-${k}`}
-                            >
-                              {k}
-                            </button>
-                          ),
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="lg:col-span-7 rounded-2xl border border-border bg-muted/20 overflow-hidden">
-                  <div className="flex items-center justify-between px-4 py-3">
-                    <div>
-                      <div className="text-sm font-medium" data-testid="text-custom-metric-title">
-                        {formulaName}
-                      </div>
-                      <div className="text-sm text-muted-foreground" data-testid="text-custom-metric-subtitle">
-                        Recomputed across years • {range[0]}–{range[1]}
-                      </div>
-                    </div>
-                    <div className="tfi-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground" data-testid="text-custom-metric-expr">
-                      {formulaExpr}
-                    </div>
-                  </div>
-                  <div className="h-[300px] px-2 pb-3">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <AreaChart data={customSeries} margin={{ top: 12, right: 18, left: 4, bottom: 0 }}>
-                        <defs>
-                          <linearGradient id="tfiGrad3" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stopColor="hsl(var(--chart-2))" stopOpacity={0.5} />
-                            <stop offset="75%" stopColor="hsl(var(--chart-2))" stopOpacity={0.12} />
-                            <stop offset="100%" stopColor="hsl(var(--chart-2))" stopOpacity={0} />
-                          </linearGradient>
-                        </defs>
-                        <CartesianGrid strokeDasharray="4 6" stroke="hsl(var(--border) / 0.7)" />
-                        <XAxis
-                          dataKey="year"
-                          tickLine={false}
-                          axisLine={false}
-                          tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }}
-                        />
-                        <YAxis
-                          tickLine={false}
-                          axisLine={false}
-                          tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }}
-                          width={40}
-                        />
-                        <Tooltip
-                          cursor={{ stroke: "hsl(var(--border))", strokeWidth: 1 }}
-                          content={({ active: a, payload, label }) => {
-                            if (!a || !payload?.length) return null;
-                            const v = payload[0]?.value as number;
-                            const formatted = Number.isFinite(v) ? formatPct(v) : "—";
-                            return (
-                              <div className="rounded-xl border border-border bg-card/95 px-3 py-2 shadow-lg">
-                                <div className="tfi-mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
-                                  {label}
-                                </div>
-                                <div className="mt-0.5 text-sm font-semibold" data-testid={`text-tooltip-calc-${label}`}>
-                                  {formatted}
-                                </div>
-                              </div>
-                            );
-                          }}
-                        />
-                        <Area
-                          type="monotone"
-                          dataKey="value"
-                          stroke="hsl(var(--chart-2))"
-                          strokeWidth={2}
-                          fill="url(#tfiGrad3)"
-                          dot={false}
-                        />
-                      </AreaChart>
-                    </ResponsiveContainer>
-                  </div>
-                </div>
-              </div>
-            </TerminalCard>
-          </TabsContent>
-
-          <TabsContent value="qa" className="mt-6 space-y-4">
-            <TerminalCard title="AI analysis & Q&A" icon={<MessageSquare className="h-4 w-4" />}>
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-                <div className="lg:col-span-5 rounded-2xl border border-border bg-muted/20 p-4">
-                  <div className="tfi-mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
-                    Ask a question
-                  </div>
-                  <div className="mt-3 space-y-2">
-                    <Input
-                      placeholder='e.g., "What drove margin expansion after 2020?"'
-                      className="h-10"
-                      data-testid="input-question"
-                    />
-                    <Button className="w-full" data-testid="button-ask-question">
-                      Ask
-                    </Button>
-                    <div className="text-sm text-muted-foreground" data-testid="text-qa-note">
-                      Prototype note: answers are mocked in UI; v1 will ground responses in filings + extracted metrics.
-                    </div>
-                  </div>
-                </div>
-
-                <div className="lg:col-span-7 rounded-2xl border border-border bg-muted/20 p-4">
-                  <div className="tfi-mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
-                    Pre-generated analysis
-                  </div>
-                  <div className="mt-3 space-y-3 text-sm leading-relaxed" data-testid="text-analysis">
-                    <p>
-                      From 2015–2024, Tencent’s revenue base expanded materially, driven by scale in value-added services and a
-                      growing contribution from FinTech & Business Services. Operating margins tightened during the investment
-                      cycle in 2018–2019, then recovered as monetization improved and cost discipline increased post-2020.
-                    </p>
-                    <p>
-                      Segment mix shifts are visible in the growing FinTech line versus the more mature advertising profile.
-                      Use the trend builder to compare YoY growth across segments and validate inflection points.
-                    </p>
-                    <div className="mt-4 rounded-2xl border border-border bg-card/60 p-3">
-                      <div className="flex items-center gap-2 text-sm font-semibold" data-testid="text-citation-title">
-                        <BookOpen className="h-4 w-4" />
-                        Source traceability
-                      </div>
-                      <div className="mt-1 text-sm text-muted-foreground" data-testid="text-citation-desc">
-                        Each metric and claim will be linked back to the exact page/table in the annual report.
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </TerminalCard>
-          </TabsContent>
-        </Tabs>
-
-        <div className="mt-10 flex items-center justify-between">
-          <div className="tfi-mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground" data-testid="text-footer-meta">
-            Tencent Financial Intelligence • v1 prototype • Tencent-only (2015–2024)
+            </nav>
           </div>
           <div className="flex items-center gap-2">
-            <button
-              type="button"
-              className="inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-2 text-sm hover-elevate"
-              data-testid="button-open-changelog"
+            <Button
+              variant="outline"
+              size="sm"
+              className="tfi-mono text-[10px]"
+              onClick={() => setLang(lang === "en" ? "zh" : "en")}
             >
-              <Calculator className="h-4 w-4" />
-              Model notes
-            </button>
+              {lang === "en" ? "ZH" : "EN"}
+            </Button>
+            <Button variant="outline" size="sm" className="hidden sm:flex">
+              <BookOpen className="w-4 h-4 mr-2" />
+              {t("Reports", "报告")}
+            </Button>
+            <Button size="sm" className="hidden sm:flex">
+              <FileUp className="w-4 h-4 mr-2" />
+              {t("Upload", "上传")}
+            </Button>
           </div>
         </div>
-      </div>
+      </header>
+
+      <main className="flex-1 max-w-7xl mx-auto w-full p-4 md:p-6 space-y-6">
+        {page === 1 ? (
+          <>
+            {/* Page 1: Visualization */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+              {/* Left Side: Setup */}
+              <aside className="lg:col-span-4 space-y-6">
+                <Card className="p-5 space-y-6 shadow-sm border-muted-border bg-card/40 backdrop-blur-sm">
+                  <div className="space-y-4">
+                    <Label className="text-xs uppercase tracking-widest text-muted-foreground tfi-mono">
+                      {t("Metrics Selection", "指标选择")}
+                    </Label>
+                    <div className="grid grid-cols-1 gap-2">
+                      {(Object.keys(METRICS_META) as MetricKey[]).map((m) => (
+                        <div key={m} className="flex items-center space-x-2">
+                          <Checkbox
+                            id={m}
+                            checked={selectedMetrics.includes(m)}
+                            onCheckedChange={(checked) => {
+                              if (checked) setSelectedMetrics([...selectedMetrics, m]);
+                              else setSelectedMetrics(selectedMetrics.filter((sm) => sm !== m));
+                            }}
+                          />
+                          <Label htmlFor={m} className="text-sm cursor-pointer flex items-center gap-2">
+                            <div className="w-2 h-2 rounded-full" style={{ backgroundColor: METRICS_META[m].color }} />
+                            {t(METRICS_META[m].label, METRICS_META[m].zh)}
+                          </Label>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <Separator />
+
+                  <div className="space-y-4">
+                    <Label className="text-xs uppercase tracking-widest text-muted-foreground tfi-mono">
+                      {t("Configuration", "配置")}
+                    </Label>
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <Label className="text-xs">{t("Year Range", "年份范围")}</Label>
+                        <div className="flex gap-2">
+                          <Select
+                            value={String(yearRange[0])}
+                            onValueChange={(v) => setYearRange([Number(v), yearRange[1]])}
+                          >
+                            <SelectTrigger className="h-9">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {DATA.map((d) => (
+                                <SelectItem key={d.year} value={String(d.year)}>
+                                  {d.year}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <Select
+                            value={String(yearRange[1])}
+                            onValueChange={(v) => setYearRange([yearRange[0], Number(v)])}
+                          >
+                            <SelectTrigger className="h-9">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {DATA.map((d) => (
+                                <SelectItem key={d.year} value={String(d.year)}>
+                                  {d.year}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label className="text-xs">{t("Plot Mode", "图表模式")}</Label>
+                        <Select value={plotMode} onValueChange={(v: any) => setPlotMode(v)}>
+                          <SelectTrigger className="h-9">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="level">{t("Level Plot", "数值图")}</SelectItem>
+                            <SelectItem value="yoy">{t("YoY Growth", "同比增长")}</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label className="text-xs">{t("Chart Type", "图表类型")}</Label>
+                        <Select value={plotType} onValueChange={(v: any) => setPlotType(v)}>
+                          <SelectTrigger className="h-9">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="line">{t("Line Plot", "折线图")}</SelectItem>
+                            <SelectItem value="bar">{t("Bar Plot", "柱状图")}</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                  </div>
+                </Card>
+              </aside>
+
+              {/* Right Side: View */}
+              <div className="lg:col-span-8 space-y-6">
+                <Card className="p-6 h-[500px] shadow-md bg-card/60 backdrop-blur-sm border-card-border">
+                  <ResponsiveContainer width="100%" height="100%">
+                    {plotType === "line" ? (
+                      <LineChart data={filteredData}>
+                        <CartesianGrid strokeDasharray="3 3" opacity={0.2} vertical={false} />
+                        <XAxis dataKey="year" axisLine={false} tickLine={false} />
+                        <YAxis axisLine={false} tickLine={false} />
+                        <Tooltip
+                          contentStyle={{
+                            backgroundColor: "hsl(var(--card))",
+                            borderRadius: "12px",
+                            border: "1px solid hsl(var(--border))",
+                            boxShadow: "var(--shadow-lg)",
+                          }}
+                        />
+                        <Legend verticalAlign="top" height={36} />
+                        {selectedMetrics.map((m) => (
+                          <Line
+                            key={m}
+                            type="monotone"
+                            dataKey={m}
+                            name={t(METRICS_META[m].label, METRICS_META[m].zh)}
+                            stroke={METRICS_META[m].color}
+                            strokeWidth={3}
+                            dot={{ r: 4, fill: METRICS_META[m].color, strokeWidth: 2 }}
+                            activeDot={{ r: 6 }}
+                            animationDuration={1000}
+                          />
+                        ))}
+                      </LineChart>
+                    ) : (
+                      <BarChart data={filteredData}>
+                        <CartesianGrid strokeDasharray="3 3" opacity={0.2} vertical={false} />
+                        <XAxis dataKey="year" axisLine={false} tickLine={false} />
+                        <YAxis axisLine={false} tickLine={false} />
+                        <Tooltip
+                          contentStyle={{
+                            backgroundColor: "hsl(var(--card))",
+                            borderRadius: "12px",
+                            border: "1px solid hsl(var(--border))",
+                            boxShadow: "var(--shadow-lg)",
+                          }}
+                        />
+                        <Legend verticalAlign="top" height={36} />
+                        {selectedMetrics.map((m) => (
+                          <Bar
+                            key={m}
+                            dataKey={m}
+                            name={t(METRICS_META[m].label, METRICS_META[m].zh)}
+                            fill={METRICS_META[m].color}
+                            radius={[4, 4, 0, 0]}
+                            animationDuration={1000}
+                          />
+                        ))}
+                      </BarChart>
+                    )}
+                  </ResponsiveContainer>
+                </Card>
+              </div>
+            </div>
+
+            {/* Bottom Section: Q&A */}
+            <Card className="p-4 shadow-sm border-muted-border bg-card/40 backdrop-blur-sm">
+              <div className="flex flex-col h-[200px]">
+                <div className="flex-1 overflow-y-auto p-2 space-y-4">
+                  <div className="flex gap-3">
+                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                      <MessageSquare className="w-4 h-4 text-primary" />
+                    </div>
+                    <div className="bg-muted p-3 rounded-2xl rounded-tl-none text-sm max-w-[80%]">
+                      {t(
+                        "Hello! I can help you analyze Tencent's financial reports. Ask me anything about margins, revenue growth, or segment details.",
+                        "你好！我可以帮你分析腾讯的财务报告。你可以问我关于利润率、收入增长或分部详情的任何问题。"
+                      )}
+                    </div>
+                  </div>
+                </div>
+                <div className="pt-4 flex gap-2">
+                  <Input
+                    placeholder={t("Type your message...", "输入你的问题...")}
+                    value={chatInput}
+                    onChange={(e) => setChatInput(e.target.value)}
+                    className="rounded-full bg-background/50"
+                  />
+                  <Button size="icon" className="rounded-full shrink-0">
+                    <Send className="w-4 h-4" />
+                  </Button>
+                </div>
+              </div>
+            </Card>
+          </>
+        ) : (
+          /* Page 2: Table */
+          <div className="space-y-6">
+            {/* Top section: Filter setup */}
+            <Card className="p-4 flex flex-wrap items-center gap-4 bg-card/40 backdrop-blur-sm border-muted-border shadow-sm">
+              <div className="flex items-center gap-2">
+                <Label className="text-xs whitespace-nowrap">{t("Years Range", "年份范围")}</Label>
+                <div className="flex gap-2">
+                   <Select value={String(yearRange[0])} onValueChange={(v) => setYearRange([Number(v), yearRange[1]])}>
+                    <SelectTrigger className="h-8 w-24"><SelectValue /></SelectTrigger>
+                    <SelectContent>{DATA.map(d => <SelectItem key={d.year} value={String(d.year)}>{d.year}</SelectItem>)}</SelectContent>
+                   </Select>
+                   <span className="text-muted-foreground self-center">-</span>
+                   <Select value={String(yearRange[1])} onValueChange={(v) => setYearRange([yearRange[0], Number(v)])}>
+                    <SelectTrigger className="h-8 w-24"><SelectValue /></SelectTrigger>
+                    <SelectContent>{DATA.map(d => <SelectItem key={d.year} value={String(d.year)}>{d.year}</SelectItem>)}</SelectContent>
+                   </Select>
+                </div>
+              </div>
+              <Separator orientation="vertical" className="h-8" />
+              <Button variant="outline" size="sm" className="rounded-full">
+                <Plus className="w-4 h-4 mr-2" />
+                {t("Add Metric", "添加指标")}
+              </Button>
+              <div className="ml-auto text-xs text-muted-foreground tfi-mono">
+                {t("Units: CNY Billion", "单位: 十亿人民币")}
+              </div>
+            </Card>
+
+            {/* Middle to bottom section: Table */}
+            <Card className="shadow-sm border-card-border overflow-hidden bg-card/60 backdrop-blur-sm">
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="bg-muted/30">
+                      <TableHead className="w-[100px] font-bold">{t("Metric", "指标")}</TableHead>
+                      {DATA.filter(d => d.year >= yearRange[0] && d.year <= yearRange[1]).map(d => (
+                        <TableHead key={d.year} className="text-right font-bold">{d.year}</TableHead>
+                      ))}
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {(Object.keys(METRICS_META) as MetricKey[]).map((m) => (
+                      <TableRow key={m} className="hover:bg-muted/20">
+                        <TableCell className="font-medium">
+                          {t(METRICS_META[m].label, METRICS_META[m].zh)}
+                        </TableCell>
+                        {DATA.filter(d => d.year >= yearRange[0] && d.year <= yearRange[1]).map(d => (
+                          <TableCell key={d.year} className="text-right tfi-mono">
+                            {d[m].toFixed(1)}
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </Card>
+          </div>
+        )}
+      </main>
+
+      <footer className="mt-auto p-4 text-center text-[10px] text-muted-foreground uppercase tracking-widest tfi-mono">
+        {t("Tencent Financial Intelligence • Analyst Grade Tooling • v1", "腾讯金融情报 • 分析师级工具 • v1")}
+      </footer>
     </div>
   );
 }

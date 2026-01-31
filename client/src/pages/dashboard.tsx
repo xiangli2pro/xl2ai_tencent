@@ -202,13 +202,13 @@ function SparklineHeader({ title, subtitle, lang, setLang }: { title: string; su
   );
 }
 
-function TopNav({ active, onChange }: { active: string; onChange: (id: string) => void }) {
+function TopNav({ active, onChange, lang }: { active: string; onChange: (id: string) => void; lang: "en" | "zh" }) {
   const items = [
-    { id: "overview", label: "Overview" },
-    { id: "financials", label: "Financials" },
-    { id: "trends", label: "Trends" },
-    { id: "calculations", label: "Calculations" },
-    { id: "qa", label: "Q&A" },
+    { id: "overview", label: lang === "en" ? "Overview" : "总览" },
+    { id: "financials", label: lang === "en" ? "Financials" : "财务报表" },
+    { id: "trends", label: lang === "en" ? "Trends" : "趋势分析" },
+    { id: "calculations", label: lang === "en" ? "Calculations" : "自定义计算" },
+    { id: "qa", label: lang === "en" ? "Q&A" : "智能问答" },
   ];
 
   return (
@@ -238,19 +238,31 @@ function StatCard({
   value,
   sub,
   trend,
+  lang,
 }: {
   label: string;
   value: string;
   sub: string;
   trend: "up" | "down" | "flat";
+  lang: "en" | "zh";
 }) {
+  const displayLabel = useMemo(() => {
+    if (lang === "zh") {
+      if (label === "Revenue") return "总收入";
+      if (label === "Operating profit") return "经营利润";
+      if (label === "FinTech") return "金融科技";
+      if (label === "Online ads") return "网络广告";
+    }
+    return label;
+  }, [label, lang]);
+
   return (
     <Card className="border-card-border bg-card/70 backdrop-blur supports-[backdrop-filter]:bg-card/55 shadow-sm">
       <div className="p-4">
         <div className="flex items-start justify-between gap-3">
           <div>
             <div className="tfi-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
-              {label}
+              {displayLabel}
             </div>
             <div className="mt-1 text-2xl font-semibold" data-testid={`text-${label.toLowerCase().replace(/\s+/g, "-")}`}>
               {value}
@@ -384,7 +396,7 @@ export default function Dashboard() {
                 <div className="flex items-center gap-2">
                   <Search className="h-4 w-4 text-muted-foreground" />
                   <Input
-                    placeholder="Search metrics, segments, or ask a question…"
+                    placeholder={lang === "en" ? "Search metrics, segments, or ask a question…" : "搜索指标、业务板块或提问..."}
                     className="h-9 w-[260px] md:w-[340px] bg-transparent"
                     data-testid="input-global-search"
                   />
@@ -402,7 +414,7 @@ export default function Dashboard() {
                     }}
                   >
                     <SelectTrigger className="h-9 w-[160px]" data-testid="select-time-range">
-                      <SelectValue placeholder="Time range" />
+                      <SelectValue placeholder={lang === "en" ? "Time range" : "时间范围"} />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="2015-2024" data-testid="option-range-2015-2024">
@@ -424,18 +436,18 @@ export default function Dashboard() {
                     data-testid="button-toggle-yoy"
                   >
                     <LineChart className="h-4 w-4" />
-                    {chartMode === "level" ? "Level" : "YoY"}
+                    {chartMode === "level" ? (lang === "en" ? "Level" : "数值") : (lang === "en" ? "YoY" : "同比")}
                     <ChevronDown className="h-4 w-4 opacity-60" />
                   </button>
                 </div>
 
                 <div className="ml-auto hidden lg:flex items-center gap-2">
                   <span className="tfi-mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
-                    Source integrity
+                    {lang === "en" ? "Source integrity" : "数据合规"}
                   </span>
                   <span className="inline-flex items-center gap-1 rounded-full border border-emerald-500/25 bg-emerald-500/10 px-3 py-1.5 text-sm text-emerald-700">
                     <CheckCircle2 className="h-4 w-4" />
-                    Page-referenced
+                    {lang === "en" ? "Page-referenced" : "源文件追溯"}
                   </span>
                 </div>
               </div>
@@ -453,7 +465,7 @@ export default function Dashboard() {
             </div>
 
             <div className="hidden md:block">
-              <TopNav active={active} onChange={setActive} />
+              <TopNav active={active} onChange={setActive} lang={lang} />
               <div className="sr-only" aria-live="polite" data-testid="status-active-tab">
                 {active}
               </div>
@@ -464,26 +476,30 @@ export default function Dashboard() {
             <StatCard
               label="Revenue"
               value={`${formatCNYb(last.revenue)}B`}
-              sub={`${revDelta >= 0 ? "+" : ""}${formatPct(revDelta)} since ${first.year}`}
+              sub={lang === "en" ? `${revDelta >= 0 ? "+" : ""}${formatPct(revDelta)} since ${first.year}` : `${revDelta >= 0 ? "+" : ""}${formatPct(revDelta)} 自 ${first.year}`}
               trend={revDelta >= 0 ? "up" : "down"}
+              lang={lang}
             />
             <StatCard
               label="Operating profit"
               value={`${formatCNYb(last.operatingProfit)}B`}
-              sub={`Margin ${formatPct(last.margin)}`}
+              sub={lang === "en" ? `Margin ${formatPct(last.margin)}` : `利润率 ${formatPct(last.margin)}`}
               trend="up"
+              lang={lang}
             />
             <StatCard
               label="FinTech"
               value={`${formatCNYb(last.fintechRevenue)}B`}
-              sub={`Segment scale • ${range[0]}–${range[1]}`}
+              sub={lang === "en" ? `Segment scale • ${range[0]}–${range[1]}` : `业务规模 • ${range[0]}–${range[1]}`}
               trend="up"
+              lang={lang}
             />
             <StatCard
               label="Online ads"
-              value={`${formatCNYb(last.adsRevenue)}B`}
-              sub={`Mix shift tracking`}
+              value={lang === "en" ? `${formatCNYb(last.adsRevenue)}B` : `${formatCNYb(last.adsRevenue)}B`}
+              sub={lang === "en" ? `Mix shift tracking` : `结构变化追踪`}
               trend="flat"
+              lang={lang}
             />
           </div>
         </div>
@@ -495,13 +511,13 @@ export default function Dashboard() {
 
           <TabsContent value="overview" className="mt-6 space-y-4">
             <TerminalCard
-              title="Long-term performance"
+              title={lang === "en" ? "Long-term performance" : "长期业绩表现"}
               icon={<LineChart className="h-4 w-4" />}
               right={
                 <div className="flex items-center gap-2">
                   <Select value={metric} onValueChange={(v) => setMetric(v as MetricKey)}>
                     <SelectTrigger className="h-9 w-[220px]" data-testid="select-metric">
-                      <SelectValue placeholder="Metric" />
+                      <SelectValue placeholder={lang === "en" ? "Metric" : "指标"} />
                     </SelectTrigger>
                     <SelectContent>
                       {METRICS.map((m) => (
@@ -510,7 +526,16 @@ export default function Dashboard() {
                           value={m.key}
                           data-testid={`option-metric-${m.key}`}
                         >
-                          {m.label}
+                          {lang === "en" ? m.label : (
+                            m.key === "revenue" ? "总收入" :
+                            m.key === "grossProfit" ? "毛利润" :
+                            m.key === "operatingProfit" ? "经营利润" :
+                            m.key === "netProfit" ? "净利润" :
+                            m.key === "margin" ? "经营利润率" :
+                            m.key === "vasRevenue" ? "增值服务收入" :
+                            m.key === "fintechRevenue" ? "金融科技收入" :
+                            m.key === "adsRevenue" ? "广告收入" : m.label
+                          )}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -523,14 +548,23 @@ export default function Dashboard() {
                   <div className="flex items-center justify-between px-4 py-3">
                     <div>
                       <div className="text-sm font-medium" data-testid="text-chart-title">
-                        {metricDef.label}
+                        {lang === "en" ? metricDef.label : (
+                          metricDef.key === "revenue" ? "总收入" :
+                          metricDef.key === "grossProfit" ? "毛利润" :
+                          metricDef.key === "operatingProfit" ? "经营利润" :
+                          metricDef.key === "netProfit" ? "净利润" :
+                          metricDef.key === "margin" ? "经营利润率" :
+                          metricDef.key === "vasRevenue" ? "增值服务收入" :
+                          metricDef.key === "fintechRevenue" ? "金融科技收入" :
+                          metricDef.key === "adsRevenue" ? "广告收入" : metricDef.label
+                        )}
                       </div>
                       <div className="text-sm text-muted-foreground" data-testid="text-chart-subtitle">
-                        {chartMode === "yoy" ? "Year-over-year growth" : "Level"} • {range[0]}–{range[1]}
+                        {chartMode === "yoy" ? (lang === "en" ? "Year-over-year growth" : "同比增长") : (lang === "en" ? "Level" : "数值")} • {range[0]}–{range[1]}
                       </div>
                     </div>
                     <div className="tfi-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground" data-testid="text-chart-unit">
-                      {chartMode === "yoy" ? "%" : metricDef.unit}
+                      {chartMode === "yoy" ? "%" : (lang === "en" ? metricDef.unit : (metricDef.unit === "CNYb" ? "十亿人民币" : "%"))}
                     </div>
                   </div>
                   <div className="h-[320px] px-2 pb-3">

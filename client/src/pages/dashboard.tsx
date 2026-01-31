@@ -391,10 +391,12 @@ export default function Dashboard() {
   const t = (en: string, zh: string) => (lang === "en" ? en : zh);
 
   const formatValue = (v: number) => {
-    return new Intl.NumberFormat("en-US", {
+    const isNegative = v < 0;
+    const formatted = new Intl.NumberFormat("en-US", {
       maximumFractionDigits: 2,
       minimumFractionDigits: 2,
-    }).format(v);
+    }).format(Math.abs(v));
+    return isNegative ? `(${formatted})` : formatted;
   };
 
   return (

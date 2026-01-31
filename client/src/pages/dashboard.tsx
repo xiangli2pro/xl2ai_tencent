@@ -685,17 +685,21 @@ export default function Dashboard() {
           </TabsContent>
 
           <TabsContent value="financials" className="mt-6 space-y-4">
-            <TerminalCard title="Financial statements" icon={<BookOpen className="h-4 w-4" />}>
+            <TerminalCard title={lang === "en" ? "Financial statements" : "财务报表"} icon={<BookOpen className="h-4 w-4" />}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {[
-                  { title: "Income statement", desc: "Revenue, gross profit, operating profit, IFRS vs non-IFRS." },
-                  { title: "Balance sheet", desc: "Assets, liabilities, equity with normalized line items." },
-                  { title: "Segment performance", desc: "VAS, FinTech, Ads with mix and margin context." },
-                  { title: "Liquidity", desc: "Cash, deposits, borrowings, net cash dynamics." },
+                  { id: "income", title: lang === "en" ? "Income statement" : "损益表", desc: lang === "en" ? "Revenue, gross profit, operating profit, IFRS vs non-IFRS." : "收入、毛利、经营利润，IFRS与非IFRS对比。" },
+                  { id: "balance", title: lang === "en" ? "Balance sheet" : "资产负债表", desc: lang === "en" ? "Assets, liabilities, equity with normalized line items." : "资产、负债、权益，标准化会计科目。" },
+                  { id: "segments", title: lang === "en" ? "Segment performance" : "分部业绩", desc: lang === "en" ? "VAS, FinTech, Ads with mix and margin context." : "增值服务、金融科技、广告，包含业务结构与利润率。" },
+                  { id: "liquidity", title: lang === "en" ? "Liquidity" : "流动性与财务资源", desc: lang === "en" ? "Cash, deposits, borrowings, net cash dynamics." : "现金、定期存款、借款、净现金动态。" },
                 ].map((c, idx) => (
                   <div
-                    key={c.title}
-                    className="rounded-2xl border border-border bg-muted/20 p-4 hover-elevate"
+                    key={c.id}
+                    className="rounded-2xl border border-border bg-muted/20 p-4 hover-elevate cursor-pointer"
+                    onClick={() => {
+                      setMetric(c.id === "income" ? "revenue" : c.id === "segments" ? "vasRevenue" : "revenue");
+                      setActive("overview");
+                    }}
                     data-testid={`card-financial-${idx}`}
                   >
                     <div className="flex items-center justify-between">
@@ -707,7 +711,7 @@ export default function Dashboard() {
                         className="inline-flex items-center gap-1 text-sm text-primary hover:opacity-90"
                         data-testid={`button-open-financial-${idx}`}
                       >
-                        Open
+                        {lang === "en" ? "Open" : "查看"}
                         <ArrowUpRight className="h-4 w-4" />
                       </button>
                     </div>

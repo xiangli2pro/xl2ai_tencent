@@ -303,6 +303,7 @@ export default function Dashboard() {
             </h1>
             <nav className="hidden md:flex items-center ml-8 gap-1">
               <Button 
+                data-testid="button-nav-visualization"
                 variant={page === 1 ? "secondary" : "ghost"} 
                 size="sm" 
                 onClick={() => setPage(1)}
@@ -311,6 +312,7 @@ export default function Dashboard() {
                 {t("Visualization", "可视化")}
               </Button>
               <Button 
+                data-testid="button-nav-data-table"
                 variant={page === 2 ? "secondary" : "ghost"} 
                 size="sm" 
                 onClick={() => setPage(2)}
@@ -322,6 +324,7 @@ export default function Dashboard() {
           </div>
           <div className="flex items-center gap-2">
             <Button
+              data-testid="button-language-toggle"
               variant="outline"
               size="sm"
               className="tfi-mono text-[10px]"
@@ -329,7 +332,7 @@ export default function Dashboard() {
             >
               {lang === "en" ? "ZH" : "EN"}
             </Button>
-            <Button variant="outline" size="sm" className="hidden sm:flex" onClick={() => setReportsOpen(true)}>
+            <Button data-testid="button-open-reports" variant="outline" size="sm" className="hidden sm:flex" onClick={() => setReportsOpen(true)}>
               <BookOpen className="w-4 h-4 mr-2" />
               {t("Reports", "报告")}
             </Button>

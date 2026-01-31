@@ -24,9 +24,16 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { 
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue 
 } from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Checkbox } from "@/components/ui/checkbox";
+import { extent, quantileSorted } from "d3-array";
+
+const UNIT_BILLIONS = "B";
+const UNIT_PERCENT = "%";
+
+const UNIT_BILLIONS = "B";
+const UNIT_PERCENT = "%";
 
 type MetricKey = keyof typeof METRICS;
 
@@ -300,7 +307,8 @@ export default function Dashboard() {
   const [selectedMetrics, setSelectedMetrics] = useState<MetricKey[]>(["revenue"]);
   const [yearRange, setYearRange] = useState<[number, number]>([2014, 2024]);
   const [plotMode, setPlotMode] = useState<"level" | "yoy">("level");
-  const [plotType, setPlotType] = useState<"line" | "bar">("line");
+  const [plotType, setPlotType] = useState<"line" | "bar" | "box">("line");
+  const [compositionYear, setCompositionYear] = useState<number>(2024);
   const [chatInput, setChatInput] = useState("");
 
   const filteredData = useMemo(() => {
@@ -403,20 +411,23 @@ export default function Dashboard() {
                       {t("Dashboard Controls", "仪表板控制")}
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-6">
+                  <CardContent className="space-y-6 max-h-[70vh] overflow-hidden">
                     <div className="space-y-4">
                       <Label className="tfi-mono text-[10px] uppercase tracking-widest text-muted-foreground">
                         {t("Metric Selection", "指标选择")}
                       </Label>
-                      <Accordion type="multiple" defaultValue={["Performance", "Balance Sheet", "Costs", "Segments", "Liquidity"]} className="w-full">
-                        {Array.from(
-                          Object.entries(METRICS).reduce((acc, [key, m]) => {
-                            const arr = acc.get(m.category) ?? [];
-                            arr.push([key, m] as const);
-                            acc.set(m.category, arr);
-                            return acc;
-                          }, new Map<string, Array<readonly [string, (typeof METRICS)[MetricKey]]>>())
-                        ).map(([category, items]) => (
+                      <div className="rounded-xl border border-border bg-muted/10 overflow-hidden">
+                        <ScrollArea className="h-[360px]" data-testid="scroll-metric-selection">
+                          <div className="p-3">
+                            <Accordion type="multiple" defaultValue={["Performance", "Balance Sheet", "Costs", "Segments", "Liquidity"]} className="w-full">
+                              {Array.from(
+                                Object.entries(METRICS).reduce((acc, [key, m]) => {
+                                  const arr = acc.get(m.category) ?? [];
+                                  arr.push([key, m] as const);
+                                  acc.set(m.category, arr);
+                                  return acc;
+                                }, new Map<string, Array<readonly [string, (typeof METRICS)[MetricKey]]>>())
+                              ).map(([category, items]) => (
                           <AccordionItem key={category} value={category} className="border-border/50">
                             <AccordionTrigger
                               data-testid={`accordion-${category.toLowerCase().replace(/\s+/g, "-")}`}
@@ -431,20 +442,21 @@ export default function Dashboard() {
                             <AccordionContent className="pb-3">
                               <div className="grid grid-cols-1 gap-2">
                                 {items.map(([key, m]) => (
-                                  <div key={key} className="flex items-center space-x-2">
-                                    <Switch 
-                                      data-testid={`switch-metric-${key}`}
+                                  <div key={key} className="flex items-start gap-2 rounded-lg px-2 py-1.5 hover:bg-white/5 transition-colors">
+                                    <Checkbox
+                                      data-testid={`checkbox-metric-${key}`}
                                       id={`metric-${key}`}
                                       checked={selectedMetrics.includes(key as MetricKey)}
-                                      onCheckedChange={(checked) => {
+                                      onCheckedChange={(checked: boolean) => {
                                         if (checked) setSelectedMetrics([...selectedMetrics, key as MetricKey]);
-                                        else setSelectedMetrics(selectedMetrics.filter(mk => mk !== key));
+                                        else setSelectedMetrics(selectedMetrics.filter((mk) => mk !== key));
                                       }}
+                                      className="mt-0.5"
                                     />
                                     <Label
                                       data-testid={`label-metric-${key}`}
                                       htmlFor={`metric-${key}`}
-                                      className="text-xs cursor-pointer"
+                                      className="text-xs cursor-pointer leading-snug"
                                     >
                                       {t(m.label, m.zh)}
                                     </Label>
@@ -454,7 +466,10 @@ export default function Dashboard() {
                             </AccordionContent>
                           </AccordionItem>
                         ))}
-                      </Accordion>
+                            </Accordion>
+                          </div>
+                        </ScrollArea>
+                      </div>
                     </div>
 
                     <div className="space-y-4">
@@ -493,8 +508,9 @@ export default function Dashboard() {
                       <Label className="tfi-mono text-[10px] uppercase tracking-widest text-muted-foreground">
                         {t("Chart Type", "图表类型")}
                       </Label>
-                      <div className="flex gap-2">
+                      <div className="grid grid-cols-3 gap-2">
                         <Button 
+                          data-testid="button-chart-line"
                           variant={plotType === "line" ? "default" : "outline"} 
                           size="sm" 
                           className="flex-1"
@@ -503,12 +519,22 @@ export default function Dashboard() {
                           <TrendingUp className="w-4 h-4" />
                         </Button>
                         <Button 
+                          data-testid="button-chart-bar"
                           variant={plotType === "bar" ? "default" : "outline"} 
                           size="sm" 
                           className="flex-1"
                           onClick={() => setPlotType("bar")}
                         >
                           <BarChart className="w-4 h-4" />
+                        </Button>
+                        <Button 
+                          data-testid="button-chart-box"
+                          variant={plotType === "box" ? "default" : "outline"} 
+                          size="sm" 
+                          className="flex-1"
+                          onClick={() => setPlotType("box")}
+                        >
+                          <Activity className="w-4 h-4" />
                         </Button>
                       </div>
                     </div>
@@ -545,11 +571,13 @@ export default function Dashboard() {
                           {t("Financial Trend Analysis", "财务趋势分析")}
                         </CardTitle>
                         <CardDescription className="tfi-mono text-[10px] uppercase tracking-wider">
-                          {t("RMB Billions • 2014-2024", "人民币 十亿元 • 2014-2024")}
+                          {plotMode === "yoy"
+                            ? t(`Unit: ${UNIT_PERCENT} • 2014-2024`, `单位：${UNIT_PERCENT} • 2014-2024`)
+                            : t(`Unit: RMB ${UNIT_BILLIONS} • 2014-2024`, `单位：人民币 ${UNIT_BILLIONS} • 2014-2024`)}
                         </CardDescription>
                       </div>
                       <Badge variant="outline" className="tfi-mono text-[10px] uppercase py-1 px-3">
-                        {plotMode === "yoy" ? "YoY Change %" : "Nominal Value"}
+                        {plotMode === "yoy" ? `YoY Change ${UNIT_PERCENT}` : `Nominal Value (${UNIT_BILLIONS} RMB)`}
                       </Badge>
                     </div>
                   </CardHeader>

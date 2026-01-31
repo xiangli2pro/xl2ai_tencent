@@ -162,7 +162,7 @@ function calcSeries(series: YearPoint[], formula: string) {
   });
 }
 
-function SparklineHeader({ title, subtitle }: { title: string; subtitle: string }) {
+function SparklineHeader({ title, subtitle, lang, setLang }: { title: string; subtitle: string; lang: "en" | "zh"; setLang: (l: "en" | "zh") => void }) {
   return (
     <div className="flex items-start justify-between gap-6">
       <div className="space-y-1">
@@ -172,19 +172,31 @@ function SparklineHeader({ title, subtitle }: { title: string; subtitle: string 
         <h1 className="tfi-title text-3xl sm:text-4xl leading-[1.05]">{title}</h1>
       </div>
 
-      <div className="hidden md:flex items-center gap-2">
+      <div className="flex items-center gap-2">
         <Button
           variant="secondary"
-          className="shadow-sm"
-          data-testid="button-open-reports"
+          size="sm"
+          className="shadow-sm tfi-mono text-xs h-8"
+          onClick={() => setLang(lang === "en" ? "zh" : "en")}
+          data-testid="button-language-switch"
         >
-          <BookOpen className="mr-2 h-4 w-4" />
-          Reports (2015–2024)
+          {lang === "en" ? "中文 (简体)" : "English"}
         </Button>
-        <Button className="shadow-sm" data-testid="button-upload-report">
-          <FileUp className="mr-2 h-4 w-4" />
-          Upload 2025+
-        </Button>
+        <div className="hidden md:flex items-center gap-2">
+          <Button
+            variant="secondary"
+            size="sm"
+            className="shadow-sm h-8"
+            data-testid="button-open-reports"
+          >
+            <BookOpen className="mr-2 h-4 w-4" />
+            {lang === "en" ? "Reports (2015–2024)" : "年度报告 (2015–2024)"}
+          </Button>
+          <Button size="sm" className="shadow-sm h-8" data-testid="button-upload-report">
+            <FileUp className="mr-2 h-4 w-4" />
+            {lang === "en" ? "Upload 2025+" : "上传 2025+"}
+          </Button>
+        </div>
       </div>
     </div>
   );
@@ -302,6 +314,7 @@ function TerminalCard({
 }
 
 export default function Dashboard() {
+  const [lang, setLang] = useState<"en" | "zh">("en");
   const [active, setActive] = useState("overview");
   const [metric, setMetric] = useState<MetricKey>("revenue");
   const [range, setRange] = useState<[number, number]>([2015, 2024]);
@@ -359,8 +372,10 @@ export default function Dashboard() {
 
         <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 pt-10 pb-6">
           <SparklineHeader
-            title="Tencent Financial Intelligence"
-            subtitle="Preloaded annual reports • grounded metrics • analyst-grade tooling"
+            title={lang === "en" ? "Tencent Financial Intelligence" : "腾讯金融情报"}
+            subtitle={lang === "en" ? "Preloaded annual reports • grounded metrics • analyst-grade tooling" : "预载年度报告 • 落地指标 • 分析师级工具"}
+            lang={lang}
+            setLang={setLang}
           />
 
           <div className="mt-6 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">

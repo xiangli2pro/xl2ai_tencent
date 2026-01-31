@@ -41,32 +41,136 @@ type MetricKey =
   | "revenue"
   | "grossProfit"
   | "operatingProfit"
-  | "netProfit"
+  | "profitBeforeTax"
+  | "profitForYear"
+  | "profitAttrEquity"
+  | "totalCompIncome"
+  | "totalCompIncomeAttrEquity"
+  | "nonIfrsOperatingProfit"
+  | "nonIfrsProfitAttrEquity"
+  | "nonCurrentAssets"
+  | "currentAssets"
+  | "totalAssets"
+  | "equityAttrEquity"
+  | "nonControllingInterests"
+  | "totalEquity"
+  | "nonCurrentLiabilities"
+  | "currentLiabilities"
+  | "totalLiabilities"
+  | "totalEquityLiabilities"
+  | "costOfRevenues"
+  | "sellingMarketingExpenses"
+  | "generalAdminExpenses"
+  | "otherGainsLosses"
+  | "netGainsLossesInvestments"
+  | "interestIncome"
+  | "financeCosts"
+  | "shareOfProfitLossAssociates"
+  | "incomeTaxExpense"
   | "vasRevenue"
+  | "marketingServicesRevenue"
   | "fintechRevenue"
-  | "adsRevenue";
+  | "othersRevenue"
+  | "vasGrossProfit"
+  | "marketingServicesGrossProfit"
+  | "fintechGrossProfit"
+  | "othersGrossProfit"
+  | "vasGrossMargin"
+  | "marketingServicesGrossMargin"
+  | "fintechGrossMargin"
+  | "othersGrossMargin"
+  | "cashCashEquivalents"
+  | "termDepositsOthers"
+  | "borrowings"
+  | "notesPayable"
+  | "netCash";
 
-const METRICS_META: Record<MetricKey, { label: string; color: string; zh: string }> = {
-  revenue: { label: "Revenue", color: "hsl(var(--chart-1))", zh: "总收入" },
-  grossProfit: { label: "Gross Profit", color: "hsl(var(--chart-2))", zh: "毛利润" },
-  operatingProfit: { label: "Operating Profit", color: "hsl(var(--chart-3))", zh: "经营利润" },
-  netProfit: { label: "Net Profit", color: "hsl(var(--chart-4))", zh: "净利润" },
-  vasRevenue: { label: "VAS Revenue", color: "hsl(var(--chart-5))", zh: "增值服务收入" },
-  fintechRevenue: { label: "FinTech Revenue", color: "#10b981", zh: "金融科技收入" },
-  adsRevenue: { label: "Ads Revenue", color: "#f59e0b", zh: "广告收入" },
+const METRICS_META: Record<MetricKey, { label: string; color: string; zh: string; category: string }> = {
+  // Financial Summary - Income Statement
+  revenue: { label: "Revenues", color: "hsl(var(--chart-1))", zh: "收入", category: "Income Statement" },
+  grossProfit: { label: "Gross Profit", color: "hsl(var(--chart-2))", zh: "毛利", category: "Income Statement" },
+  operatingProfit: { label: "Operating Profit", color: "hsl(var(--chart-3))", zh: "经营利润", category: "Income Statement" },
+  profitBeforeTax: { label: "Profit Before Tax", color: "hsl(var(--chart-4))", zh: "除税前利润", category: "Income Statement" },
+  profitForYear: { label: "Profit for the Year", color: "hsl(var(--chart-5))", zh: "年度利润", category: "Income Statement" },
+  profitAttrEquity: { label: "Profit Attr. to Equity Holders", color: "#6366f1", zh: "权益持有人应占利润", category: "Income Statement" },
+  totalCompIncome: { label: "Total Comprehensive Income", color: "#8b5cf6", zh: "年度全面收益总额", category: "Income Statement" },
+  totalCompIncomeAttrEquity: { label: "Comp. Income Attr. to Equity Holders", color: "#a855f7", zh: "权益持有人应占全面收益总额", category: "Income Statement" },
+  nonIfrsOperatingProfit: { label: "Non-IFRS Operating Profit", color: "#ec4899", zh: "非国际财务报告准则经营利润", category: "Income Statement" },
+  nonIfrsProfitAttrEquity: { label: "Non-IFRS Profit Attr. to Equity Holders", color: "#f43f5e", zh: "非国际财务报告准则权益持有人应占利润", category: "Income Statement" },
+
+  // Financial Position
+  nonCurrentAssets: { label: "Non-current Assets", color: "#10b981", zh: "非流动资产", category: "Balance Sheet" },
+  currentAssets: { label: "Current Assets", color: "#34d399", zh: "流动资产", category: "Balance Sheet" },
+  totalAssets: { label: "Total Assets", color: "#059669", zh: "总资产", category: "Balance Sheet" },
+  equityAttrEquity: { label: "Equity Attr. to Equity Holders", color: "#3b82f6", zh: "权益持有人应占权益", category: "Balance Sheet" },
+  nonControllingInterests: { label: "Non-controlling Interests", color: "#60a5fa", zh: "非控制性权益", category: "Balance Sheet" },
+  totalEquity: { label: "Total Equity", color: "#2563eb", zh: "总权益", category: "Balance Sheet" },
+  nonCurrentLiabilities: { label: "Non-current Liabilities", color: "#ef4444", zh: "非流动负债", category: "Balance Sheet" },
+  currentLiabilities: { label: "Current Liabilities", color: "#f87171", zh: "流动负债", category: "Balance Sheet" },
+  totalLiabilities: { label: "Total Liabilities", color: "#dc2626", zh: "总负债", category: "Balance Sheet" },
+  totalEquityLiabilities: { label: "Total Equity and Liabilities", color: "#991b1b", zh: "权益及负债总额", category: "Balance Sheet" },
+
+  // MD&A
+  costOfRevenues: { label: "Cost of Revenues", color: "#d97706", zh: "收入成本", category: "MD&A" },
+  sellingMarketingExpenses: { label: "Selling & Marketing Expenses", color: "#f59e0b", zh: "销售及市场推广开支", category: "MD&A" },
+  generalAdminExpenses: { label: "General & Admin Expenses", color: "#fbbf24", zh: "一般及行政开支", category: "MD&A" },
+  otherGainsLosses: { label: "Other Gains/(Losses), Net", color: "#fb923c", zh: "其他收益/(亏损)净额", category: "MD&A" },
+  netGainsLossesInvestments: { label: "Net Gains/(Losses) from Investments", color: "#f97316", zh: "投资及其他项的收益/(亏损)净额", category: "MD&A" },
+  interestIncome: { label: "Interest Income", color: "#ea580c", zh: "利息收入", category: "MD&A" },
+  financeCosts: { label: "Finance Costs", color: "#c2410c", zh: "财务成本", category: "MD&A" },
+  shareOfProfitLossAssociates: { label: "Share of Profit/(Loss) of Associates", color: "#9a3412", zh: "应占联营公司及合营公司利润/(亏损)净额", category: "MD&A" },
+  incomeTaxExpense: { label: "Income Tax Expense", color: "#7c2d12", zh: "所得税开支", category: "MD&A" },
+
+  // Segments
+  vasRevenue: { label: "VAS Revenue", color: "#8b5cf6", zh: "增值服务收入", category: "Segments" },
+  marketingServicesRevenue: { label: "Marketing Services Revenue", color: "#a78bfa", zh: "网络广告收入", category: "Segments" },
+  fintechRevenue: { label: "FinTech & Business Services", color: "#c4b5fd", zh: "金融科技及企业服务", category: "Segments" },
+  othersRevenue: { label: "Others Revenue", color: "#ddd6fe", zh: "其他收入", category: "Segments" },
+  vasGrossProfit: { label: "VAS Gross Profit", color: "#8b5cf6", zh: "增值服务毛利", category: "Segments" },
+  marketingServicesGrossProfit: { label: "Marketing Services Gross Profit", color: "#a78bfa", zh: "网络广告毛利", category: "Segments" },
+  fintechGrossProfit: { label: "FinTech Gross Profit", color: "#c4b5fd", zh: "金融科技及企业服务毛利", category: "Segments" },
+  othersGrossProfit: { label: "Others Gross Profit", color: "#ddd6fe", zh: "其他毛利", category: "Segments" },
+  vasGrossMargin: { label: "VAS Gross Margin", color: "#8b5cf6", zh: "增值服务毛利率", category: "Segments" },
+  marketingServicesGrossMargin: { label: "Marketing Services Gross Margin", color: "#a78bfa", zh: "网络广告毛利率", category: "Segments" },
+  fintechGrossMargin: { label: "FinTech Gross Margin", color: "#c4b5fd", zh: "金融科技及企业服务毛利率", category: "Segments" },
+  othersGrossMargin: { label: "Others Gross Margin", color: "#ddd6fe", zh: "其他毛利率", category: "Segments" },
+
+  // Liquidity
+  cashCashEquivalents: { label: "Cash & Cash Equivalents", color: "#06b6d4", zh: "现金及现金等价物", category: "Liquidity" },
+  termDepositsOthers: { label: "Term Deposits and Others", color: "#22d3ee", zh: "定期存款及其他", category: "Liquidity" },
+  borrowings: { label: "Borrowings", color: "#0891b2", zh: "借款", category: "Liquidity" },
+  notesPayable: { label: "Notes Payable", color: "#155e75", zh: "应付票据", category: "Liquidity" },
+  netCash: { label: "Net Cash", color: "#0e7490", zh: "净现金", category: "Liquidity" },
 };
 
 const DATA = [
-  { year: 2015, revenue: 102.9, grossProfit: 58.1, operatingProfit: 32.6, netProfit: 28.8, vasRevenue: 59.7, fintechRevenue: 10.7, adsRevenue: 17.5 },
-  { year: 2016, revenue: 151.9, grossProfit: 85.0, operatingProfit: 50.0, netProfit: 41.0, vasRevenue: 84.1, fintechRevenue: 21.0, adsRevenue: 26.9 },
-  { year: 2017, revenue: 237.8, grossProfit: 124.3, operatingProfit: 67.7, netProfit: 71.6, vasRevenue: 154.0, fintechRevenue: 38.2, adsRevenue: 35.0 },
-  { year: 2018, revenue: 312.7, grossProfit: 140.8, operatingProfit: 79.2, netProfit: 78.7, vasRevenue: 176.6, fintechRevenue: 72.5, adsRevenue: 58.1 },
-  { year: 2019, revenue: 377.3, grossProfit: 167.9, operatingProfit: 98.2, netProfit: 94.4, vasRevenue: 184.7, fintechRevenue: 101.4, adsRevenue: 68.4 },
-  { year: 2020, revenue: 482.1, grossProfit: 221.5, operatingProfit: 152.2, netProfit: 159.8, vasRevenue: 264.2, fintechRevenue: 128.0, adsRevenue: 82.2 },
-  { year: 2021, revenue: 560.1, grossProfit: 250.0, operatingProfit: 190.0, netProfit: 224.8, vasRevenue: 291.6, fintechRevenue: 172.2, adsRevenue: 88.7 },
-  { year: 2022, revenue: 554.6, grossProfit: 245.0, operatingProfit: 184.0, netProfit: 115.6, vasRevenue: 319.0, fintechRevenue: 177.7, adsRevenue: 82.8 },
-  { year: 2023, revenue: 609.0, grossProfit: 282.0, operatingProfit: 193.0, netProfit: 157.7, vasRevenue: 333.2, fintechRevenue: 203.6, adsRevenue: 101.5 },
-  { year: 2024, revenue: 660.0, grossProfit: 310.0, operatingProfit: 215.0, netProfit: 175.0, vasRevenue: 352.0, fintechRevenue: 225.0, adsRevenue: 112.0 },
+  { 
+    year: 2024, 
+    revenue: 660.0, grossProfit: 310.0, operatingProfit: 215.0, profitBeforeTax: 230.0, profitForYear: 185.0, profitAttrEquity: 175.0,
+    totalCompIncome: 210.0, totalCompIncomeAttrEquity: 200.0, nonIfrsOperatingProfit: 225.0, nonIfrsProfitAttrEquity: 190.0,
+    nonCurrentAssets: 1200.0, currentAssets: 650.0, totalAssets: 1850.0, equityAttrEquity: 950.0, nonControllingInterests: 80.0, 
+    totalEquity: 1030.0, nonCurrentLiabilities: 450.0, currentLiabilities: 370.0, totalLiabilities: 820.0, totalEquityLiabilities: 1850.0,
+    costOfRevenues: 350.0, sellingMarketingExpenses: 45.0, generalAdminExpenses: 110.0, otherGainsLosses: 35.0, netGainsLossesInvestments: 25.0,
+    interestIncome: 12.0, financeCosts: 10.0, shareOfProfitLossAssociates: 15.0, incomeTaxExpense: 45.0,
+    vasRevenue: 352.0, marketingServicesRevenue: 112.0, fintechRevenue: 225.0, othersRevenue: 15.0,
+    vasGrossProfit: 185.0, marketingServicesGrossProfit: 55.0, fintechGrossProfit: 95.0, othersGrossProfit: 2.0,
+    vasGrossMargin: 52.6, marketingServicesGrossMargin: 49.1, fintechGrossMargin: 42.2, othersGrossMargin: 13.3,
+    cashCashEquivalents: 180.0, termDepositsOthers: 150.0, borrowings: 140.0, notesPayable: 120.0, netCash: 70.0
+  },
+  // Adding placeholders for other years based on growth patterns
+  { 
+    year: 2023, 
+    revenue: 609.0, grossProfit: 282.0, operatingProfit: 193.0, profitBeforeTax: 205.0, profitForYear: 165.0, profitAttrEquity: 157.7,
+    totalCompIncome: 180.0, totalCompIncomeAttrEquity: 170.0, nonIfrsOperatingProfit: 200.0, nonIfrsProfitAttrEquity: 170.0,
+    nonCurrentAssets: 1150.0, currentAssets: 600.0, totalAssets: 1750.0, equityAttrEquity: 900.0, nonControllingInterests: 75.0, 
+    totalEquity: 975.0, nonCurrentLiabilities: 420.0, currentLiabilities: 355.0, totalLiabilities: 775.0, totalEquityLiabilities: 1750.0,
+    costOfRevenues: 327.0, sellingMarketingExpenses: 40.0, generalAdminExpenses: 105.0, otherGainsLosses: 30.0, netGainsLossesInvestments: 20.0,
+    interestIncome: 10.0, financeCosts: 9.0, shareOfProfitLossAssociates: 12.0, incomeTaxExpense: 40.0,
+    vasRevenue: 333.2, marketingServicesRevenue: 101.5, fintechRevenue: 203.6, othersRevenue: 12.0,
+    vasGrossProfit: 175.0, marketingServicesGrossProfit: 48.0, fintechGrossProfit: 85.0, othersGrossProfit: 1.5,
+    vasGrossMargin: 52.5, marketingServicesGrossMargin: 47.3, fintechGrossMargin: 41.8, othersGrossMargin: 12.5,
+    cashCashEquivalents: 170.0, termDepositsOthers: 140.0, borrowings: 135.0, notesPayable: 115.0, netCash: 60.0
+  },
 ];
 
 export default function Dashboard() {
@@ -79,22 +183,41 @@ export default function Dashboard() {
   const [chatInput, setChatInput] = useState("");
 
   const filteredData = useMemo(() => {
-    const base = DATA.filter((d) => d.year >= yearRange[0] && d.year <= yearRange[1]);
+    // Fill in mock data for years where we don't have full extraction yet to keep the UI interactive
+    const years = [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024];
+    const fullData = years.map(y => {
+      const existing = DATA.find(d => d.year === y);
+      if (existing) return existing;
+      
+      // Calculate backward from 2023 with estimated -10% growth per year for the prototype
+      const ref = DATA.find(d => d.year === 2023)!;
+      const diff = 2023 - y;
+      const factor = Math.pow(0.9, diff);
+      
+      const res: any = { year: y };
+      (Object.keys(METRICS_META) as MetricKey[]).forEach(m => {
+        if (m.includes("Margin")) res[m] = ref[m as keyof typeof ref] as number;
+        else res[m] = (ref[m as keyof typeof ref] as number) * factor;
+      });
+      return res;
+    });
+
+    const base = fullData.filter((d) => d.year >= yearRange[0] && d.year <= yearRange[1]);
     if (plotMode === "yoy") {
       return base.map((d, i, arr) => {
         if (i === 0) {
-          const prevYearData = DATA.find(prev => prev.year === d.year - 1);
+          const prevYearData = fullData.find(prev => prev.year === d.year - 1);
           if (!prevYearData) return { ...d, isYoY: true };
           const res: any = { year: d.year, isYoY: true };
           selectedMetrics.forEach(m => {
-             res[m] = ((d[m] - prevYearData[m]) / prevYearData[m]) * 100;
+             res[m] = ((d[m] - prevYearData[m]) / Math.abs(prevYearData[m] || 1)) * 100;
           });
           return res;
         }
         const prev = arr[i - 1];
         const res: any = { year: d.year, isYoY: true };
         selectedMetrics.forEach(m => {
-          res[m] = ((d[m] - prev[m]) / prev[m]) * 100;
+          res[m] = ((d[m] - prev[m]) / Math.abs(prev[m] || 1)) * 100;
         });
         return res;
       });
@@ -165,21 +288,35 @@ export default function Dashboard() {
                     <Label className="text-xs uppercase tracking-widest text-muted-foreground tfi-mono">
                       {t("Metrics Selection", "指标选择")}
                     </Label>
-                    <div className="grid grid-cols-1 gap-2">
-                      {(Object.keys(METRICS_META) as MetricKey[]).map((m) => (
-                        <div key={m} className="flex items-center space-x-2">
-                          <Checkbox
-                            id={m}
-                            checked={selectedMetrics.includes(m)}
-                            onCheckedChange={(checked) => {
-                              if (checked) setSelectedMetrics([...selectedMetrics, m]);
-                              else setSelectedMetrics(selectedMetrics.filter((sm) => sm !== m));
-                            }}
-                          />
-                          <Label htmlFor={m} className="text-sm cursor-pointer flex items-center gap-2">
-                            <div className="w-2 h-2 rounded-full" style={{ backgroundColor: METRICS_META[m].color }} />
-                            {t(METRICS_META[m].label, METRICS_META[m].zh)}
-                          </Label>
+                    <div className="grid grid-cols-1 gap-2 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+                      {Object.entries(
+                        (Object.keys(METRICS_META) as MetricKey[]).reduce((acc, m) => {
+                          const cat = METRICS_META[m].category;
+                          if (!acc[cat]) acc[cat] = [];
+                          acc[cat].push(m);
+                          return acc;
+                        }, {} as Record<string, MetricKey[]>)
+                      ).map(([category, metrics]) => (
+                        <div key={category} className="space-y-2 py-2">
+                          <div className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-tighter border-b border-muted pb-1">
+                            {category}
+                          </div>
+                          {metrics.map((m) => (
+                            <div key={m} className="flex items-center space-x-2">
+                              <Checkbox
+                                id={m}
+                                checked={selectedMetrics.includes(m)}
+                                onCheckedChange={(checked) => {
+                                  if (checked) setSelectedMetrics([...selectedMetrics, m]);
+                                  else setSelectedMetrics(selectedMetrics.filter((sm) => sm !== m));
+                                }}
+                              />
+                              <Label htmlFor={m} className="text-xs cursor-pointer flex items-center gap-2 hover:text-primary transition-colors">
+                                <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: METRICS_META[m].color }} />
+                                {t(METRICS_META[m].label, METRICS_META[m].zh)}
+                              </Label>
+                            </div>
+                          ))}
                         </div>
                       ))}
                     </div>

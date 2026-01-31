@@ -1,0 +1,94 @@
+Here’s the **deduplicated set of metric names (row/column labels)** that appear in the requested tables from Tencent’s annual report PDF.
+
+## Page 3 — Financial Summary tables 
+
+### Condensed consolidated statements of comprehensive income
+
+* Revenues
+* Gross profit
+* Operating profit
+* Profit before income tax
+* Profit for the year
+* Profit attributable to equity holders of the Company
+* Total comprehensive income for the year
+* Total comprehensive income attributable to equity holders of the Company
+* Non-IFRS operating profit
+* Non-IFRS profit attributable to equity holders of the Company
+
+### Condensed consolidated statements of financial position
+
+* Non-current assets
+* Current assets
+* Total assets
+* Equity attributable to equity holders of the Company
+* Non-controlling interests
+* Total equity
+* Non-current liabilities
+* Current liabilities
+* Total liabilities
+* Total equity and liabilities
+
+---
+
+## Page 7 — Management Discussion and Analysis (comparative figures table) 
+
+* Cost of revenues
+* Selling and marketing expenses
+* General and administrative expenses
+* Other gains/(losses), net
+* Net gains/(losses) from investments and others
+* Interest income
+* Finance costs
+* Share of profit/(loss) of associates and joint ventures, net
+* Income tax expense
+
+**“Attributable to” breakdown (within Profit for the year)**
+
+* Equity holders of the Company
+* Non-controlling interests
+
+---
+
+## Page 8 — Segment revenues table 
+
+**Revenue categories (rows)**
+
+* VAS
+* Marketing Services
+* FinTech and Business Services
+* Others
+* The Group
+
+**Additional metrics (columns)**
+
+* Year-on-year change
+* % of total revenues
+
+---
+
+## Page 9 — Gross profit/(loss) & gross margin table 
+
+**Gross profit/(loss) categories (rows)**
+
+* VAS
+* Marketing Services
+* FinTech and Business Services
+* Others
+* The Group
+
+**Additional metrics (columns)**
+
+* Gross margin
+* Year-on-year change
+
+---
+
+## Page 24 — Liquidity and financial resources table 
+
+* Cash and cash equivalents
+* Term deposits and others
+* Borrowings
+* Notes payable
+* Net cash
+
+If you want, I can turn this into a **canonical metric dictionary** (stable metric_id + display name + units + statement type + segment flag) so it’s ready to store cleanly in your database.

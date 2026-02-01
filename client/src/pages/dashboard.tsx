@@ -317,6 +317,7 @@ export default function Dashboard() {
   const [chatInput, setChatInput] = useState("");
   const [chatMessages, setChatMessages] = useState<Array<{ role: "user" | "assistant"; content: string }>>([]);
   const [chatLoading, setChatLoading] = useState(false);
+  const [tableYearFilter, setTableYearFilter] = useState<number[]>(DATA.map(d => d.year));
   const [customMetricDialogOpen, setCustomMetricDialogOpen] = useState(false);
   const [customMetrics, setCustomMetrics] = useState<Array<{
     id: string;
@@ -1155,10 +1156,49 @@ export default function Dashboard() {
                     {t("Comprehensive Metrics 2014–2024 • RMB Billions", "2014–2024 全面指标 • 人民币 十亿元")}
                   </CardDescription>
                 </div>
-                <Button variant="outline" size="sm" className="h-8">
-                  <Download className="w-4 h-4 mr-2" />
-                  {t("Export CSV", "导出数据")}
-                </Button>
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2">
+                    <Filter className="w-4 h-4 text-muted-foreground" />
+                    <Select
+                      value={tableYearFilter.length === DATA.length ? "all" : "custom"}
+                      onValueChange={(v) => {
+                        if (v === "all") setTableYearFilter(DATA.map(d => d.year));
+                      }}
+                    >
+                      <SelectTrigger data-testid="select-table-year-filter" className="h-8 w-[140px] text-xs">
+                        <SelectValue placeholder={t("Filter Years", "筛选年份")} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">{t("All Years", "全部年份")}</SelectItem>
+                        <div className="px-2 py-1.5 border-t border-border mt-1">
+                          <p className="text-[10px] text-muted-foreground mb-2">{t("Select years:", "选择年份：")}</p>
+                          <div className="grid grid-cols-3 gap-1">
+                            {DATA.map(d => (
+                              <label key={d.year} className="flex items-center gap-1.5 cursor-pointer">
+                                <Checkbox
+                                  data-testid={`checkbox-year-${d.year}`}
+                                  checked={tableYearFilter.includes(d.year)}
+                                  onCheckedChange={(checked: boolean) => {
+                                    if (checked) {
+                                      setTableYearFilter([...tableYearFilter, d.year].sort());
+                                    } else {
+                                      setTableYearFilter(tableYearFilter.filter(y => y !== d.year));
+                                    }
+                                  }}
+                                />
+                                <span className="text-xs">{d.year}</span>
+                              </label>
+                            ))}
+                          </div>
+                        </div>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <Button variant="outline" size="sm" className="h-8">
+                    <Download className="w-4 h-4 mr-2" />
+                    {t("Export CSV", "导出数据")}
+                  </Button>
+                </div>
               </CardHeader>
               <CardContent>
                 <div className="relative overflow-auto rounded-xl border border-border max-h-[600px]">
@@ -1166,7 +1206,7 @@ export default function Dashboard() {
                     <thead className="text-[11px] tfi-mono uppercase text-muted-foreground bg-muted/50 border-b border-border sticky top-0 z-20">
                       <tr>
                         <th className="px-6 py-4 font-medium sticky left-0 bg-muted/50 z-30">{t("Metric", "指标")}</th>
-                        {DATA.map(d => (
+                        {DATA.filter(d => tableYearFilter.includes(d.year)).map(d => (
                           <th key={d.year} className="px-6 py-4 font-medium text-center bg-muted/50">{d.year}</th>
                         ))}
                       </tr>
@@ -1180,7 +1220,7 @@ export default function Dashboard() {
                               <span className="text-[10px] text-muted-foreground font-normal">{m.category}</span>
                             </div>
                           </td>
-                          {DATA.map(d => {
+                          {DATA.filter(d => tableYearFilter.includes(d.year)).map(d => {
                             const computed = computeCalculatedMetrics(d);
                             return (
                               <td key={d.year} className="px-6 py-4 text-center tfi-mono text-[13px]">

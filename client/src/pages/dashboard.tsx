@@ -111,6 +111,7 @@ const METRICS = {
   weixinWechatMAU: { label: "Weixin/WeChat Combined MAU (M)", color: "#22c55e", zh: "微信/WeChat合并月活跃用户(百万)", category: "Operating" },
   qqMobileMAU: { label: "QQ Mobile Device MAU (M)", color: "#3b82f6", zh: "QQ移动端月活跃用户(百万)", category: "Operating" },
   feeBasedVASSubscriptions: { label: "Fee-based VAS Subscriptions (M)", color: "#8b5cf6", zh: "付费增值服务订阅数(百万)", category: "Operating" },
+  employeeCount: { label: "Employee Count", color: "#f59e0b", zh: "员工人数", category: "Operating" },
 
   // Calculated Metrics
   sellingMarketingExpensesMargin: { label: "Selling & Marketing Expenses Margin (%)", color: "#86efac", zh: "销售及市场推广开支率(%)", category: "Calculated Metrics" },
@@ -137,7 +138,7 @@ const DATA = [
     vasGrossMargin: 56.3, marketingServicesGrossMargin: 49.8, fintechGrossMargin: 47.1, othersGrossMargin: 26.9,
     cashCashEquivalents: 179.8, termDepositsOthers: 235.6, borrowings: 141.2, notesPayable: 120.8, netCash: 76.8,
     ebitda: 230.1, adjustedEbitda: 259.9, operatingCashFlow: 258.5, capitalExpenditure: 76.8, freeCashFlow: 155.3,
-    deferredRevenue: 100.1, weixinWechatMAU: 1385.0, qqMobileMAU: 524.0, feeBasedVASSubscriptions: 265.0
+    deferredRevenue: 100.1, weixinWechatMAU: 1385.0, qqMobileMAU: 524.0, feeBasedVASSubscriptions: 265.0, employeeCount: 110558
   },
   { 
     year: 2023, 
@@ -153,7 +154,7 @@ const DATA = [
     vasGrossMargin: 51.0, marketingServicesGrossMargin: 50.0, fintechGrossMargin: 39.8, othersGrossMargin: 25.9,
     cashCashEquivalents: 172.6, termDepositsOthers: 200.4, borrowings: 131.8, notesPayable: 109.6, netCash: 53.8,
     ebitda: 184.0, adjustedEbitda: 212.9, operatingCashFlow: 222.0, capitalExpenditure: 23.9, freeCashFlow: 167.0,
-    deferredRevenue: 86.2, weixinWechatMAU: 1343.0, qqMobileMAU: 554.0, feeBasedVASSubscriptions: 248.0
+    deferredRevenue: 86.2, weixinWechatMAU: 1343.0, qqMobileMAU: 554.0, feeBasedVASSubscriptions: 248.0, employeeCount: 105417
   },
   { 
     year: 2022, 
@@ -169,7 +170,7 @@ const DATA = [
     vasGrossMargin: 50.4, marketingServicesGrossMargin: 41.8, fintechGrossMargin: 29.4, othersGrossMargin: 16.7,
     cashCashEquivalents: 156.8, termDepositsOthers: 189.5, borrowings: 128.6, notesPayable: 104.8, netCash: 47.5,
     ebitda: 134.3, adjustedEbitda: 176.6, operatingCashFlow: 146.1, capitalExpenditure: 22.7, freeCashFlow: 123.4,
-    deferredRevenue: 82.2, weixinWechatMAU: 1309.0, qqMobileMAU: 569.0, feeBasedVASSubscriptions: 236.0
+    deferredRevenue: 82.2, weixinWechatMAU: 1309.0, qqMobileMAU: 569.0, feeBasedVASSubscriptions: 236.0, employeeCount: 108436
   },
   { 
     year: 2021, 
@@ -185,7 +186,7 @@ const DATA = [
     vasGrossMargin: 52.1, marketingServicesGrossMargin: 42.4, fintechGrossMargin: 28.6, othersGrossMargin: 16.9,
     cashCashEquivalents: 166.5, termDepositsOthers: 168.2, borrowings: 126.8, notesPayable: 102.6, netCash: 44.8,
     ebitda: 147.0, adjustedEbitda: 181.4, operatingCashFlow: 175.2, capitalExpenditure: 29.3, freeCashFlow: 145.9,
-    deferredRevenue: 87.8, weixinWechatMAU: 1268.2, qqMobileMAU: 552.1, feeBasedVASSubscriptions: 236.3
+    deferredRevenue: 87.8, weixinWechatMAU: 1268.2, qqMobileMAU: 552.1, feeBasedVASSubscriptions: 236.3, employeeCount: 112771
   },
   { 
     year: 2020, 
@@ -201,7 +202,7 @@ const DATA = [
     vasGrossMargin: 52.8, marketingServicesGrossMargin: 42.2, fintechGrossMargin: 31.7, othersGrossMargin: 14.7,
     cashCashEquivalents: 152.6, termDepositsOthers: 146.8, borrowings: 115.4, notesPayable: 95.8, netCash: 36.8,
     ebitda: 144.7, adjustedEbitda: 154.2, operatingCashFlow: 194.1, capitalExpenditure: 34.1, freeCashFlow: 160.0,
-    deferredRevenue: 82.8, weixinWechatMAU: 1225.0, qqMobileMAU: 648.0, feeBasedVASSubscriptions: 209.0
+    deferredRevenue: 82.8, weixinWechatMAU: 1225.0, qqMobileMAU: 648.0, feeBasedVASSubscriptions: 209.0, employeeCount: 85858
   },
   { 
     year: 2019, 
@@ -217,7 +218,7 @@ const DATA = [
     vasGrossMargin: 52.5, marketingServicesGrossMargin: 43.3, fintechGrossMargin: 27.4, othersGrossMargin: 11.3,
     cashCashEquivalents: 132.6, termDepositsOthers: 71.8, borrowings: 125.4, notesPayable: 82.6, netCash: -3.6,
     ebitda: 138.7, adjustedEbitda: 127.6, operatingCashFlow: 145.8, capitalExpenditure: 24.4, freeCashFlow: 121.4,
-    deferredRevenue: 64.8, weixinWechatMAU: 1165.0, qqMobileMAU: 694.0, feeBasedVASSubscriptions: 185.0
+    deferredRevenue: 64.8, weixinWechatMAU: 1165.0, qqMobileMAU: 694.0, feeBasedVASSubscriptions: 185.0, employeeCount: 62885
   },
   { 
     year: 2018, 
@@ -233,7 +234,7 @@ const DATA = [
     vasGrossMargin: 55.4, marketingServicesGrossMargin: 42.3, fintechGrossMargin: 24.9, othersGrossMargin: 8.2,
     cashCashEquivalents: 97.6, termDepositsOthers: 64.8, borrowings: 113.6, notesPayable: 64.6, netCash: -16.8,
     ebitda: 117.4, adjustedEbitda: 100.1, operatingCashFlow: 109.4, capitalExpenditure: 21.6, freeCashFlow: 87.8,
-    deferredRevenue: 53.6, weixinWechatMAU: 1098.0, qqMobileMAU: 700.0, feeBasedVASSubscriptions: 170.0
+    deferredRevenue: 53.6, weixinWechatMAU: 1098.0, qqMobileMAU: 700.0, feeBasedVASSubscriptions: 170.0, employeeCount: 54309
   },
   { 
     year: 2017, 
@@ -249,7 +250,7 @@ const DATA = [
     vasGrossMargin: 59.7, marketingServicesGrossMargin: 36.3, fintechGrossMargin: 23.4, othersGrossMargin: 0.0,
     cashCashEquivalents: 105.8, termDepositsOthers: 41.6, borrowings: 97.4, notesPayable: 33.8, netCash: 16.2,
     ebitda: 100.8, adjustedEbitda: 85.0, operatingCashFlow: 96.7, capitalExpenditure: 12.4, freeCashFlow: 84.3,
-    deferredRevenue: 42.6, weixinWechatMAU: 989.0, qqMobileMAU: 783.0, feeBasedVASSubscriptions: 149.0
+    deferredRevenue: 42.6, weixinWechatMAU: 989.0, qqMobileMAU: 783.0, feeBasedVASSubscriptions: 149.0, employeeCount: 44796
   },
   { 
     year: 2016, 
@@ -265,7 +266,7 @@ const DATA = [
     vasGrossMargin: 59.9, marketingServicesGrossMargin: 36.4, fintechGrossMargin: 54.7, othersGrossMargin: 0.0,
     cashCashEquivalents: 71.8, termDepositsOthers: 54.6, borrowings: 69.8, notesPayable: 37.6, netCash: 18.8,
     ebitda: 63.8, adjustedEbitda: 58.6, operatingCashFlow: 68.4, capitalExpenditure: 8.2, freeCashFlow: 60.2,
-    deferredRevenue: 32.8, weixinWechatMAU: 846.0, qqMobileMAU: 652.0, feeBasedVASSubscriptions: 133.0
+    deferredRevenue: 32.8, weixinWechatMAU: 846.0, qqMobileMAU: 652.0, feeBasedVASSubscriptions: 133.0, employeeCount: 38775
   },
   { 
     year: 2015, 
@@ -281,7 +282,7 @@ const DATA = [
     vasGrossMargin: 61.8, marketingServicesGrossMargin: 32.0, fintechGrossMargin: 100.0, othersGrossMargin: 0.0,
     cashCashEquivalents: 43.8, termDepositsOthers: 44.6, borrowings: 44.8, notesPayable: 24.6, netCash: 19.2,
     ebitda: 46.4, adjustedEbitda: 42.8, operatingCashFlow: 47.6, capitalExpenditure: 5.4, freeCashFlow: 42.2,
-    deferredRevenue: 26.4, weixinWechatMAU: 697.0, qqMobileMAU: 641.5, feeBasedVASSubscriptions: 115.0
+    deferredRevenue: 26.4, weixinWechatMAU: 697.0, qqMobileMAU: 641.5, feeBasedVASSubscriptions: 115.0, employeeCount: 30641
   },
   { 
     year: 2014, 
@@ -297,7 +298,7 @@ const DATA = [
     vasGrossMargin: 63.8, marketingServicesGrossMargin: 36.5, fintechGrossMargin: 59.0, othersGrossMargin: 0.0,
     cashCashEquivalents: 42.6, termDepositsOthers: 14.8, borrowings: 7.6, notesPayable: 14.6, netCash: 34.4,
     ebitda: 35.2, adjustedEbitda: 33.1, operatingCashFlow: 38.4, capitalExpenditure: 4.2, freeCashFlow: 34.2,
-    deferredRevenue: 18.6, weixinWechatMAU: 500.0, qqMobileMAU: 576.0, feeBasedVASSubscriptions: 98.0
+    deferredRevenue: 18.6, weixinWechatMAU: 500.0, qqMobileMAU: 576.0, feeBasedVASSubscriptions: 98.0, employeeCount: 27690
   },
 ];
 

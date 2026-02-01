@@ -978,95 +978,98 @@ export default function Dashboard() {
                     </CardContent>
                   </Card>
 
-                  {/* Gross & Operating Margins */}
-                  <Card className="bg-card/20 backdrop-blur-sm border-card-border">
-                    <CardHeader>
-                      <div className="flex items-start justify-between gap-3">
-                        <CardTitle className="text-sm font-bold flex items-center gap-2">
-                          <Activity className="w-4 h-4 text-primary" />
-                          {t("Gross & Operating Margins", "毛利率与经营利润率")}
-                        </CardTitle>
-                        <Badge variant="outline" className="tfi-mono text-[10px] uppercase py-1 px-3">{`Unit: ${UNIT_PERCENT}`}</Badge>
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="h-[280px]">
-                        <ResponsiveContainer width="100%" height="100%">
-                          <LineChart data={DATA.slice().sort((a, b) => a.year - b.year).map(computeCalculatedMetrics)}>
-                            <XAxis dataKey="year" fontSize={9} stroke="#6b7280" tickLine={false} axisLine={false} />
-                            <YAxis fontSize={9} stroke="#6b7280" tickLine={false} axisLine={false} tickFormatter={(v) => `${v}%`} />
-                            <Tooltip formatter={(v: any) => `${Number(v).toFixed(2)}${UNIT_PERCENT}`} />
-                            <Legend verticalAlign="bottom" align="center" iconType="circle" wrapperStyle={{ fontSize: "9px", paddingTop: "5px" }} />
-                            <Line 
-                              type="monotone" 
-                              dataKey={(d) => (d.grossProfit / d.revenue) * 100} 
-                              name={t("Gross Margin", "毛利率")}
-                              stroke="#10b981" 
-                              strokeWidth={2}
-                              dot={false}
-                            />
-                            <Line 
-                              type="monotone" 
-                              dataKey={(d) => (d.operatingProfit / d.revenue) * 100} 
-                              name={t("Operating Margin", "经营利润率")}
-                              stroke="#f59e0b" 
-                              strokeWidth={2}
-                              dot={false}
-                            />
-                          </LineChart>
-                        </ResponsiveContainer>
-                      </div>
-                    </CardContent>
-                  </Card>
+                  {/* Margins Row */}
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    {/* Gross & Operating Margins */}
+                    <Card className="bg-card/20 backdrop-blur-sm border-card-border">
+                      <CardHeader>
+                        <div className="flex items-start justify-between gap-3">
+                          <CardTitle className="text-sm font-bold flex items-center gap-2">
+                            <Activity className="w-4 h-4 text-primary" />
+                            {t("Gross & Operating Margins", "毛利率与经营利润率")}
+                          </CardTitle>
+                          <Badge variant="outline" className="tfi-mono text-[10px] uppercase py-1 px-3">{`Unit: ${UNIT_PERCENT}`}</Badge>
+                        </div>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="h-[240px]">
+                          <ResponsiveContainer width="100%" height="100%">
+                            <LineChart data={DATA.slice().sort((a, b) => a.year - b.year).map(computeCalculatedMetrics)}>
+                              <XAxis dataKey="year" fontSize={9} stroke="#6b7280" tickLine={false} axisLine={false} />
+                              <YAxis fontSize={9} stroke="#6b7280" tickLine={false} axisLine={false} tickFormatter={(v) => `${v}%`} />
+                              <Tooltip formatter={(v: any) => `${Number(v).toFixed(2)}${UNIT_PERCENT}`} />
+                              <Legend verticalAlign="bottom" align="center" iconType="circle" wrapperStyle={{ fontSize: "9px", paddingTop: "5px" }} />
+                              <Line 
+                                type="monotone" 
+                                dataKey={(d) => (d.grossProfit / d.revenue) * 100} 
+                                name={t("Gross Margin", "毛利率")}
+                                stroke="#10b981" 
+                                strokeWidth={2}
+                                dot={false}
+                              />
+                              <Line 
+                                type="monotone" 
+                                dataKey={(d) => (d.operatingProfit / d.revenue) * 100} 
+                                name={t("Operating Margin", "经营利润率")}
+                                stroke="#f59e0b" 
+                                strokeWidth={2}
+                                dot={false}
+                              />
+                            </LineChart>
+                          </ResponsiveContainer>
+                        </div>
+                      </CardContent>
+                    </Card>
 
-                  {/* Segment Margins */}
-                  <Card className="bg-card/20 backdrop-blur-sm border-card-border">
-                    <CardHeader>
-                      <div className="flex items-start justify-between gap-3">
-                        <CardTitle className="text-sm font-bold flex items-center gap-2">
-                          <Activity className="w-4 h-4 text-primary" />
-                          {t("Segment Margins", "分部利润率")}
-                        </CardTitle>
-                        <Badge variant="outline" className="tfi-mono text-[10px] uppercase py-1 px-3">{`Unit: ${UNIT_PERCENT}`}</Badge>
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="h-[280px]">
-                        <ResponsiveContainer width="100%" height="100%">
-                          <LineChart data={DATA.slice().sort((a, b) => a.year - b.year).map(computeCalculatedMetrics)}>
-                            <XAxis dataKey="year" fontSize={9} stroke="#6b7280" tickLine={false} axisLine={false} />
-                            <YAxis fontSize={9} stroke="#6b7280" tickLine={false} axisLine={false} tickFormatter={(v) => `${v}%`} />
-                            <Tooltip formatter={(v: any) => `${Number(v).toFixed(2)}${UNIT_PERCENT}`} />
-                            <Legend verticalAlign="bottom" align="center" iconType="circle" wrapperStyle={{ fontSize: "9px", paddingTop: "5px" }} />
-                            <Line 
-                              type="monotone" 
-                              dataKey="vasMargin" 
-                              name={t("VAS", "增值服务")}
-                              stroke="#3b82f6" 
-                              strokeWidth={2}
-                              dot={false}
-                            />
-                            <Line 
-                              type="monotone" 
-                              dataKey="marketingServicesMargin" 
-                              name={t("Marketing", "营销")}
-                              stroke="#ec4899" 
-                              strokeWidth={2}
-                              dot={false}
-                            />
-                            <Line 
-                              type="monotone" 
-                              dataKey="fintechMargin" 
-                              name={t("FinTech", "金融科技")}
-                              stroke="#8b5cf6" 
-                              strokeWidth={2}
-                              dot={false}
-                            />
-                          </LineChart>
-                        </ResponsiveContainer>
-                      </div>
-                    </CardContent>
-                  </Card>
+                    {/* Segment Margins */}
+                    <Card className="bg-card/20 backdrop-blur-sm border-card-border">
+                      <CardHeader>
+                        <div className="flex items-start justify-between gap-3">
+                          <CardTitle className="text-sm font-bold flex items-center gap-2">
+                            <Activity className="w-4 h-4 text-primary" />
+                            {t("Segment Margins", "分部利润率")}
+                          </CardTitle>
+                          <Badge variant="outline" className="tfi-mono text-[10px] uppercase py-1 px-3">{`Unit: ${UNIT_PERCENT}`}</Badge>
+                        </div>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="h-[240px]">
+                          <ResponsiveContainer width="100%" height="100%">
+                            <LineChart data={DATA.slice().sort((a, b) => a.year - b.year).map(computeCalculatedMetrics)}>
+                              <XAxis dataKey="year" fontSize={9} stroke="#6b7280" tickLine={false} axisLine={false} />
+                              <YAxis fontSize={9} stroke="#6b7280" tickLine={false} axisLine={false} tickFormatter={(v) => `${v}%`} />
+                              <Tooltip formatter={(v: any) => `${Number(v).toFixed(2)}${UNIT_PERCENT}`} />
+                              <Legend verticalAlign="bottom" align="center" iconType="circle" wrapperStyle={{ fontSize: "9px", paddingTop: "5px" }} />
+                              <Line 
+                                type="monotone" 
+                                dataKey="vasMargin" 
+                                name={t("VAS", "增值服务")}
+                                stroke="#3b82f6" 
+                                strokeWidth={2}
+                                dot={false}
+                              />
+                              <Line 
+                                type="monotone" 
+                                dataKey="marketingServicesMargin" 
+                                name={t("Marketing", "营销")}
+                                stroke="#ec4899" 
+                                strokeWidth={2}
+                                dot={false}
+                              />
+                              <Line 
+                                type="monotone" 
+                                dataKey="fintechMargin" 
+                                name={t("FinTech", "金融科技")}
+                                stroke="#8b5cf6" 
+                                strokeWidth={2}
+                                dot={false}
+                              />
+                            </LineChart>
+                          </ResponsiveContainer>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
                 </div>
 
                 {/* AI Chatbox */}

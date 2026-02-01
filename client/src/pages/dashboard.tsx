@@ -8,7 +8,7 @@ import {
   Download, Filter, Calendar, RefreshCw, ChevronRight, 
   ArrowUpRight, ArrowDownRight, Info, BookOpen, FileUp,
   LayoutDashboard, Table as TableIcon, Search, Send, User,
-  Globe, Shield, Zap, Target, Plus, Trash2
+  Globe, Shield, Zap, Target, Plus, Trash2, MessageCircle, Bot
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -315,6 +315,8 @@ export default function Dashboard() {
   const [plotType, setPlotType] = useState<"line" | "bar">("line");
   const [compositionYear, setCompositionYear] = useState<number>(2024);
   const [chatInput, setChatInput] = useState("");
+  const [chatMessages, setChatMessages] = useState<Array<{ role: "user" | "assistant"; content: string }>>([]);
+  const [chatLoading, setChatLoading] = useState(false);
   const [customMetricDialogOpen, setCustomMetricDialogOpen] = useState(false);
   const [customMetrics, setCustomMetrics] = useState<Array<{
     id: string;
@@ -384,6 +386,32 @@ export default function Dashboard() {
     const baseKeys = Object.keys(METRICS) as MetricKey[];
     return baseKeys;
   }, []);
+
+  const sendChatMessage = async () => {
+    if (!chatInput.trim() || chatLoading) return;
+    
+    const userMessage = chatInput.trim();
+    setChatInput("");
+    setChatMessages((prev) => [...prev, { role: "user", content: userMessage }]);
+    setChatLoading(true);
+    
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: userMessage, history: chatMessages }),
+      });
+      
+      if (!res.ok) throw new Error("Failed to send message");
+      
+      const data = await res.json();
+      setChatMessages((prev) => [...prev, { role: "assistant", content: data.reply }]);
+    } catch (error) {
+      setChatMessages((prev) => [...prev, { role: "assistant", content: "Sorry, I encountered an error. Please try again." }]);
+    } finally {
+      setChatLoading(false);
+    }
+  };
 
   const getMetricInfo = (key: string) => {
     if (METRICS[key as MetricKey]) {
@@ -1056,6 +1084,79 @@ export default function Dashboard() {
                     </CardContent>
                   </Card>
                 </div>
+
+                {/* AI Chatbox */}
+                <Card className="border-card-border bg-card/30 backdrop-blur-xl">
+                  <CardHeader className="border-b border-white/5 pb-4">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 rounded-lg bg-primary/10">
+                        <Bot className="w-5 h-5 text-primary" />
+                      </div>
+                      <div>
+                        <CardTitle className="tfi-title text-lg">
+                          {t("Financial Analyst AI", "财务分析AI")}
+                        </CardTitle>
+                        <CardDescription className="tfi-mono text-[10px] uppercase tracking-wider">
+                          {t("Ask questions about Tencent's financial data", "询问腾讯财务数据相关问题")}
+                        </CardDescription>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="p-0">
+                    <div className="h-[300px] overflow-y-auto p-4 space-y-4">
+                      {chatMessages.length === 0 ? (
+                        <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground">
+                          <MessageCircle className="w-10 h-10 mb-3 opacity-30" />
+                          <p className="text-sm">{t("Start a conversation about Tencent's financials", "开始关于腾讯财务的对话")}</p>
+                          <p className="text-xs mt-1 opacity-70">{t("e.g., \"What was Tencent's revenue growth in 2024?\"", "例如：\"腾讯2024年营收增长如何？\"")}</p>
+                        </div>
+                      ) : (
+                        chatMessages.map((msg, i) => (
+                          <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
+                            <div className={`max-w-[80%] rounded-xl px-4 py-2 ${
+                              msg.role === "user" 
+                                ? "bg-primary text-primary-foreground" 
+                                : "bg-muted/50 border border-border"
+                            }`}>
+                              <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
+                            </div>
+                          </div>
+                        ))
+                      )}
+                      {chatLoading && (
+                        <div className="flex justify-start">
+                          <div className="bg-muted/50 border border-border rounded-xl px-4 py-2">
+                            <div className="flex gap-1">
+                              <span className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                              <span className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                              <span className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                    <div className="border-t border-border p-4">
+                      <div className="flex gap-2">
+                        <Input
+                          data-testid="input-chat"
+                          placeholder={t("Ask about Tencent's financials...", "询问腾讯财务数据...")}
+                          value={chatInput}
+                          onChange={(e) => setChatInput(e.target.value)}
+                          onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && sendChatMessage()}
+                          className="flex-1"
+                        />
+                        <Button 
+                          data-testid="button-send-chat" 
+                          onClick={sendChatMessage} 
+                          disabled={chatLoading || !chatInput.trim()}
+                          size="icon"
+                        >
+                          <Send className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
             </div>
           ) : (

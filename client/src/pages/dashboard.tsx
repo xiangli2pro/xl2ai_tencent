@@ -617,7 +617,7 @@ export default function Dashboard() {
                                     </SelectTrigger>
                                     <SelectContent className="max-h-[200px]">
                                       {allMetricsForSelect.map((k) => (
-                                        <SelectItem key={k} value={k} className="text-xs">{METRICS[k].label}</SelectItem>
+                                        <SelectItem key={k} value={k} className="text-xs">{t(METRICS[k].label, METRICS[k].zh)}</SelectItem>
                                       ))}
                                     </SelectContent>
                                   </Select>
@@ -638,7 +638,7 @@ export default function Dashboard() {
                                     </SelectTrigger>
                                     <SelectContent className="max-h-[200px]">
                                       {allMetricsForSelect.map((k) => (
-                                        <SelectItem key={k} value={k} className="text-xs">{METRICS[k].label}</SelectItem>
+                                        <SelectItem key={k} value={k} className="text-xs">{t(METRICS[k].label, METRICS[k].zh)}</SelectItem>
                                       ))}
                                     </SelectContent>
                                   </Select>
@@ -678,7 +678,7 @@ export default function Dashboard() {
                                 <div className="flex flex-col min-w-0">
                                   <span className="text-xs font-medium truncate" style={{ color: cm.color }}>{t(cm.name, cm.nameZh)}</span>
                                   <span className="text-[9px] text-muted-foreground truncate">
-                                    {METRICS[cm.metricA as MetricKey]?.label ?? cm.metricA} {cm.operator} {METRICS[cm.metricB as MetricKey]?.label ?? cm.metricB}
+                                    {t(METRICS[cm.metricA as MetricKey]?.label ?? cm.metricA, METRICS[cm.metricA as MetricKey]?.zh ?? cm.metricA)} {cm.operator} {t(METRICS[cm.metricB as MetricKey]?.label ?? cm.metricB, METRICS[cm.metricB as MetricKey]?.zh ?? cm.metricB)}
                                   </span>
                                 </div>
                               </div>

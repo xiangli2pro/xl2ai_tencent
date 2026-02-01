@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line,
-  AreaChart, Area, Cell
+  AreaChart, Area, Cell, LabelList
 } from "recharts";
 import { 
   TrendingUp, TrendingDown, DollarSign, PieChart, Activity, 
@@ -907,32 +907,35 @@ export default function Dashboard() {
                           {t("Revenue Composition Over Time", "营收结构变化")}
                         </CardTitle>
                         <Badge variant="outline" className="tfi-mono text-[10px] uppercase py-1 px-3">
-                          {t(`Unit: ${UNIT_BILLIONS}`, `单位：${UNIT_BILLIONS}`)}
+                          {t(`Unit: ${UNIT_PERCENT}`, `单位：${UNIT_PERCENT}`)}
                         </Badge>
                       </div>
                       <CardDescription className="tfi-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-                        {t("VAS, Marketing, FinTech & Others", "增值服务、营销服务、金融科技及其他")}
+                        {t("Proportion of VAS, Marketing, FinTech & Others", "增值服务、营销服务、金融科技及其他占比")}
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
                       <div className="h-[240px]">
                         <ResponsiveContainer width="100%" height="100%">
                           <BarChart 
-                            data={DATA.map((d) => ({
-                              year: d.year,
-                              vas: d.vasRevenue,
-                              marketing: d.marketingServicesRevenue,
-                              fintech: d.fintechRevenue,
-                              others: d.othersRevenue,
-                            }))}
+                            data={DATA.slice().sort((a, b) => a.year - b.year).map((d) => {
+                              const total = d.vasRevenue + d.marketingServicesRevenue + d.fintechRevenue + d.othersRevenue;
+                              return {
+                                year: d.year,
+                                vas: (d.vasRevenue / total) * 100,
+                                marketing: (d.marketingServicesRevenue / total) * 100,
+                                fintech: (d.fintechRevenue / total) * 100,
+                                others: (d.othersRevenue / total) * 100,
+                              };
+                            })}
                             margin={{ top: 10, right: 10, left: 0, bottom: 10 }}
                           >
                             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
                             <XAxis dataKey="year" stroke="#6b7280" fontSize={10} tickLine={false} axisLine={false} />
-                            <YAxis stroke="#6b7280" fontSize={10} tickLine={false} axisLine={false} />
+                            <YAxis stroke="#6b7280" fontSize={10} tickLine={false} axisLine={false} domain={[0, 100]} tickFormatter={(v) => `${v}%`} />
                             <Tooltip 
                               cursor={{ fill: "rgba(255,255,255,0.05)" }}
-                              formatter={(value: any) => formatValue(Number(value))}
+                              formatter={(value: any) => `${Number(value).toFixed(1)}%`}
                               contentStyle={{ 
                                 backgroundColor: "rgba(17, 24, 39, 0.95)", 
                                 borderRadius: "12px", 
@@ -946,10 +949,18 @@ export default function Dashboard() {
                               iconType="circle" 
                               wrapperStyle={{ paddingTop: "10px", fontSize: "10px" }} 
                             />
-                            <Bar dataKey="vas" name={t("VAS", "增值服务")} stackId="a" fill="#3b82f6" />
-                            <Bar dataKey="marketing" name={t("Marketing", "营销服务")} stackId="a" fill="#10b981" />
-                            <Bar dataKey="fintech" name={t("FinTech", "金融科技")} stackId="a" fill="#f59e0b" />
-                            <Bar dataKey="others" name={t("Others", "其他")} stackId="a" fill="#8b5cf6" radius={[4, 4, 0, 0]} />
+                            <Bar dataKey="vas" name={t("VAS", "增值服务")} stackId="a" fill="#3b82f6">
+                              <LabelList dataKey="vas" position="center" fill="#fff" fontSize={8} formatter={(v: number) => v >= 8 ? `${v.toFixed(0)}%` : ""} />
+                            </Bar>
+                            <Bar dataKey="marketing" name={t("Marketing", "营销服务")} stackId="a" fill="#10b981">
+                              <LabelList dataKey="marketing" position="center" fill="#fff" fontSize={8} formatter={(v: number) => v >= 8 ? `${v.toFixed(0)}%` : ""} />
+                            </Bar>
+                            <Bar dataKey="fintech" name={t("FinTech", "金融科技")} stackId="a" fill="#f59e0b">
+                              <LabelList dataKey="fintech" position="center" fill="#fff" fontSize={8} formatter={(v: number) => v >= 8 ? `${v.toFixed(0)}%` : ""} />
+                            </Bar>
+                            <Bar dataKey="others" name={t("Others", "其他")} stackId="a" fill="#8b5cf6" radius={[4, 4, 0, 0]}>
+                              <LabelList dataKey="others" position="center" fill="#fff" fontSize={8} formatter={(v: number) => v >= 8 ? `${v.toFixed(0)}%` : ""} />
+                            </Bar>
                           </BarChart>
                         </ResponsiveContainer>
                       </div>

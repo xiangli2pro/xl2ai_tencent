@@ -877,7 +877,15 @@ export default function Dashboard() {
                                   fill={info.color} 
                                   radius={[4, 4, 0, 0]}
                                   animationDuration={1000}
-                                />
+                                >
+                                  <LabelList 
+                                    dataKey={m} 
+                                    position="top" 
+                                    fill={info.color}
+                                    fontSize={9}
+                                    formatter={(v: number) => plotMode === "yoy" ? `${v.toFixed(1)}%` : formatValue(v)}
+                                  />
+                                </Bar>
                               );
                             })}
                           </BarChart>

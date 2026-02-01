@@ -898,66 +898,60 @@ export default function Dashboard() {
 
                 {/* Sub-metrics Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {/* Revenue Composition */}
+                  {/* Revenue Composition - Stacked Bar Chart Over Time */}
                   <Card className="bg-card/20 backdrop-blur-sm border-card-border">
                     <CardHeader className="space-y-3">
                       <div className="flex items-start justify-between gap-3">
                         <CardTitle className="text-sm font-bold flex items-center gap-2">
                           <PieChart className="w-4 h-4 text-primary" />
-                          {t(`Revenue Composition (${compositionYear})`, `营收结构 (${compositionYear})`)}
+                          {t("Revenue Composition Over Time", "营收结构变化")}
                         </CardTitle>
-                        <div className="min-w-[120px]">
-                          <Select value={String(compositionYear)} onValueChange={(v) => setCompositionYear(Number(v))}>
-                            <SelectTrigger data-testid="select-composition-year" className="h-8">
-                              <SelectValue placeholder={t("Year", "年份")} />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {DATA.map((d) => (
-                                <SelectItem data-testid={`select-item-composition-year-${d.year}`} key={d.year} value={String(d.year)}>
-                                  {d.year}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </div>
+                        <Badge variant="outline" className="tfi-mono text-[10px] uppercase py-1 px-3">
+                          {t(`Unit: ${UNIT_BILLIONS}`, `单位：${UNIT_BILLIONS}`)}
+                        </Badge>
                       </div>
                       <CardDescription className="tfi-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-                        {t(`Unit: RMB ${UNIT_BILLIONS}`, `单位：人民币 ${UNIT_BILLIONS}`)}
+                        {t("VAS, Marketing, FinTech & Others", "增值服务、营销服务、金融科技及其他")}
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
-                      <div className="h-[200px]">
+                      <div className="h-[240px]">
                         <ResponsiveContainer width="100%" height="100%">
                           <BarChart 
-                            layout="vertical" 
-                            data={(DATA.find((d) => d.year === compositionYear)
-                              ? [
-                                  { name: t("VAS", "增值服务"), value: (DATA.find((d) => d.year === compositionYear) as any).vasRevenue, fill: "#3b82f6" },
-                                  { name: t("Marketing", "营销服务"), value: (DATA.find((d) => d.year === compositionYear) as any).marketingServicesRevenue, fill: "#10b981" },
-                                  { name: t("FinTech", "金融科技"), value: (DATA.find((d) => d.year === compositionYear) as any).fintechRevenue, fill: "#f59e0b" },
-                                  { name: t("Others", "其他"), value: (DATA.find((d) => d.year === compositionYear) as any).othersRevenue, fill: "#8b5cf6" },
-                                ]
-                              : [])}
-                            margin={{ left: 30 }}
+                            data={DATA.map((d) => ({
+                              year: d.year,
+                              vas: d.vasRevenue,
+                              marketing: d.marketingServicesRevenue,
+                              fintech: d.fintechRevenue,
+                              others: d.othersRevenue,
+                            }))}
+                            margin={{ top: 10, right: 10, left: 0, bottom: 10 }}
                           >
-                            <XAxis type="number" hide />
-                            <YAxis dataKey="name" type="category" fontSize={10} axisLine={false} tickLine={false} />
-                            <Tooltip cursor={{ fill: "transparent" }} />
-                            <Bar dataKey="value" radius={[0, 4, 4, 0]} barSize={20}>
-                              {/* Custom labels could go here */}
-                            </Bar>
+                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
+                            <XAxis dataKey="year" stroke="#6b7280" fontSize={10} tickLine={false} axisLine={false} />
+                            <YAxis stroke="#6b7280" fontSize={10} tickLine={false} axisLine={false} />
+                            <Tooltip 
+                              cursor={{ fill: "rgba(255,255,255,0.05)" }}
+                              formatter={(value: any) => formatValue(Number(value))}
+                              contentStyle={{ 
+                                backgroundColor: "rgba(17, 24, 39, 0.95)", 
+                                borderRadius: "12px", 
+                                border: "1px solid rgba(255,255,255,0.1)",
+                                fontSize: "11px"
+                              }}
+                            />
+                            <Legend 
+                              verticalAlign="bottom" 
+                              align="center" 
+                              iconType="circle" 
+                              wrapperStyle={{ paddingTop: "10px", fontSize: "10px" }} 
+                            />
+                            <Bar dataKey="vas" name={t("VAS", "增值服务")} stackId="a" fill="#3b82f6" />
+                            <Bar dataKey="marketing" name={t("Marketing", "营销服务")} stackId="a" fill="#10b981" />
+                            <Bar dataKey="fintech" name={t("FinTech", "金融科技")} stackId="a" fill="#f59e0b" />
+                            <Bar dataKey="others" name={t("Others", "其他")} stackId="a" fill="#8b5cf6" radius={[4, 4, 0, 0]} />
                           </BarChart>
                         </ResponsiveContainer>
-                      </div>
-                      <div className="mt-4 grid grid-cols-2 gap-2">
-                        <div className="p-2 rounded-lg bg-muted/30 border border-border/50">
-                          <p className="text-[10px] text-muted-foreground uppercase">{t("Total Revenue", "总营收")}</p>
-                          <p className="text-sm font-bold tfi-mono">{formatValue((DATA.find((d) => d.year === compositionYear) as any)?.revenue ?? 0)}{UNIT_BILLIONS}</p>
-                        </div>
-                        <div className="p-2 rounded-lg bg-muted/30 border border-border/50">
-                          <p className="text-[10px] text-muted-foreground uppercase">{t("Growth", "同比增长")}</p>
-                          <p className="text-sm font-bold tfi-mono text-emerald-500">+8.4%</p>
-                        </div>
                       </div>
                     </CardContent>
                   </Card>

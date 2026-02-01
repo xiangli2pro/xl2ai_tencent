@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line,
-  AreaChart, Area, Cell, ComposedChart
+  AreaChart, Area, Cell, ComposedChart, Scatter
 } from "recharts";
 import { 
   TrendingUp, TrendingDown, DollarSign, PieChart, Activity, 
@@ -28,9 +28,6 @@ import { Label } from "@/components/ui/label";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Checkbox } from "@/components/ui/checkbox";
 import { extent, quantileSorted } from "d3-array";
-
-const UNIT_BILLIONS = "B";
-const UNIT_PERCENT = "%";
 
 const UNIT_BILLIONS = "B";
 const UNIT_PERCENT = "%";
@@ -577,14 +574,84 @@ export default function Dashboard() {
                         </CardDescription>
                       </div>
                       <Badge variant="outline" className="tfi-mono text-[10px] uppercase py-1 px-3">
-                        {plotMode === "yoy" ? `YoY Change ${UNIT_PERCENT}` : `Nominal Value (${UNIT_BILLIONS} RMB)`}
+                        {plotMode === "yoy" ? `YoY Change ${UNIT_PERCENT}` : plotType === "box" ? `Distribution (${UNIT_BILLIONS} RMB)` : `Nominal Value (${UNIT_BILLIONS} RMB)`}
                       </Badge>
                     </div>
                   </CardHeader>
                   <CardContent className="pt-8">
                     <div className="h-[450px] w-full">
                       <ResponsiveContainer width="100%" height="100%">
-                        {plotType === "line" ? (
+                        {plotType === "box" ? (
+                          <ComposedChart data={filteredData} margin={{ left: 6, right: 16, top: 10, bottom: 8 }}>
+                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
+                            <XAxis dataKey="year" stroke="#6b7280" fontSize={11} tickLine={false} axisLine={false} dy={10} />
+                            <YAxis
+                              stroke="#6b7280"
+                              fontSize={11}
+                              tickLine={false}
+                              axisLine={false}
+                              tickFormatter={(v) => `${v}`}
+                            />
+                            <Tooltip
+                              cursor={{ fill: "rgba(255,255,255,0.05)" }}
+                              contentStyle={{
+                                backgroundColor: "rgba(17, 24, 39, 0.95)",
+                                borderRadius: "12px",
+                                border: "1px solid rgba(255,255,255,0.1)",
+                                fontSize: "12px",
+                              }}
+                            />
+                            {/* Render one box per year for the first selected metric */}
+                            {(() => {
+                              const metric = selectedMetrics[0] ?? "revenue";
+                              const values = filteredData
+                                .map((d: any) => Number(d[metric]))
+                                .filter((n: number) => Number.isFinite(n))
+                                .sort((a: number, b: number) => a - b);
+                              const q1 = values.length ? quantileSorted(values, 0.25) ?? 0 : 0;
+                              const median = values.length ? quantileSorted(values, 0.5) ?? 0 : 0;
+                              const q3 = values.length ? quantileSorted(values, 0.75) ?? 0 : 0;
+                              const min = values.length ? values[0] : 0;
+                              const max = values.length ? values[values.length - 1] : 0;
+
+                              return (
+                                <Scatter
+                                  dataKey="year"
+                                  name={t(METRICS[metric as MetricKey]?.label ?? "Metric", METRICS[metric as MetricKey]?.zh ?? "\u6307\u6807")}
+                                  shape={(props: any) => {
+                                    const { cx, yAxis } = props;
+                                    const boxWidth = 26;
+                                    const yScale = (val: number) => (yAxis?.scale ? yAxis.scale(val) : 0);
+                                    const yMin = yScale(min);
+                                    const yQ1 = yScale(q1);
+                                    const yMed = yScale(median);
+                                    const yQ3 = yScale(q3);
+                                    const yMax = yScale(max);
+                                    return (
+                                      <g>
+                                        <line x1={cx} y1={yMin} x2={cx} y2={yQ1} stroke="rgba(255,255,255,0.55)" strokeWidth={2} />
+                                        <line x1={cx} y1={yQ3} x2={cx} y2={yMax} stroke="rgba(255,255,255,0.55)" strokeWidth={2} />
+                                        <line x1={cx - boxWidth / 3} y1={yMin} x2={cx + boxWidth / 3} y2={yMin} stroke="rgba(255,255,255,0.55)" strokeWidth={2} />
+                                        <line x1={cx - boxWidth / 3} y1={yMax} x2={cx + boxWidth / 3} y2={yMax} stroke="rgba(255,255,255,0.55)" strokeWidth={2} />
+                                        <rect
+                                          x={cx - boxWidth / 2}
+                                          y={Math.min(yQ3, yQ1)}
+                                          width={boxWidth}
+                                          height={Math.abs(yQ1 - yQ3)}
+                                          rx={6}
+                                          fill="rgba(99, 102, 241, 0.35)"
+                                          stroke="rgba(99, 102, 241, 0.8)"
+                                        />
+                                        <line x1={cx - boxWidth / 2} y1={yMed} x2={cx + boxWidth / 2} y2={yMed} stroke="rgba(255,255,255,0.85)" strokeWidth={2} />
+                                      </g>
+                                    );
+                                  }}
+                                  data={filteredData.map((d) => ({ year: d.year }))}
+                                />
+                              );
+                            })()}
+                          </ComposedChart>
+                        ) : plotType === "line" ? (
                           <LineChart data={filteredData}>
                             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
                             <XAxis 
@@ -673,25 +740,46 @@ export default function Dashboard() {
 
                 {/* Sub-metrics Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {/* Revenue Composition (2024 example) */}
+                  {/* Revenue Composition */}
                   <Card className="bg-card/20 backdrop-blur-sm border-card-border">
-                    <CardHeader>
-                      <CardTitle className="text-sm font-bold flex items-center gap-2">
-                        <PieChart className="w-4 h-4 text-primary" />
-                        {t("Revenue Composition (2024)", "营收结构 (2024)")}
-                      </CardTitle>
+                    <CardHeader className="space-y-3">
+                      <div className="flex items-start justify-between gap-3">
+                        <CardTitle className="text-sm font-bold flex items-center gap-2">
+                          <PieChart className="w-4 h-4 text-primary" />
+                          {t(`Revenue Composition (${compositionYear})`, `营收结构 (${compositionYear})`)}
+                        </CardTitle>
+                        <div className="min-w-[120px]">
+                          <Select value={String(compositionYear)} onValueChange={(v) => setCompositionYear(Number(v))}>
+                            <SelectTrigger data-testid="select-composition-year" className="h-8">
+                              <SelectValue placeholder={t("Year", "年份")} />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {DATA.map((d) => (
+                                <SelectItem data-testid={`select-item-composition-year-${d.year}`} key={d.year} value={String(d.year)}>
+                                  {d.year}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+                      <CardDescription className="tfi-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+                        {t(`Unit: RMB ${UNIT_BILLIONS}`, `单位：人民币 ${UNIT_BILLIONS}`)}
+                      </CardDescription>
                     </CardHeader>
                     <CardContent>
                       <div className="h-[200px]">
                         <ResponsiveContainer width="100%" height="100%">
                           <BarChart 
                             layout="vertical" 
-                            data={[
-                              { name: t("VAS", "增值服务"), value: 352.44, fill: "#3b82f6" },
-                              { name: t("Marketing", "营销服务"), value: 112.33, fill: "#10b981" },
-                              { name: t("FinTech", "金融科技"), value: 225.22, fill: "#f59e0b" },
-                              { name: t("Others", "其他"), value: 15.44, fill: "#8b5cf6" },
-                            ]}
+                            data={(DATA.find((d) => d.year === compositionYear)
+                              ? [
+                                  { name: t("VAS", "增值服务"), value: (DATA.find((d) => d.year === compositionYear) as any).vasRevenue, fill: "#3b82f6" },
+                                  { name: t("Marketing", "营销服务"), value: (DATA.find((d) => d.year === compositionYear) as any).marketingServicesRevenue, fill: "#10b981" },
+                                  { name: t("FinTech", "金融科技"), value: (DATA.find((d) => d.year === compositionYear) as any).fintechRevenue, fill: "#f59e0b" },
+                                  { name: t("Others", "其他"), value: (DATA.find((d) => d.year === compositionYear) as any).othersRevenue, fill: "#8b5cf6" },
+                                ]
+                              : [])}
                             margin={{ left: 30 }}
                           >
                             <XAxis type="number" hide />
@@ -706,7 +794,7 @@ export default function Dashboard() {
                       <div className="mt-4 grid grid-cols-2 gap-2">
                         <div className="p-2 rounded-lg bg-muted/30 border border-border/50">
                           <p className="text-[10px] text-muted-foreground uppercase">{t("Total Revenue", "总营收")}</p>
-                          <p className="text-sm font-bold tfi-mono">660.34B</p>
+                          <p className="text-sm font-bold tfi-mono">{formatValue((DATA.find((d) => d.year === compositionYear) as any)?.revenue ?? 0)}{UNIT_BILLIONS}</p>
                         </div>
                         <div className="p-2 rounded-lg bg-muted/30 border border-border/50">
                           <p className="text-[10px] text-muted-foreground uppercase">{t("Growth", "同比增长")}</p>
@@ -719,10 +807,13 @@ export default function Dashboard() {
                   {/* Profit Margins Analysis */}
                   <Card className="bg-card/20 backdrop-blur-sm border-card-border">
                     <CardHeader>
-                      <CardTitle className="text-sm font-bold flex items-center gap-2">
-                        <Activity className="w-4 h-4 text-primary" />
-                        {t("Profit Margins Trend", "利润率趋势")}
-                      </CardTitle>
+                      <div className="flex items-start justify-between gap-3">
+                        <CardTitle className="text-sm font-bold flex items-center gap-2">
+                          <Activity className="w-4 h-4 text-primary" />
+                          {t("Profit Margins Trend", "利润率趋势")}
+                        </CardTitle>
+                        <Badge variant="outline" className="tfi-mono text-[10px] uppercase py-1 px-3">{`Unit: ${UNIT_PERCENT}`}</Badge>
+                      </div>
                     </CardHeader>
                     <CardContent>
                       <div className="h-[200px]">
@@ -730,7 +821,7 @@ export default function Dashboard() {
                           <LineChart data={DATA.slice().reverse()}>
                             <XAxis dataKey="year" fontSize={9} hide />
                             <YAxis fontSize={9} hide />
-                            <Tooltip />
+                            <Tooltip formatter={(v: any) => `${Number(v).toFixed(2)}${UNIT_PERCENT}`} />
                             <Line 
                               type="monotone" 
                               dataKey={(d) => (d.grossProfit / d.revenue) * 100} 

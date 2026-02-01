@@ -8,7 +8,7 @@ import {
   Download, Filter, Calendar, RefreshCw, ChevronRight, 
   ArrowUpRight, ArrowDownRight, Info, BookOpen,
   LayoutDashboard, Table as TableIcon, Search, Send, User,
-  Globe, Shield, Zap, Target, Plus, Trash2, MessageCircle, Bot
+  Globe, Shield, Zap, Target, Plus, Trash2, MessageCircle, Bot, Pencil
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -361,6 +361,40 @@ export default function Dashboard() {
     setSelectedMetrics(selectedMetrics.filter((m) => m !== id));
   };
 
+  const [editingMetricId, setEditingMetricId] = useState<string | null>(null);
+
+  const startEditMetric = (cm: typeof customMetrics[0]) => {
+    setNewCustomMetric({
+      name: cm.name,
+      nameZh: cm.nameZh,
+      metricA: cm.metricA,
+      operator: cm.operator,
+      metricB: cm.metricB,
+    });
+    setEditingMetricId(cm.id);
+    setCustomMetricDialogOpen(true);
+  };
+
+  const updateCustomMetric = () => {
+    if (!newCustomMetric.name.trim() || !editingMetricId) return;
+    setCustomMetrics(customMetrics.map((cm) => 
+      cm.id === editingMetricId 
+        ? { ...cm, name: newCustomMetric.name, nameZh: newCustomMetric.nameZh || newCustomMetric.name, metricA: newCustomMetric.metricA, operator: newCustomMetric.operator, metricB: newCustomMetric.metricB }
+        : cm
+    ));
+    setNewCustomMetric({ name: "", nameZh: "", metricA: "revenue", operator: "/", metricB: "revenue" });
+    setEditingMetricId(null);
+    setCustomMetricDialogOpen(false);
+  };
+
+  const handleDialogClose = (open: boolean) => {
+    if (!open) {
+      setEditingMetricId(null);
+      setNewCustomMetric({ name: "", nameZh: "", metricA: "revenue", operator: "/", metricB: "revenue" });
+    }
+    setCustomMetricDialogOpen(open);
+  };
+
   const allMetricsForSelect = useMemo(() => {
     const baseKeys = Object.keys(METRICS) as MetricKey[];
     return baseKeys;
@@ -573,7 +607,7 @@ export default function Dashboard() {
                         <Label className="tfi-mono text-[10px] uppercase tracking-widest text-muted-foreground">
                           {t("Custom Metrics", "自定义指标")}
                         </Label>
-                        <Dialog open={customMetricDialogOpen} onOpenChange={setCustomMetricDialogOpen}>
+                        <Dialog open={customMetricDialogOpen} onOpenChange={handleDialogClose}>
                           <DialogTrigger asChild>
                             <Button data-testid="button-add-custom-metric" variant="ghost" size="sm" className="h-6 px-2">
                               <Plus className="w-3 h-3 mr-1" />
@@ -583,7 +617,7 @@ export default function Dashboard() {
                           <DialogContent className="sm:max-w-[400px] bg-card/95 backdrop-blur-xl border-card-border">
                             <DialogHeader>
                               <DialogTitle className="tfi-title text-lg">
-                                {t("Create Custom Metric", "创建自定义指标")}
+                                {editingMetricId ? t("Edit Custom Metric", "编辑自定义指标") : t("Create Custom Metric", "创建自定义指标")}
                               </DialogTitle>
                               <DialogDescription className="text-xs text-muted-foreground">
                                 {t("Combine existing metrics with an operator", "使用运算符组合现有指标")}
@@ -651,8 +685,12 @@ export default function Dashboard() {
                               </div>
                             </div>
                             <DialogFooter>
-                              <Button data-testid="button-create-custom-metric" onClick={addCustomMetric} disabled={!newCustomMetric.name.trim()}>
-                                {t("Create Metric", "创建指标")}
+                              <Button 
+                                data-testid={editingMetricId ? "button-update-custom-metric" : "button-create-custom-metric"} 
+                                onClick={editingMetricId ? updateCustomMetric : addCustomMetric} 
+                                disabled={!newCustomMetric.name.trim()}
+                              >
+                                {editingMetricId ? t("Update Metric", "更新指标") : t("Create Metric", "创建指标")}
                               </Button>
                             </DialogFooter>
                           </DialogContent>
@@ -682,15 +720,26 @@ export default function Dashboard() {
                                   </span>
                                 </div>
                               </div>
-                              <Button
-                                data-testid={`button-remove-custom-metric-${cm.id}`}
-                                variant="ghost"
-                                size="sm"
-                                className="h-6 w-6 p-0 text-muted-foreground hover:text-destructive"
-                                onClick={() => removeCustomMetric(cm.id)}
-                              >
-                                <Trash2 className="w-3 h-3" />
-                              </Button>
+                              <div className="flex items-center gap-1">
+                                <Button
+                                  data-testid={`button-edit-custom-metric-${cm.id}`}
+                                  variant="ghost"
+                                  size="sm"
+                                  className="h-6 w-6 p-0 text-muted-foreground hover:text-primary"
+                                  onClick={() => startEditMetric(cm)}
+                                >
+                                  <Pencil className="w-3 h-3" />
+                                </Button>
+                                <Button
+                                  data-testid={`button-remove-custom-metric-${cm.id}`}
+                                  variant="ghost"
+                                  size="sm"
+                                  className="h-6 w-6 p-0 text-muted-foreground hover:text-destructive"
+                                  onClick={() => removeCustomMetric(cm.id)}
+                                >
+                                  <Trash2 className="w-3 h-3" />
+                                </Button>
+                              </div>
                             </div>
                           ))}
                         </div>

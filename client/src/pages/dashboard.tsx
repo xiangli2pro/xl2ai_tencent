@@ -127,7 +127,7 @@ const DATA = [
   { 
     year: 2024, 
     revenue: 660.3, grossProfit: 349.2, operatingProfit: 208.1, profitBeforeTax: 241.5, profitForYear: 196.5, profitAttrEquity: 194.1,
-    totalCompIncome: 190.6, totalCompIncomeAttrEquity: 188.2, nonIfrsOperatingProfit: 237.8, nonIfrsProfitAttrEquity: 222.7,
+    totalCompIncome: 284.3, totalCompIncomeAttrEquity: 279.0, nonIfrsOperatingProfit: 237.8, nonIfrsProfitAttrEquity: 222.7,
     nonCurrentAssets: 1178.4, currentAssets: 596.2, totalAssets: 1774.6, equityAttrEquity: 918.5, nonControllingInterests: 78.2, 
     totalEquity: 996.7, nonCurrentLiabilities: 431.8, currentLiabilities: 346.1, totalLiabilities: 777.9, totalEquityLiabilities: 1774.6,
     costOfRevenues: 311.0, sellingMarketingExpenses: 36.4, generalAdminExpenses: 112.8, otherGainsLosses: 8.0, netGainsLossesInvestments: 7.9,

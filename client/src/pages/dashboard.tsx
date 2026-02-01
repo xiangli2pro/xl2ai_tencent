@@ -6,7 +6,7 @@ import {
 import { 
   TrendingUp, TrendingDown, DollarSign, PieChart, Activity, 
   Download, Filter, Calendar, RefreshCw, ChevronRight, 
-  ArrowUpRight, ArrowDownRight, Info, BookOpen, FileUp,
+  ArrowUpRight, ArrowDownRight, Info, BookOpen,
   LayoutDashboard, Table as TableIcon, Search, Send, User,
   Globe, Shield, Zap, Target, Plus, Trash2, MessageCircle, Bot
 } from "lucide-react";
@@ -293,65 +293,9 @@ const DATA = [
   },
 ];
 
-function ReportsModal({ open, onOpenChange, lang }: { open: boolean; onOpenChange: (open: boolean) => void; lang: "en" | "zh" }) {
-  const t = (en: string, zh: string) => (lang === "en" ? en : zh);
-  const reports = [
-    { year: 2024, url: "https://www.tencent.com/en-us/investors/financial-reports.html" },
-    { year: 2023, url: "https://www.tencent.com/en-us/investors/financial-reports.html" },
-    { year: 2022, url: "https://www.tencent.com/en-us/investors/financial-reports.html" },
-    { year: 2021, url: "https://www.tencent.com/en-us/investors/financial-reports.html" },
-    { year: 2020, url: "https://www.tencent.com/en-us/investors/financial-reports.html" },
-    { year: 2019, url: "https://www.tencent.com/en-us/investors/financial-reports.html" },
-    { year: 2018, url: "https://www.tencent.com/en-us/investors/financial-reports.html" },
-    { year: 2017, url: "https://www.tencent.com/en-us/investors/financial-reports.html" },
-    { year: 2016, url: "https://www.tencent.com/en-us/investors/financial-reports.html" },
-    { year: 2015, url: "https://www.tencent.com/en-us/investors/financial-reports.html" },
-    { year: 2014, url: "https://www.tencent.com/en-us/investors/financial-reports.html" },
-  ];
-
-  return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px] bg-card/95 backdrop-blur-xl border-card-border">
-        <DialogHeader>
-          <DialogTitle className="tfi-title text-2xl">
-            {t("Annual Reports", "年度报告")}
-          </DialogTitle>
-          <DialogDescription className="tfi-mono text-xs uppercase tracking-widest text-muted-foreground pt-1">
-            {t("Official Filings 2014–2024", "官方备案文件 2014–2024")}
-          </DialogDescription>
-        </DialogHeader>
-        <ScrollArea className="h-[400px] pr-4 mt-4">
-          <div className="space-y-2 pb-4">
-            {reports.map((r) => (
-              <a
-                key={r.year}
-                href={r.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-between p-3 rounded-xl border border-border bg-muted/30 hover:bg-primary/5 hover:border-primary/30 transition-all group"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-card border border-border flex items-center justify-center tfi-mono text-sm font-bold group-hover:text-primary">
-                    {r.year}
-                  </div>
-                  <div className="text-sm font-medium">
-                    {t(`${r.year} Annual Report`, `${r.year} 年度报告`)}
-                  </div>
-                </div>
-                <ArrowUpRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
-              </a>
-            ))}
-          </div>
-        </ScrollArea>
-      </DialogContent>
-    </Dialog>
-  );
-}
-
 export default function Dashboard() {
   const [page, setPage] = useState<1 | 2>(1);
   const [lang, setLang] = useState<"en" | "zh">("en");
-  const [reportsOpen, setReportsOpen] = useState(false);
   const [selectedMetrics, setSelectedMetrics] = useState<MetricKey[]>(["revenue"]);
   const [yearRange, setYearRange] = useState<[number, number]>([2014, 2024]);
   const [plotMode, setPlotMode] = useState<"level" | "yoy">("level");
@@ -534,19 +478,20 @@ export default function Dashboard() {
             >
               {lang === "en" ? "ZH" : "EN"}
             </Button>
-            <Button data-testid="button-open-reports" variant="outline" size="sm" className="hidden sm:flex" onClick={() => setReportsOpen(true)}>
+            <Button 
+              data-testid="button-download-reports" 
+              variant="outline" 
+              size="sm" 
+              className="hidden sm:flex" 
+              onClick={() => window.open("https://www.tencent.com/en-us/investors/financial-reports.html", "_blank")}
+            >
               <BookOpen className="w-4 h-4 mr-2" />
-              {t("Reports", "报告")}
-            </Button>
-            <Button size="sm" className="hidden sm:flex">
-              <FileUp className="w-4 h-4 mr-2" />
-              {t("Upload", "上传")}
+              {t("Download Reports", "下载报告")}
             </Button>
           </div>
         </div>
       </header>
 
-      <ReportsModal open={reportsOpen} onOpenChange={setReportsOpen} lang={lang} />
 
       <main className="flex-1 overflow-auto p-4 md:p-8">
         <div className="max-w-7xl mx-auto space-y-8">

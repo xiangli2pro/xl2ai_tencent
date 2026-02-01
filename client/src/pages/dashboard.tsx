@@ -1212,7 +1212,28 @@ export default function Dashboard() {
                       </SelectContent>
                     </Select>
                   </div>
-                  <Button variant="outline" size="sm" className="h-8">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="h-8"
+                    onClick={() => {
+                      const headers = ["Metric", ...DATA.filter(d => tableYearFilter.includes(d.year)).map(d => d.year.toString())];
+                      const rows = Object.entries(METRICS).map(([key, m]) => {
+                        const values = DATA.filter(d => tableYearFilter.includes(d.year)).map(d => {
+                          const computed = computeCalculatedMetrics(d);
+                          const val = (computed as any)[key];
+                          return val !== undefined && val !== null ? val.toString() : "";
+                        });
+                        return [m.label, ...values];
+                      });
+                      const csvContent = [headers, ...rows].map(row => row.map(cell => `"${cell}"`).join(",")).join("\n");
+                      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+                      const link = document.createElement("a");
+                      link.href = URL.createObjectURL(blob);
+                      link.download = `tencent_financial_data_${new Date().toISOString().split("T")[0]}.csv`;
+                      link.click();
+                    }}
+                  >
                     <Download className="w-4 h-4 mr-2" />
                     {t("Export CSV", "导出数据")}
                   </Button>

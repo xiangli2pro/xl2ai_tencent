@@ -408,7 +408,7 @@ export default function Dashboard() {
                       {t("Dashboard Controls", "仪表板控制")}
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-6 max-h-[70vh] overflow-hidden">
+                  <CardContent className="space-y-6 max-h-[70vh] overflow-auto pr-2">
                     <div className="space-y-4">
                       <Label className="tfi-mono text-[10px] uppercase tracking-widest text-muted-foreground">
                         {t("Metric Selection", "指标选择")}

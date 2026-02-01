@@ -1072,34 +1072,42 @@ export default function Dashboard() {
                       <CardContent>
                         <div className="h-[240px]">
                           <ResponsiveContainer width="100%" height="100%">
-                            <LineChart data={DATA.slice().sort((a, b) => a.year - b.year).map(computeCalculatedMetrics)}>
+                            <LineChart data={DATA.slice().sort((a, b) => a.year - b.year).map(d => ({
+                              year: d.year,
+                              vasGrossMargin: d.vasGrossMargin != null ? d.vasGrossMargin * 100 : null,
+                              marketingServicesGrossMargin: d.marketingServicesGrossMargin != null ? d.marketingServicesGrossMargin * 100 : null,
+                              fintechGrossMargin: d.fintechGrossMargin != null ? d.fintechGrossMargin * 100 : null,
+                            }))}>
                               <XAxis dataKey="year" fontSize={9} stroke="#6b7280" tickLine={false} axisLine={false} />
                               <YAxis fontSize={9} stroke="#6b7280" tickLine={false} axisLine={false} tickFormatter={(v) => `${v}%`} />
-                              <Tooltip formatter={(v: any) => `${Number(v).toFixed(2)}${UNIT_PERCENT}`} />
+                              <Tooltip formatter={(v: any) => `${Number(v).toFixed(1)}${UNIT_PERCENT}`} />
                               <Legend verticalAlign="bottom" align="center" iconType="circle" wrapperStyle={{ fontSize: "9px", paddingTop: "5px" }} />
                               <Line 
                                 type="monotone" 
-                                dataKey="vasMargin" 
-                                name={t("VAS", "增值服务")}
+                                dataKey="vasGrossMargin" 
+                                name={t("VAS Gross Margin", "增值服务毛利率")}
                                 stroke="#3b82f6" 
                                 strokeWidth={2}
                                 dot={false}
+                                connectNulls
                               />
                               <Line 
                                 type="monotone" 
-                                dataKey="marketingServicesMargin" 
-                                name={t("Marketing", "营销")}
+                                dataKey="marketingServicesGrossMargin" 
+                                name={t("Marketing Services Gross Margin", "营销服务毛利率")}
                                 stroke="#ec4899" 
                                 strokeWidth={2}
                                 dot={false}
+                                connectNulls
                               />
                               <Line 
                                 type="monotone" 
-                                dataKey="fintechMargin" 
-                                name={t("FinTech", "金融科技")}
+                                dataKey="fintechGrossMargin" 
+                                name={t("FinTech Gross Margin", "金融科技毛利率")}
                                 stroke="#8b5cf6" 
                                 strokeWidth={2}
                                 dot={false}
+                                connectNulls
                               />
                             </LineChart>
                           </ResponsiveContainer>

@@ -509,18 +509,20 @@ export default function Dashboard() {
                           data-testid="button-chart-line"
                           variant={plotType === "line" ? "default" : "outline"} 
                           size="sm" 
-                          className="flex-1"
+                          className="flex-1 justify-between"
                           onClick={() => setPlotType("line")}
                         >
+                          <span className="text-[10px] tfi-mono uppercase tracking-wider">{t("Line", "折线")}</span>
                           <TrendingUp className="w-4 h-4" />
                         </Button>
                         <Button 
                           data-testid="button-chart-bar"
                           variant={plotType === "bar" ? "default" : "outline"} 
                           size="sm" 
-                          className="flex-1"
+                          className="flex-1 justify-between"
                           onClick={() => setPlotType("bar")}
                         >
+                          <span className="text-[10px] tfi-mono uppercase tracking-wider">{t("Bar", "柱状")}</span>
                           <BarChart className="w-4 h-4" />
                         </Button>
                       </div>

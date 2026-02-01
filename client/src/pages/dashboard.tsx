@@ -750,23 +750,6 @@ export default function Dashboard() {
                   </CardContent>
                 </Card>
 
-                {/* AI Insight Placeholder */}
-                <Card className="bg-primary/5 border-primary/20">
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-xs font-bold flex items-center gap-2 text-primary">
-                      <Zap className="w-3 h-3" />
-                      {t("Smart Insight", "智能洞察")}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-[11px] leading-relaxed text-muted-foreground italic">
-                      {t(
-                        "Revenue growth showing strong resilience in 2024 with Gross Margin improving by 4.2% YoY driven by advertising optimization.",
-                        "2024年营收增长展现强劲韧性，毛利率在广告业务优化的推动下同比增长4.2%。"
-                      )}
-                    </p>
-                  </CardContent>
-                </Card>
               </div>
 
               {/* Visualization Area */}
@@ -897,7 +880,7 @@ export default function Dashboard() {
                 </Card>
 
                 {/* Sub-metrics Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   {/* Revenue Composition - Stacked Bar Chart Over Time */}
                   <Card className="bg-card/20 backdrop-blur-sm border-card-border">
                     <CardHeader className="space-y-3">

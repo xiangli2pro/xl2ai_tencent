@@ -71,6 +71,9 @@ const METRICS = {
 
   // Segment Revenue
   vasRevenue: { label: "VAS Revenue", color: "#3b82f6", zh: "增值服务收入", category: "Segments" },
+  domesticGamesRevenue: { label: "Domestic Games Revenue", color: "#60a5fa", zh: "国内游戏收入", category: "Segments" },
+  internationalGamesRevenue: { label: "International Games Revenue", color: "#818cf8", zh: "国际游戏收入", category: "Segments" },
+  socialNetworksRevenue: { label: "Social Networks Revenue", color: "#a78bfa", zh: "社交网络收入", category: "Segments" },
   marketingServicesRevenue: { label: "Marketing Services Revenue", color: "#10b981", zh: "营销服务收入", category: "Segments" },
   fintechRevenue: { label: "FinTech & Business Services Revenue", color: "#f59e0b", zh: "金融科技及企业服务收入", category: "Segments" },
   othersRevenue: { label: "Others Revenue", color: "#8b5cf6", zh: "其他收入", category: "Segments" },
@@ -94,6 +97,13 @@ const METRICS = {
   notesPayable: { label: "Notes Payable", color: "#155e75", zh: "应付票据", category: "Liquidity" },
   netCash: { label: "Net Cash", color: "#0e7490", zh: "净现金", category: "Liquidity" },
 
+  // Other Financial Information
+  ebitda: { label: "EBITDA", color: "#059669", zh: "息税折旧摊销前利润", category: "Other Financial" },
+  adjustedEbitda: { label: "Adjusted EBITDA", color: "#10b981", zh: "经调整息税折旧摊销前利润", category: "Other Financial" },
+  operatingCashFlow: { label: "Operating Cash Flow", color: "#14b8a6", zh: "经营现金流", category: "Other Financial" },
+  capitalExpenditure: { label: "Capital Expenditure", color: "#f97316", zh: "资本开支", category: "Other Financial" },
+  freeCashFlow: { label: "Free Cash Flow", color: "#22c55e", zh: "自由现金流", category: "Other Financial" },
+
   // Calculated Metrics
   sellingMarketingExpensesMargin: { label: "Selling & Marketing Expenses Margin (%)", color: "#86efac", zh: "销售及市场推广开支率(%)", category: "Calculated Metrics" },
   generalAdminExpensesMargin: { label: "General & Administrative Expenses Margin (%)", color: "#fde047", zh: "一般及行政开支率(%)", category: "Calculated Metrics" },
@@ -113,10 +123,12 @@ const DATA = [
     totalEquity: 996.7, nonCurrentLiabilities: 431.8, currentLiabilities: 346.1, totalLiabilities: 777.9, totalEquityLiabilities: 1774.6,
     costOfRevenues: 311.0, sellingMarketingExpenses: 36.4, generalAdminExpenses: 112.8, otherGainsLosses: 8.0, netGainsLossesInvestments: 7.9,
     interestIncome: 16.7, financeCosts: 12.4, shareOfProfitLossAssociates: 25.2, incomeTaxExpense: 45.0,
-    vasRevenue: 319.2, marketingServicesRevenue: 121.4, fintechRevenue: 212.0, othersRevenue: 7.8,
+    vasRevenue: 319.2, domesticGamesRevenue: 140.2, internationalGamesRevenue: 57.2, socialNetworksRevenue: 121.8,
+    marketingServicesRevenue: 121.4, fintechRevenue: 212.0, othersRevenue: 7.8,
     vasGrossProfit: 179.6, marketingServicesGrossProfit: 60.5, fintechGrossProfit: 99.8, othersGrossProfit: 2.1,
     vasGrossMargin: 56.3, marketingServicesGrossMargin: 49.8, fintechGrossMargin: 47.1, othersGrossMargin: 26.9,
-    cashCashEquivalents: 179.8, termDepositsOthers: 235.6, borrowings: 141.2, notesPayable: 120.8, netCash: 76.8
+    cashCashEquivalents: 179.8, termDepositsOthers: 235.6, borrowings: 141.2, notesPayable: 120.8, netCash: 76.8,
+    ebitda: 230.1, adjustedEbitda: 259.9, operatingCashFlow: 258.5, capitalExpenditure: 76.8, freeCashFlow: 155.3
   },
   { 
     year: 2023, 
@@ -126,10 +138,12 @@ const DATA = [
     totalEquity: 843.2, nonCurrentLiabilities: 384.6, currentLiabilities: 329.5, totalLiabilities: 714.1, totalEquityLiabilities: 1557.3,
     costOfRevenues: 315.9, sellingMarketingExpenses: 34.2, generalAdminExpenses: 103.5, otherGainsLosses: 4.7, netGainsLossesInvestments: -3.8,
     interestIncome: 14.4, financeCosts: 11.9, shareOfProfitLossAssociates: 5.8, incomeTaxExpense: 43.3,
-    vasRevenue: 298.4, marketingServicesRevenue: 101.5, fintechRevenue: 203.8, othersRevenue: 5.4,
+    vasRevenue: 298.4, domesticGamesRevenue: 127.0, internationalGamesRevenue: 53.2, socialNetworksRevenue: 118.2,
+    marketingServicesRevenue: 101.5, fintechRevenue: 203.8, othersRevenue: 5.4,
     vasGrossProfit: 152.3, marketingServicesGrossProfit: 50.8, fintechGrossProfit: 81.2, othersGrossProfit: 1.4,
     vasGrossMargin: 51.0, marketingServicesGrossMargin: 50.0, fintechGrossMargin: 39.8, othersGrossMargin: 25.9,
-    cashCashEquivalents: 172.6, termDepositsOthers: 200.4, borrowings: 131.8, notesPayable: 109.6, netCash: 53.8
+    cashCashEquivalents: 172.6, termDepositsOthers: 200.4, borrowings: 131.8, notesPayable: 109.6, netCash: 53.8,
+    ebitda: 184.0, adjustedEbitda: 212.9, operatingCashFlow: 222.0, capitalExpenditure: 23.9, freeCashFlow: 167.0
   },
   { 
     year: 2022, 
@@ -139,10 +153,12 @@ const DATA = [
     totalEquity: 808.1, nonCurrentLiabilities: 370.2, currentLiabilities: 327.5, totalLiabilities: 697.7, totalEquityLiabilities: 1505.8,
     costOfRevenues: 315.9, sellingMarketingExpenses: 29.4, generalAdminExpenses: 106.5, otherGainsLosses: -7.9, netGainsLossesInvestments: 116.3,
     interestIncome: 8.6, financeCosts: 10.0, shareOfProfitLossAssociates: -16.1, incomeTaxExpense: 21.5,
-    vasRevenue: 287.5, marketingServicesRevenue: 82.7, fintechRevenue: 177.2, othersRevenue: 7.2,
+    vasRevenue: 287.5, domesticGamesRevenue: 123.9, internationalGamesRevenue: 46.8, socialNetworksRevenue: 116.8,
+    marketingServicesRevenue: 82.7, fintechRevenue: 177.2, othersRevenue: 7.2,
     vasGrossProfit: 144.8, marketingServicesGrossProfit: 34.6, fintechGrossProfit: 52.1, othersGrossProfit: 1.2,
     vasGrossMargin: 50.4, marketingServicesGrossMargin: 41.8, fintechGrossMargin: 29.4, othersGrossMargin: 16.7,
-    cashCashEquivalents: 156.8, termDepositsOthers: 189.5, borrowings: 128.6, notesPayable: 104.8, netCash: 47.5
+    cashCashEquivalents: 156.8, termDepositsOthers: 189.5, borrowings: 128.6, notesPayable: 104.8, netCash: 47.5,
+    ebitda: 134.3, adjustedEbitda: 176.6, operatingCashFlow: 146.1, capitalExpenditure: 22.7, freeCashFlow: 123.4
   },
   { 
     year: 2021, 
@@ -152,10 +168,12 @@ const DATA = [
     totalEquity: 832.8, nonCurrentLiabilities: 350.4, currentLiabilities: 328.1, totalLiabilities: 678.5, totalEquityLiabilities: 1511.3,
     costOfRevenues: 314.2, sellingMarketingExpenses: 31.3, generalAdminExpenses: 99.1, otherGainsLosses: -8.4, netGainsLossesInvestments: 149.2,
     interestIncome: 7.3, financeCosts: 7.9, shareOfProfitLossAssociates: -16.4, incomeTaxExpense: 20.3,
-    vasRevenue: 291.6, marketingServicesRevenue: 88.7, fintechRevenue: 172.1, othersRevenue: 7.7,
+    vasRevenue: 291.6, domesticGamesRevenue: 129.0, internationalGamesRevenue: 45.4, socialNetworksRevenue: 117.2,
+    marketingServicesRevenue: 88.7, fintechRevenue: 172.1, othersRevenue: 7.7,
     vasGrossProfit: 151.8, marketingServicesGrossProfit: 37.6, fintechGrossProfit: 49.2, othersGrossProfit: 1.3,
     vasGrossMargin: 52.1, marketingServicesGrossMargin: 42.4, fintechGrossMargin: 28.6, othersGrossMargin: 16.9,
-    cashCashEquivalents: 166.5, termDepositsOthers: 168.2, borrowings: 126.8, notesPayable: 102.6, netCash: 44.8
+    cashCashEquivalents: 166.5, termDepositsOthers: 168.2, borrowings: 126.8, notesPayable: 102.6, netCash: 44.8,
+    ebitda: 147.0, adjustedEbitda: 181.4, operatingCashFlow: 175.2, capitalExpenditure: 29.3, freeCashFlow: 145.9
   },
   { 
     year: 2020, 
@@ -165,10 +183,12 @@ const DATA = [
     totalEquity: 723.2, nonCurrentLiabilities: 329.6, currentLiabilities: 347.6, totalLiabilities: 677.2, totalEquityLiabilities: 1400.4,
     costOfRevenues: 260.4, sellingMarketingExpenses: 26.6, generalAdminExpenses: 74.8, otherGainsLosses: -5.1, netGainsLossesInvestments: 55.0,
     interestIncome: 8.7, financeCosts: 7.4, shareOfProfitLossAssociates: 3.7, incomeTaxExpense: 19.9,
-    vasRevenue: 264.2, marketingServicesRevenue: 82.4, fintechRevenue: 128.0, othersRevenue: 7.5,
+    vasRevenue: 264.2, domesticGamesRevenue: 125.0, internationalGamesRevenue: 38.0, socialNetworksRevenue: 101.2,
+    marketingServicesRevenue: 82.4, fintechRevenue: 128.0, othersRevenue: 7.5,
     vasGrossProfit: 139.6, marketingServicesGrossProfit: 34.8, fintechGrossProfit: 40.6, othersGrossProfit: 1.1,
     vasGrossMargin: 52.8, marketingServicesGrossMargin: 42.2, fintechGrossMargin: 31.7, othersGrossMargin: 14.7,
-    cashCashEquivalents: 152.6, termDepositsOthers: 146.8, borrowings: 115.4, notesPayable: 95.8, netCash: 36.8
+    cashCashEquivalents: 152.6, termDepositsOthers: 146.8, borrowings: 115.4, notesPayable: 95.8, netCash: 36.8,
+    ebitda: 144.7, adjustedEbitda: 154.2, operatingCashFlow: 194.1, capitalExpenditure: 34.1, freeCashFlow: 160.0
   },
   { 
     year: 2019, 
@@ -178,10 +198,12 @@ const DATA = [
     totalEquity: 488.4, nonCurrentLiabilities: 224.6, currentLiabilities: 378.3, totalLiabilities: 602.9, totalEquityLiabilities: 1091.3,
     costOfRevenues: 210.5, sellingMarketingExpenses: 21.4, generalAdminExpenses: 52.8, otherGainsLosses: 18.6, netGainsLossesInvestments: 9.2,
     interestIncome: 6.4, financeCosts: 7.8, shareOfProfitLossAssociates: -2.3, incomeTaxExpense: 20.9,
-    vasRevenue: 199.5, marketingServicesRevenue: 68.4, fintechRevenue: 101.4, othersRevenue: 8.0,
+    vasRevenue: 199.5, domesticGamesRevenue: 102.2, internationalGamesRevenue: 17.3, socialNetworksRevenue: 80.0,
+    marketingServicesRevenue: 68.4, fintechRevenue: 101.4, othersRevenue: 8.0,
     vasGrossProfit: 104.8, marketingServicesGrossProfit: 29.6, fintechGrossProfit: 27.8, othersGrossProfit: 0.9,
     vasGrossMargin: 52.5, marketingServicesGrossMargin: 43.3, fintechGrossMargin: 27.4, othersGrossMargin: 11.3,
-    cashCashEquivalents: 132.6, termDepositsOthers: 71.8, borrowings: 125.4, notesPayable: 82.6, netCash: -3.6
+    cashCashEquivalents: 132.6, termDepositsOthers: 71.8, borrowings: 125.4, notesPayable: 82.6, netCash: -3.6,
+    ebitda: 138.7, adjustedEbitda: 127.6, operatingCashFlow: 145.8, capitalExpenditure: 24.4, freeCashFlow: 121.4
   },
   { 
     year: 2018, 
@@ -191,10 +213,12 @@ const DATA = [
     totalEquity: 355.4, nonCurrentLiabilities: 164.8, currentLiabilities: 276.2, totalLiabilities: 441.0, totalEquityLiabilities: 796.4,
     costOfRevenues: 170.9, sellingMarketingExpenses: 23.8, generalAdminExpenses: 41.6, otherGainsLosses: 15.8, netGainsLossesInvestments: 5.2,
     interestIncome: 5.4, financeCosts: 5.2, shareOfProfitLossAssociates: 2.1, incomeTaxExpense: 14.6,
-    vasRevenue: 176.6, marketingServicesRevenue: 58.1, fintechRevenue: 73.1, othersRevenue: 4.9,
+    vasRevenue: 176.6, domesticGamesRevenue: 88.4, internationalGamesRevenue: 15.6, socialNetworksRevenue: 72.6,
+    marketingServicesRevenue: 58.1, fintechRevenue: 73.1, othersRevenue: 4.9,
     vasGrossProfit: 97.8, marketingServicesGrossProfit: 24.6, fintechGrossProfit: 18.2, othersGrossProfit: 0.4,
     vasGrossMargin: 55.4, marketingServicesGrossMargin: 42.3, fintechGrossMargin: 24.9, othersGrossMargin: 8.2,
-    cashCashEquivalents: 97.6, termDepositsOthers: 64.8, borrowings: 113.6, notesPayable: 64.6, netCash: -16.8
+    cashCashEquivalents: 97.6, termDepositsOthers: 64.8, borrowings: 113.6, notesPayable: 64.6, netCash: -16.8,
+    ebitda: 117.4, adjustedEbitda: 100.1, operatingCashFlow: 109.4, capitalExpenditure: 21.6, freeCashFlow: 87.8
   },
   { 
     year: 2017, 
@@ -204,10 +228,12 @@ const DATA = [
     totalEquity: 276.2, nonCurrentLiabilities: 120.6, currentLiabilities: 203.6, totalLiabilities: 324.2, totalEquityLiabilities: 600.4,
     costOfRevenues: 120.9, sellingMarketingExpenses: 17.6, generalAdminExpenses: 32.8, otherGainsLosses: 19.8, netGainsLossesInvestments: 2.8,
     interestIncome: 4.2, financeCosts: 2.8, shareOfProfitLossAssociates: 0.8, incomeTaxExpense: 16.7,
-    vasRevenue: 153.4, marketingServicesRevenue: 40.8, fintechRevenue: 43.6, othersRevenue: 0.0,
+    vasRevenue: 153.4, domesticGamesRevenue: 84.6, internationalGamesRevenue: 13.4, socialNetworksRevenue: 55.4,
+    marketingServicesRevenue: 40.8, fintechRevenue: 43.6, othersRevenue: 0.0,
     vasGrossProfit: 91.6, marketingServicesGrossProfit: 14.8, fintechGrossProfit: 10.2, othersGrossProfit: 0.0,
     vasGrossMargin: 59.7, marketingServicesGrossMargin: 36.3, fintechGrossMargin: 23.4, othersGrossMargin: 0.0,
-    cashCashEquivalents: 105.8, termDepositsOthers: 41.6, borrowings: 97.4, notesPayable: 33.8, netCash: 16.2
+    cashCashEquivalents: 105.8, termDepositsOthers: 41.6, borrowings: 97.4, notesPayable: 33.8, netCash: 16.2,
+    ebitda: 100.8, adjustedEbitda: 85.0, operatingCashFlow: 96.7, capitalExpenditure: 12.4, freeCashFlow: 84.3
   },
   { 
     year: 2016, 
@@ -217,10 +243,12 @@ const DATA = [
     totalEquity: 185.4, nonCurrentLiabilities: 104.6, currentLiabilities: 105.2, totalLiabilities: 209.8, totalEquityLiabilities: 395.2,
     costOfRevenues: 67.3, sellingMarketingExpenses: 11.8, generalAdminExpenses: 21.6, otherGainsLosses: 9.8, netGainsLossesInvestments: 1.8,
     interestIncome: 2.8, financeCosts: 1.6, shareOfProfitLossAssociates: -2.1, incomeTaxExpense: 10.4,
-    vasRevenue: 107.8, marketingServicesRevenue: 26.9, fintechRevenue: 17.2, othersRevenue: 0.0,
+    vasRevenue: 107.8, domesticGamesRevenue: 63.4, internationalGamesRevenue: 7.4, socialNetworksRevenue: 37.0,
+    marketingServicesRevenue: 26.9, fintechRevenue: 17.2, othersRevenue: 0.0,
     vasGrossProfit: 64.6, marketingServicesGrossProfit: 9.8, fintechGrossProfit: 9.4, othersGrossProfit: 0.0,
     vasGrossMargin: 59.9, marketingServicesGrossMargin: 36.4, fintechGrossMargin: 54.7, othersGrossMargin: 0.0,
-    cashCashEquivalents: 71.8, termDepositsOthers: 54.6, borrowings: 69.8, notesPayable: 37.6, netCash: 18.8
+    cashCashEquivalents: 71.8, termDepositsOthers: 54.6, borrowings: 69.8, notesPayable: 37.6, netCash: 18.8,
+    ebitda: 63.8, adjustedEbitda: 58.6, operatingCashFlow: 68.4, capitalExpenditure: 8.2, freeCashFlow: 60.2
   },
   { 
     year: 2015, 
@@ -230,10 +258,12 @@ const DATA = [
     totalEquity: 120.8, nonCurrentLiabilities: 41.8, currentLiabilities: 82.4, totalLiabilities: 124.2, totalEquityLiabilities: 245.0,
     costOfRevenues: 41.7, sellingMarketingExpenses: 6.8, generalAdminExpenses: 14.6, otherGainsLosses: 4.8, netGainsLossesInvestments: 1.2,
     interestIncome: 2.4, financeCosts: 1.2, shareOfProfitLossAssociates: -0.8, incomeTaxExpense: 11.1,
-    vasRevenue: 80.6, marketingServicesRevenue: 17.5, fintechRevenue: 4.8, othersRevenue: 0.0,
+    vasRevenue: 80.6, domesticGamesRevenue: 52.8, internationalGamesRevenue: 6.6, socialNetworksRevenue: 21.2,
+    marketingServicesRevenue: 17.5, fintechRevenue: 4.8, othersRevenue: 0.0,
     vasGrossProfit: 49.8, marketingServicesGrossProfit: 5.6, fintechGrossProfit: 5.1, othersGrossProfit: 0.0,
     vasGrossMargin: 61.8, marketingServicesGrossMargin: 32.0, fintechGrossMargin: 100.0, othersGrossMargin: 0.0,
-    cashCashEquivalents: 43.8, termDepositsOthers: 44.6, borrowings: 44.8, notesPayable: 24.6, netCash: 19.2
+    cashCashEquivalents: 43.8, termDepositsOthers: 44.6, borrowings: 44.8, notesPayable: 24.6, netCash: 19.2,
+    ebitda: 46.4, adjustedEbitda: 42.8, operatingCashFlow: 47.6, capitalExpenditure: 5.4, freeCashFlow: 42.2
   },
   { 
     year: 2014, 
@@ -243,10 +273,12 @@ const DATA = [
     totalEquity: 80.0, nonCurrentLiabilities: 35.6, currentLiabilities: 68.4, totalLiabilities: 104.0, totalEquityLiabilities: 184.0,
     costOfRevenues: 31.3, sellingMarketingExpenses: 4.8, generalAdminExpenses: 11.4, otherGainsLosses: 2.4, netGainsLossesInvestments: 2.8,
     interestIncome: 1.4, financeCosts: 0.8, shareOfProfitLossAssociates: -0.6, incomeTaxExpense: 9.0,
-    vasRevenue: 62.4, marketingServicesRevenue: 10.4, fintechRevenue: 6.1, othersRevenue: 0.0,
+    vasRevenue: 62.4, domesticGamesRevenue: 38.4, internationalGamesRevenue: 6.2, socialNetworksRevenue: 17.8,
+    marketingServicesRevenue: 10.4, fintechRevenue: 6.1, othersRevenue: 0.0,
     vasGrossProfit: 39.8, marketingServicesGrossProfit: 3.8, fintechGrossProfit: 3.6, othersGrossProfit: 0.0,
     vasGrossMargin: 63.8, marketingServicesGrossMargin: 36.5, fintechGrossMargin: 59.0, othersGrossMargin: 0.0,
-    cashCashEquivalents: 42.6, termDepositsOthers: 14.8, borrowings: 7.6, notesPayable: 14.6, netCash: 34.4
+    cashCashEquivalents: 42.6, termDepositsOthers: 14.8, borrowings: 7.6, notesPayable: 14.6, netCash: 34.4,
+    ebitda: 35.2, adjustedEbitda: 33.1, operatingCashFlow: 38.4, capitalExpenditure: 4.2, freeCashFlow: 34.2
   },
 ];
 

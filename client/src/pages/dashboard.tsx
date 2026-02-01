@@ -8,7 +8,7 @@ import {
   Download, Filter, Calendar, RefreshCw, ChevronRight, 
   ArrowUpRight, ArrowDownRight, Info, BookOpen, FileUp,
   LayoutDashboard, Table as TableIcon, Search, Send, User,
-  Globe, Shield, Zap, Target
+  Globe, Shield, Zap, Target, Plus, Trash2
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -315,10 +315,27 @@ export default function Dashboard() {
   const [plotType, setPlotType] = useState<"line" | "bar">("line");
   const [compositionYear, setCompositionYear] = useState<number>(2024);
   const [chatInput, setChatInput] = useState("");
+  const [customMetricDialogOpen, setCustomMetricDialogOpen] = useState(false);
+  const [customMetrics, setCustomMetrics] = useState<Array<{
+    id: string;
+    name: string;
+    nameZh: string;
+    metricA: string;
+    operator: "+" | "-" | "*" | "/";
+    metricB: string;
+    color: string;
+  }>>([]);
+  const [newCustomMetric, setNewCustomMetric] = useState({
+    name: "",
+    nameZh: "",
+    metricA: "revenue",
+    operator: "/" as "+" | "-" | "*" | "/",
+    metricB: "revenue",
+  });
 
   // Helper to compute calculated metrics
   const computeCalculatedMetrics = (d: typeof DATA[0]) => {
-    return {
+    const base: any = {
       ...d,
       sellingMarketingExpensesMargin: (d.sellingMarketingExpenses / d.revenue) * 100,
       generalAdminExpensesMargin: (d.generalAdminExpenses / d.revenue) * 100,
@@ -328,7 +345,45 @@ export default function Dashboard() {
       marketingServicesMargin: (d.marketingServicesGrossProfit / d.marketingServicesRevenue) * 100,
       fintechMargin: (d.fintechGrossProfit / d.fintechRevenue) * 100,
     };
+    customMetrics.forEach((cm) => {
+      const valA = (d as any)[cm.metricA] ?? base[cm.metricA] ?? 0;
+      const valB = (d as any)[cm.metricB] ?? base[cm.metricB] ?? 0;
+      switch (cm.operator) {
+        case "+": base[cm.id] = valA + valB; break;
+        case "-": base[cm.id] = valA - valB; break;
+        case "*": base[cm.id] = valA * valB; break;
+        case "/": base[cm.id] = valB !== 0 ? (valA / valB) * 100 : 0; break;
+      }
+    });
+    return base;
   };
+
+  const addCustomMetric = () => {
+    if (!newCustomMetric.name.trim()) return;
+    const id = `custom_${Date.now()}`;
+    const colors = ["#f472b6", "#a3e635", "#38bdf8", "#c084fc", "#fb923c", "#22d3ee", "#facc15"];
+    setCustomMetrics([...customMetrics, {
+      id,
+      name: newCustomMetric.name,
+      nameZh: newCustomMetric.nameZh || newCustomMetric.name,
+      metricA: newCustomMetric.metricA,
+      operator: newCustomMetric.operator,
+      metricB: newCustomMetric.metricB,
+      color: colors[customMetrics.length % colors.length],
+    }]);
+    setNewCustomMetric({ name: "", nameZh: "", metricA: "revenue", operator: "/", metricB: "revenue" });
+    setCustomMetricDialogOpen(false);
+  };
+
+  const removeCustomMetric = (id: string) => {
+    setCustomMetrics(customMetrics.filter((cm) => cm.id !== id));
+    setSelectedMetrics(selectedMetrics.filter((m) => m !== id));
+  };
+
+  const allMetricsForSelect = useMemo(() => {
+    const baseKeys = Object.keys(METRICS) as MetricKey[];
+    return baseKeys;
+  }, []);
 
   const filteredData = useMemo(() => {
     const base = DATA.filter((d) => d.year >= yearRange[0] && d.year <= yearRange[1]).sort((a, b) => a.year - b.year).map(computeCalculatedMetrics);
@@ -550,6 +605,136 @@ export default function Dashboard() {
                           <BarChart className="w-4 h-4" />
                         </Button>
                       </div>
+                    </div>
+
+                    {/* Custom Metrics Section */}
+                    <div className="space-y-4 pt-2 border-t border-border/50">
+                      <div className="flex items-center justify-between">
+                        <Label className="tfi-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+                          {t("Custom Metrics", "自定义指标")}
+                        </Label>
+                        <Dialog open={customMetricDialogOpen} onOpenChange={setCustomMetricDialogOpen}>
+                          <DialogTrigger asChild>
+                            <Button data-testid="button-add-custom-metric" variant="ghost" size="sm" className="h-6 px-2">
+                              <Plus className="w-3 h-3 mr-1" />
+                              <span className="text-[10px]">{t("Add", "添加")}</span>
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent className="sm:max-w-[400px] bg-card/95 backdrop-blur-xl border-card-border">
+                            <DialogHeader>
+                              <DialogTitle className="tfi-title text-lg">
+                                {t("Create Custom Metric", "创建自定义指标")}
+                              </DialogTitle>
+                              <DialogDescription className="text-xs text-muted-foreground">
+                                {t("Combine existing metrics with an operator", "使用运算符组合现有指标")}
+                              </DialogDescription>
+                            </DialogHeader>
+                            <div className="space-y-4 py-4">
+                              <div className="space-y-2">
+                                <Label className="text-xs">{t("Name (English)", "名称（英文）")}</Label>
+                                <Input
+                                  data-testid="input-custom-metric-name"
+                                  placeholder={t("e.g. My Ratio", "例如 我的比率")}
+                                  value={newCustomMetric.name}
+                                  onChange={(e) => setNewCustomMetric({ ...newCustomMetric, name: e.target.value })}
+                                />
+                              </div>
+                              <div className="space-y-2">
+                                <Label className="text-xs">{t("Name (Chinese)", "名称（中文）")}</Label>
+                                <Input
+                                  data-testid="input-custom-metric-name-zh"
+                                  placeholder={t("e.g. 我的比率", "例如 我的比率")}
+                                  value={newCustomMetric.nameZh}
+                                  onChange={(e) => setNewCustomMetric({ ...newCustomMetric, nameZh: e.target.value })}
+                                />
+                              </div>
+                              <div className="space-y-2">
+                                <Label className="text-xs">{t("Formula", "公式")}</Label>
+                                <div className="flex items-center gap-2">
+                                  <Select value={newCustomMetric.metricA} onValueChange={(v) => setNewCustomMetric({ ...newCustomMetric, metricA: v })}>
+                                    <SelectTrigger data-testid="select-metric-a" className="flex-1 h-9 text-xs">
+                                      <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent className="max-h-[200px]">
+                                      {allMetricsForSelect.map((k) => (
+                                        <SelectItem key={k} value={k} className="text-xs">{METRICS[k].label}</SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                  <Select value={newCustomMetric.operator} onValueChange={(v: any) => setNewCustomMetric({ ...newCustomMetric, operator: v })}>
+                                    <SelectTrigger data-testid="select-operator" className="w-16 h-9 text-center font-bold">
+                                      <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectItem value="+">+</SelectItem>
+                                      <SelectItem value="-">−</SelectItem>
+                                      <SelectItem value="*">×</SelectItem>
+                                      <SelectItem value="/">/</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                  <Select value={newCustomMetric.metricB} onValueChange={(v) => setNewCustomMetric({ ...newCustomMetric, metricB: v })}>
+                                    <SelectTrigger data-testid="select-metric-b" className="flex-1 h-9 text-xs">
+                                      <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent className="max-h-[200px]">
+                                      {allMetricsForSelect.map((k) => (
+                                        <SelectItem key={k} value={k} className="text-xs">{METRICS[k].label}</SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+                                <p className="text-[10px] text-muted-foreground mt-1">
+                                  {newCustomMetric.operator === "/" 
+                                    ? t("Division results are shown as percentages (×100)", "除法结果以百分比显示（×100）")
+                                    : t("Result will be in the same unit as operands", "结果单位与操作数相同")}
+                                </p>
+                              </div>
+                            </div>
+                            <DialogFooter>
+                              <Button data-testid="button-create-custom-metric" onClick={addCustomMetric} disabled={!newCustomMetric.name.trim()}>
+                                {t("Create Metric", "创建指标")}
+                              </Button>
+                            </DialogFooter>
+                          </DialogContent>
+                        </Dialog>
+                      </div>
+                      {customMetrics.length === 0 ? (
+                        <p className="text-[10px] text-muted-foreground italic">
+                          {t("No custom metrics yet", "暂无自定义指标")}
+                        </p>
+                      ) : (
+                        <div className="space-y-2">
+                          {customMetrics.map((cm) => (
+                            <div key={cm.id} className="flex items-center justify-between gap-2 p-2 rounded-lg bg-muted/20 border border-border/50">
+                              <div className="flex items-center gap-2 flex-1 min-w-0">
+                                <Checkbox
+                                  data-testid={`checkbox-custom-metric-${cm.id}`}
+                                  checked={selectedMetrics.includes(cm.id as any)}
+                                  onCheckedChange={(checked: boolean) => {
+                                    if (checked) setSelectedMetrics([...selectedMetrics, cm.id as any]);
+                                    else setSelectedMetrics(selectedMetrics.filter((m) => m !== cm.id));
+                                  }}
+                                />
+                                <div className="flex flex-col min-w-0">
+                                  <span className="text-xs font-medium truncate" style={{ color: cm.color }}>{t(cm.name, cm.nameZh)}</span>
+                                  <span className="text-[9px] text-muted-foreground truncate">
+                                    {METRICS[cm.metricA as MetricKey]?.label ?? cm.metricA} {cm.operator} {METRICS[cm.metricB as MetricKey]?.label ?? cm.metricB}
+                                  </span>
+                                </div>
+                              </div>
+                              <Button
+                                data-testid={`button-remove-custom-metric-${cm.id}`}
+                                variant="ghost"
+                                size="sm"
+                                className="h-6 w-6 p-0 text-muted-foreground hover:text-destructive"
+                                onClick={() => removeCustomMetric(cm.id)}
+                              >
+                                <Trash2 className="w-3 h-3" />
+                              </Button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   </CardContent>
                 </Card>

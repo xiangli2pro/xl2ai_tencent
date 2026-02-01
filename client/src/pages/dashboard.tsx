@@ -1161,20 +1161,20 @@ export default function Dashboard() {
                 </Button>
               </CardHeader>
               <CardContent>
-                <div className="relative overflow-x-auto rounded-xl border border-border">
+                <div className="relative overflow-auto rounded-xl border border-border max-h-[600px]">
                   <table className="w-full text-sm text-left">
-                    <thead className="text-[11px] tfi-mono uppercase text-muted-foreground bg-muted/50 border-b border-border">
+                    <thead className="text-[11px] tfi-mono uppercase text-muted-foreground bg-muted/50 border-b border-border sticky top-0 z-20">
                       <tr>
-                        <th className="px-6 py-4 font-medium sticky left-0 bg-card z-10">{t("Metric", "指标")}</th>
+                        <th className="px-6 py-4 font-medium sticky left-0 bg-muted/50 z-30">{t("Metric", "指标")}</th>
                         {DATA.map(d => (
-                          <th key={d.year} className="px-6 py-4 font-medium text-center">{d.year}</th>
+                          <th key={d.year} className="px-6 py-4 font-medium text-center bg-muted/50">{d.year}</th>
                         ))}
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-white/5">
                       {Object.entries(METRICS).map(([key, m]) => (
                         <tr key={key} className="hover:bg-white/5 transition-colors group">
-                          <td className="px-6 py-4 font-medium sticky left-0 bg-card z-10 group-hover:bg-white/5 transition-colors">
+                          <td className="px-6 py-4 font-medium sticky left-0 bg-card z-10 group-hover:bg-muted/30 transition-colors">
                             <div className="flex flex-col">
                               <span className="text-foreground">{t(m.label, m.zh)}</span>
                               <span className="text-[10px] text-muted-foreground font-normal">{m.category}</span>

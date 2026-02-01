@@ -670,6 +670,11 @@ export default function Dashboard() {
                               tickFormatter={(v) => (plotMode === "yoy" ? `${Number(v).toFixed(2)}%` : v)}
                             />
                             <Tooltip 
+                              formatter={(value: any) => {
+                                const n = Number(value);
+                                if (!Number.isFinite(n)) return value;
+                                return plotMode === "yoy" ? `${n.toFixed(2)}%` : formatValue(n);
+                              }}
                               contentStyle={{ 
                                 backgroundColor: "rgba(17, 24, 39, 0.95)", 
                                 borderRadius: "12px", 
@@ -713,6 +718,11 @@ export default function Dashboard() {
                             />
                             <Tooltip 
                               cursor={{ fill: "rgba(255,255,255,0.05)" }}
+                              formatter={(value: any) => {
+                                const n = Number(value);
+                                if (!Number.isFinite(n)) return value;
+                                return plotMode === "yoy" ? `${n.toFixed(2)}%` : formatValue(n);
+                              }}
                               contentStyle={{ 
                                 backgroundColor: "rgba(17, 24, 39, 0.95)", 
                                 borderRadius: "12px", 

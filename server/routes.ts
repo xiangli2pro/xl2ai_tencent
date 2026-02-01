@@ -2,6 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import OpenAI from "openai";
+import { sendFeedbackEmail } from "./sendgrid";
 
 const openai = new OpenAI({
   apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY,
@@ -124,8 +125,12 @@ export async function registerRoutes(
         message: message.trim(),
       });
 
-      // TODO: Send email notification via SendGrid when configured
-      console.log("Feedback received:", { name, email, message: message.substring(0, 50) + "..." });
+      // Send email notification via SendGrid
+      await sendFeedbackEmail({
+        name: name || "Anonymous",
+        email: email || "",
+        message: message.trim(),
+      });
       
       res.json({ success: true });
     } catch (error) {

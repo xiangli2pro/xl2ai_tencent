@@ -586,66 +586,6 @@ export default function Dashboard() {
                       </div>
                     </div>
 
-                    <div className="space-y-4">
-                      <Label className="tfi-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-                        {t("Year Range", "年份范围")}
-                      </Label>
-                      <div className="px-2 pt-2">
-                        <Slider 
-                          data-testid="slider-year-range"
-                          defaultValue={[2014, 2024]} 
-                          min={2014} 
-                          max={2024} 
-                          step={1}
-                          onValueChange={(v) => setYearRange([v[0], v[1]])}
-                        />
-                        <div className="flex justify-between mt-4 tfi-mono text-[10px]">
-                          <span>{yearRange[0]}</span>
-                          <span>{yearRange[1]}</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="space-y-4">
-                      <Label className="tfi-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-                        {t("Analysis Mode", "分析模式")}
-                      </Label>
-                      <Tabs value={plotMode} onValueChange={(v: any) => setPlotMode(v)} className="w-full">
-                        <TabsList className="grid w-full grid-cols-2">
-                          <TabsTrigger value="level" className="text-[10px]">{t("Nominal", "名义值")}</TabsTrigger>
-                          <TabsTrigger value="yoy" className="text-[10px]">{t("YoY %", "同比")}</TabsTrigger>
-                        </TabsList>
-                      </Tabs>
-                    </div>
-
-                    <div className="space-y-4">
-                      <Label className="tfi-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-                        {t("Chart Type", "图表类型")}
-                      </Label>
-                      <div className="grid grid-cols-2 gap-2">
-                        <Button 
-                          data-testid="button-chart-line"
-                          variant={plotType === "line" ? "default" : "outline"} 
-                          size="sm" 
-                          className="flex-1 justify-between"
-                          onClick={() => setPlotType("line")}
-                        >
-                          <span className="text-[10px] tfi-mono uppercase tracking-wider">{t("Line", "折线")}</span>
-                          <TrendingUp className="w-4 h-4" />
-                        </Button>
-                        <Button 
-                          data-testid="button-chart-bar"
-                          variant={plotType === "bar" ? "default" : "outline"} 
-                          size="sm" 
-                          className="flex-1 justify-between"
-                          onClick={() => setPlotType("bar")}
-                        >
-                          <span className="text-[10px] tfi-mono uppercase tracking-wider">{t("Bar", "柱状")}</span>
-                          <BarChart className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    </div>
-
                     {/* Custom Metrics Section */}
                     <div className="space-y-4 pt-2 border-t border-border/50">
                       <div className="flex items-center justify-between">
@@ -774,6 +714,50 @@ export default function Dashboard() {
                           ))}
                         </div>
                       )}
+                    </div>
+
+                    <div className="space-y-4">
+                      <Label className="tfi-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+                        {t("Year Range", "年份范围")}
+                      </Label>
+                      <div className="px-2 pt-2">
+                        <Slider 
+                          data-testid="slider-year-range"
+                          defaultValue={[2014, 2024]} 
+                          min={2014} 
+                          max={2024} 
+                          step={1}
+                          onValueChange={(v) => setYearRange([v[0], v[1]])}
+                        />
+                        <div className="flex justify-between mt-4 tfi-mono text-[10px]">
+                          <span>{yearRange[0]}</span>
+                          <span>{yearRange[1]}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-4">
+                      <Label className="tfi-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+                        {t("Analysis Mode", "分析模式")}
+                      </Label>
+                      <Tabs value={plotMode} onValueChange={(v: any) => setPlotMode(v)} className="w-full">
+                        <TabsList className="grid w-full grid-cols-2">
+                          <TabsTrigger value="level" className="text-[10px]">{t("Nominal", "名义值")}</TabsTrigger>
+                          <TabsTrigger value="yoy" className="text-[10px]">{t("YoY %", "同比")}</TabsTrigger>
+                        </TabsList>
+                      </Tabs>
+                    </div>
+
+                    <div className="space-y-4">
+                      <Label className="tfi-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+                        {t("Chart Type", "图表类型")}
+                      </Label>
+                      <Tabs value={plotType} onValueChange={(v: any) => setPlotType(v)} className="w-full">
+                        <TabsList className="grid w-full grid-cols-2">
+                          <TabsTrigger data-testid="button-chart-line" value="line" className="text-[10px]">{t("Line", "折线")}</TabsTrigger>
+                          <TabsTrigger data-testid="button-chart-bar" value="bar" className="text-[10px]">{t("Bar", "柱状")}</TabsTrigger>
+                        </TabsList>
+                      </Tabs>
                     </div>
                   </CardContent>
                 </Card>

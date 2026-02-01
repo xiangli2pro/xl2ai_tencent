@@ -829,7 +829,15 @@ export default function Dashboard() {
                                   dot={{ r: 4, strokeWidth: 2, fill: "#111827" }}
                                   activeDot={{ r: 6, strokeWidth: 0 }}
                                   animationDuration={1500}
-                                />
+                                >
+                                  <LabelList 
+                                    dataKey={m} 
+                                    position="top" 
+                                    fill={info.color}
+                                    fontSize={9}
+                                    formatter={(v: number) => plotMode === "yoy" ? `${v.toFixed(1)}%` : formatValue(v)}
+                                  />
+                                </Line>
                               );
                             })}
                           </LineChart>

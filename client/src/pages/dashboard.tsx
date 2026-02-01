@@ -880,7 +880,7 @@ export default function Dashboard() {
                 </Card>
 
                 {/* Sub-metrics Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 gap-6">
                   {/* Revenue Composition - Stacked Bar Chart Over Time */}
                   <Card className="bg-card/20 backdrop-blur-sm border-card-border">
                     <CardHeader className="space-y-3">
@@ -898,7 +898,7 @@ export default function Dashboard() {
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
-                      <div className="h-[240px]">
+                      <div className="h-[280px]">
                         <ResponsiveContainer width="100%" height="100%">
                           <BarChart 
                             data={DATA.slice().sort((a, b) => a.year - b.year).map((d) => {
@@ -962,7 +962,7 @@ export default function Dashboard() {
                       </div>
                     </CardHeader>
                     <CardContent>
-                      <div className="h-[200px]">
+                      <div className="h-[280px]">
                         <ResponsiveContainer width="100%" height="100%">
                           <LineChart data={DATA.slice().sort((a, b) => a.year - b.year).map(computeCalculatedMetrics)}>
                             <XAxis dataKey="year" fontSize={9} stroke="#6b7280" tickLine={false} axisLine={false} />
@@ -1003,7 +1003,7 @@ export default function Dashboard() {
                       </div>
                     </CardHeader>
                     <CardContent>
-                      <div className="h-[200px]">
+                      <div className="h-[280px]">
                         <ResponsiveContainer width="100%" height="100%">
                           <LineChart data={DATA.slice().sort((a, b) => a.year - b.year).map(computeCalculatedMetrics)}>
                             <XAxis dataKey="year" fontSize={9} stroke="#6b7280" tickLine={false} axisLine={false} />

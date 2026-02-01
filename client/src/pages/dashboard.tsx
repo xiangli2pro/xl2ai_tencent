@@ -479,7 +479,7 @@ export default function Dashboard() {
         <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <h1 className="tfi-title text-xl font-bold tracking-tight">
-              {t("Tencent Financial Intelligence", "腾讯金融情报")}
+              {t("Tencent Financial Intelligence", "腾讯财报分析")}
             </h1>
             <nav className="hidden md:flex items-center ml-8 gap-1">
               <Button 

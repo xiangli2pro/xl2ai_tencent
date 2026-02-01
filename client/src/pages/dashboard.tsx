@@ -127,7 +127,7 @@ const DATA = [
   { 
     year: 2024, 
     revenue: 660.3, grossProfit: 349.2, operatingProfit: 208.1, profitBeforeTax: 241.5, profitForYear: 196.5, profitAttrEquity: 194.1,
-    totalCompIncome: 209.8, totalCompIncomeAttrEquity: 199.5, nonIfrsOperatingProfit: 237.8, nonIfrsProfitAttrEquity: 222.7,
+    totalCompIncome: 190.6, totalCompIncomeAttrEquity: 188.2, nonIfrsOperatingProfit: 237.8, nonIfrsProfitAttrEquity: 222.7,
     nonCurrentAssets: 1178.4, currentAssets: 596.2, totalAssets: 1774.6, equityAttrEquity: 918.5, nonControllingInterests: 78.2, 
     totalEquity: 996.7, nonCurrentLiabilities: 431.8, currentLiabilities: 346.1, totalLiabilities: 777.9, totalEquityLiabilities: 1774.6,
     costOfRevenues: 311.0, sellingMarketingExpenses: 36.4, generalAdminExpenses: 112.8, otherGainsLosses: 8.0, netGainsLossesInvestments: 7.9,
@@ -143,7 +143,7 @@ const DATA = [
   { 
     year: 2023, 
     revenue: 609.0, grossProfit: 293.1, operatingProfit: 160.1, profitBeforeTax: 161.3, profitForYear: 118.0, profitAttrEquity: 115.2,
-    totalCompIncome: 124.6, totalCompIncomeAttrEquity: 119.8, nonIfrsOperatingProfit: 191.9, nonIfrsProfitAttrEquity: 157.7,
+    totalCompIncome: 127.6, totalCompIncomeAttrEquity: 124.8, nonIfrsOperatingProfit: 191.9, nonIfrsProfitAttrEquity: 157.7,
     nonCurrentAssets: 1033.8, currentAssets: 523.5, totalAssets: 1557.3, equityAttrEquity: 778.4, nonControllingInterests: 64.8, 
     totalEquity: 843.2, nonCurrentLiabilities: 384.6, currentLiabilities: 329.5, totalLiabilities: 714.1, totalEquityLiabilities: 1557.3,
     costOfRevenues: 315.9, sellingMarketingExpenses: 34.2, generalAdminExpenses: 103.5, otherGainsLosses: 4.7, netGainsLossesInvestments: -3.8,
@@ -159,7 +159,7 @@ const DATA = [
   { 
     year: 2022, 
     revenue: 554.6, grossProfit: 238.7, operatingProfit: 113.9, profitBeforeTax: 210.2, profitForYear: 188.7, profitAttrEquity: 188.2,
-    totalCompIncome: 174.5, totalCompIncomeAttrEquity: 169.8, nonIfrsOperatingProfit: 153.6, nonIfrsProfitAttrEquity: 115.6,
+    totalCompIncome: 175.4, totalCompIncomeAttrEquity: 172.6, nonIfrsOperatingProfit: 153.6, nonIfrsProfitAttrEquity: 115.6,
     nonCurrentAssets: 1004.2, currentAssets: 501.6, totalAssets: 1505.8, equityAttrEquity: 748.5, nonControllingInterests: 59.6, 
     totalEquity: 808.1, nonCurrentLiabilities: 370.2, currentLiabilities: 327.5, totalLiabilities: 697.7, totalEquityLiabilities: 1505.8,
     costOfRevenues: 315.9, sellingMarketingExpenses: 29.4, generalAdminExpenses: 106.5, otherGainsLosses: -7.9, netGainsLossesInvestments: 116.3,
@@ -175,7 +175,7 @@ const DATA = [
   { 
     year: 2021, 
     revenue: 560.1, grossProfit: 245.9, operatingProfit: 123.9, profitBeforeTax: 248.1, profitForYear: 227.8, profitAttrEquity: 224.8,
-    totalCompIncome: 234.6, totalCompIncomeAttrEquity: 229.4, nonIfrsOperatingProfit: 159.8, nonIfrsProfitAttrEquity: 123.8,
+    totalCompIncome: 228.2, totalCompIncomeAttrEquity: 224.6, nonIfrsOperatingProfit: 159.8, nonIfrsProfitAttrEquity: 123.8,
     nonCurrentAssets: 1024.5, currentAssets: 486.8, totalAssets: 1511.3, equityAttrEquity: 778.2, nonControllingInterests: 54.6, 
     totalEquity: 832.8, nonCurrentLiabilities: 350.4, currentLiabilities: 328.1, totalLiabilities: 678.5, totalEquityLiabilities: 1511.3,
     costOfRevenues: 314.2, sellingMarketingExpenses: 31.3, generalAdminExpenses: 99.1, otherGainsLosses: -8.4, netGainsLossesInvestments: 149.2,
@@ -191,7 +191,7 @@ const DATA = [
   { 
     year: 2020, 
     revenue: 482.1, grossProfit: 221.6, operatingProfit: 125.4, profitBeforeTax: 180.0, profitForYear: 160.1, profitAttrEquity: 159.8,
-    totalCompIncome: 164.8, totalCompIncomeAttrEquity: 159.4, nonIfrsOperatingProfit: 141.6, nonIfrsProfitAttrEquity: 122.7,
+    totalCompIncome: 158.4, totalCompIncomeAttrEquity: 154.1, nonIfrsOperatingProfit: 141.6, nonIfrsProfitAttrEquity: 122.7,
     nonCurrentAssets: 984.6, currentAssets: 415.8, totalAssets: 1400.4, equityAttrEquity: 678.4, nonControllingInterests: 44.8, 
     totalEquity: 723.2, nonCurrentLiabilities: 329.6, currentLiabilities: 347.6, totalLiabilities: 677.2, totalEquityLiabilities: 1400.4,
     costOfRevenues: 260.4, sellingMarketingExpenses: 26.6, generalAdminExpenses: 74.8, otherGainsLosses: -5.1, netGainsLossesInvestments: 55.0,
@@ -207,7 +207,7 @@ const DATA = [
   { 
     year: 2019, 
     revenue: 377.3, grossProfit: 166.8, operatingProfit: 118.9, profitBeforeTax: 116.8, profitForYear: 95.9, profitAttrEquity: 93.3,
-    totalCompIncome: 94.6, totalCompIncomeAttrEquity: 89.4, nonIfrsOperatingProfit: 107.8, nonIfrsProfitAttrEquity: 94.4,
+    totalCompIncome: 93.4, totalCompIncomeAttrEquity: 90.9, nonIfrsOperatingProfit: 107.8, nonIfrsProfitAttrEquity: 94.4,
     nonCurrentAssets: 763.5, currentAssets: 327.8, totalAssets: 1091.3, equityAttrEquity: 432.6, nonControllingInterests: 55.8, 
     totalEquity: 488.4, nonCurrentLiabilities: 224.6, currentLiabilities: 378.3, totalLiabilities: 602.9, totalEquityLiabilities: 1091.3,
     costOfRevenues: 210.5, sellingMarketingExpenses: 21.4, generalAdminExpenses: 52.8, otherGainsLosses: 18.6, netGainsLossesInvestments: 9.2,
@@ -223,7 +223,7 @@ const DATA = [
   { 
     year: 2018, 
     revenue: 312.7, grossProfit: 141.8, operatingProfit: 97.6, profitBeforeTax: 94.5, profitForYear: 79.9, profitAttrEquity: 78.7,
-    totalCompIncome: 59.8, totalCompIncomeAttrEquity: 54.6, nonIfrsOperatingProfit: 85.8, nonIfrsProfitAttrEquity: 77.4,
+    totalCompIncome: 59.4, totalCompIncomeAttrEquity: 55.1, nonIfrsOperatingProfit: 85.8, nonIfrsProfitAttrEquity: 77.4,
     nonCurrentAssets: 553.6, currentAssets: 242.8, totalAssets: 796.4, equityAttrEquity: 321.6, nonControllingInterests: 33.8, 
     totalEquity: 355.4, nonCurrentLiabilities: 164.8, currentLiabilities: 276.2, totalLiabilities: 441.0, totalEquityLiabilities: 796.4,
     costOfRevenues: 170.9, sellingMarketingExpenses: 23.8, generalAdminExpenses: 41.6, otherGainsLosses: 15.8, netGainsLossesInvestments: 5.2,
@@ -239,7 +239,7 @@ const DATA = [
   { 
     year: 2017, 
     revenue: 237.8, grossProfit: 116.9, operatingProfit: 90.3, profitBeforeTax: 88.2, profitForYear: 71.5, profitAttrEquity: 71.6,
-    totalCompIncome: 74.8, totalCompIncomeAttrEquity: 69.6, nonIfrsOperatingProfit: 74.8, nonIfrsProfitAttrEquity: 65.1,
+    totalCompIncome: 73.1, totalCompIncomeAttrEquity: 68.4, nonIfrsOperatingProfit: 74.8, nonIfrsProfitAttrEquity: 65.1,
     nonCurrentAssets: 395.6, currentAssets: 204.8, totalAssets: 600.4, equityAttrEquity: 255.4, nonControllingInterests: 20.8, 
     totalEquity: 276.2, nonCurrentLiabilities: 120.6, currentLiabilities: 203.6, totalLiabilities: 324.2, totalEquityLiabilities: 600.4,
     costOfRevenues: 120.9, sellingMarketingExpenses: 17.6, generalAdminExpenses: 32.8, otherGainsLosses: 19.8, netGainsLossesInvestments: 2.8,
@@ -255,7 +255,7 @@ const DATA = [
   { 
     year: 2016, 
     revenue: 151.9, grossProfit: 84.6, operatingProfit: 56.1, profitBeforeTax: 51.8, profitForYear: 41.4, profitAttrEquity: 41.1,
-    totalCompIncome: 44.6, totalCompIncomeAttrEquity: 39.8, nonIfrsOperatingProfit: 51.6, nonIfrsProfitAttrEquity: 46.8,
+    totalCompIncome: 40.5, totalCompIncomeAttrEquity: 37.8, nonIfrsOperatingProfit: 51.6, nonIfrsProfitAttrEquity: 46.8,
     nonCurrentAssets: 250.4, currentAssets: 144.8, totalAssets: 395.2, equityAttrEquity: 174.6, nonControllingInterests: 10.8, 
     totalEquity: 185.4, nonCurrentLiabilities: 104.6, currentLiabilities: 105.2, totalLiabilities: 209.8, totalEquityLiabilities: 395.2,
     costOfRevenues: 67.3, sellingMarketingExpenses: 11.8, generalAdminExpenses: 21.6, otherGainsLosses: 9.8, netGainsLossesInvestments: 1.8,
@@ -271,7 +271,7 @@ const DATA = [
   { 
     year: 2015, 
     revenue: 102.9, grossProfit: 61.2, operatingProfit: 40.6, profitBeforeTax: 40.2, profitForYear: 29.1, profitAttrEquity: 29.1,
-    totalCompIncome: 24.8, totalCompIncomeAttrEquity: 21.6, nonIfrsOperatingProfit: 37.6, nonIfrsProfitAttrEquity: 31.8,
+    totalCompIncome: 27.8, totalCompIncomeAttrEquity: 24.6, nonIfrsOperatingProfit: 37.6, nonIfrsProfitAttrEquity: 31.8,
     nonCurrentAssets: 126.4, currentAssets: 118.6, totalAssets: 245.0, equityAttrEquity: 119.6, nonControllingInterests: 1.2, 
     totalEquity: 120.8, nonCurrentLiabilities: 41.8, currentLiabilities: 82.4, totalLiabilities: 124.2, totalEquityLiabilities: 245.0,
     costOfRevenues: 41.7, sellingMarketingExpenses: 6.8, generalAdminExpenses: 14.6, otherGainsLosses: 4.8, netGainsLossesInvestments: 1.2,
@@ -287,7 +287,7 @@ const DATA = [
   { 
     year: 2014, 
     revenue: 78.9, grossProfit: 47.6, operatingProfit: 30.5, profitBeforeTax: 32.8, profitForYear: 23.8, profitAttrEquity: 23.8,
-    totalCompIncome: 19.6, totalCompIncomeAttrEquity: 17.4, nonIfrsOperatingProfit: 28.6, nonIfrsProfitAttrEquity: 24.2,
+    totalCompIncome: 22.5, totalCompIncomeAttrEquity: 20.3, nonIfrsOperatingProfit: 28.6, nonIfrsProfitAttrEquity: 24.2,
     nonCurrentAssets: 86.4, currentAssets: 97.6, totalAssets: 184.0, equityAttrEquity: 79.6, nonControllingInterests: 0.4, 
     totalEquity: 80.0, nonCurrentLiabilities: 35.6, currentLiabilities: 68.4, totalLiabilities: 104.0, totalEquityLiabilities: 184.0,
     costOfRevenues: 31.3, sellingMarketingExpenses: 4.8, generalAdminExpenses: 11.4, otherGainsLosses: 2.4, netGainsLossesInvestments: 2.8,

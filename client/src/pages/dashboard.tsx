@@ -981,14 +981,15 @@ export default function Dashboard() {
                     <CardContent>
                       <div className="h-[200px]">
                         <ResponsiveContainer width="100%" height="100%">
-                          <LineChart data={DATA.slice().reverse().map(computeCalculatedMetrics)}>
-                            <XAxis dataKey="year" fontSize={9} hide />
-                            <YAxis fontSize={9} hide />
+                          <LineChart data={DATA.slice().sort((a, b) => a.year - b.year).map(computeCalculatedMetrics)}>
+                            <XAxis dataKey="year" fontSize={9} stroke="#6b7280" tickLine={false} axisLine={false} />
+                            <YAxis fontSize={9} stroke="#6b7280" tickLine={false} axisLine={false} tickFormatter={(v) => `${v}%`} />
                             <Tooltip formatter={(v: any) => `${Number(v).toFixed(2)}${UNIT_PERCENT}`} />
+                            <Legend verticalAlign="bottom" align="center" iconType="circle" wrapperStyle={{ fontSize: "9px", paddingTop: "5px" }} />
                             <Line 
                               type="monotone" 
                               dataKey={(d) => (d.grossProfit / d.revenue) * 100} 
-                              name={t("Gross Margin", "毛利率")}
+                              name={t("Gross", "毛利率")}
                               stroke="#10b981" 
                               strokeWidth={2}
                               dot={false}
@@ -996,23 +997,37 @@ export default function Dashboard() {
                             <Line 
                               type="monotone" 
                               dataKey={(d) => (d.operatingProfit / d.revenue) * 100} 
-                              name={t("Operating Margin", "经营利润率")}
+                              name={t("Operating", "经营")}
                               stroke="#f59e0b" 
+                              strokeWidth={2}
+                              dot={false}
+                            />
+                            <Line 
+                              type="monotone" 
+                              dataKey="vasMargin" 
+                              name={t("VAS", "增值服务")}
+                              stroke="#3b82f6" 
+                              strokeWidth={2}
+                              dot={false}
+                            />
+                            <Line 
+                              type="monotone" 
+                              dataKey="marketingServicesMargin" 
+                              name={t("Marketing", "营销")}
+                              stroke="#ec4899" 
+                              strokeWidth={2}
+                              dot={false}
+                            />
+                            <Line 
+                              type="monotone" 
+                              dataKey="fintechMargin" 
+                              name={t("FinTech", "金融科技")}
+                              stroke="#8b5cf6" 
                               strokeWidth={2}
                               dot={false}
                             />
                           </LineChart>
                         </ResponsiveContainer>
-                      </div>
-                      <div className="mt-4 flex items-center justify-between text-[11px] tfi-mono text-muted-foreground">
-                        <div className="flex items-center gap-2">
-                          <div className="w-2 h-2 rounded-full bg-emerald-500" />
-                          <span>{t("Gross Margin", "毛利率")}</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <div className="w-2 h-2 rounded-full bg-amber-500" />
-                          <span>{t("Operating Margin", "经营利润率")}</span>
-                        </div>
                       </div>
                     </CardContent>
                   </Card>

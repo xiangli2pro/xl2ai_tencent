@@ -93,6 +93,15 @@ const METRICS = {
   borrowings: { label: "Borrowings", color: "#0891b2", zh: "借款", category: "Liquidity" },
   notesPayable: { label: "Notes Payable", color: "#155e75", zh: "应付票据", category: "Liquidity" },
   netCash: { label: "Net Cash", color: "#0e7490", zh: "净现金", category: "Liquidity" },
+
+  // Calculated Metrics
+  sellingMarketingExpensesMargin: { label: "Selling & Marketing Expenses Margin (%)", color: "#86efac", zh: "销售及市场推广开支率(%)", category: "Calculated Metrics" },
+  generalAdminExpensesMargin: { label: "General & Administrative Expenses Margin (%)", color: "#fde047", zh: "一般及行政开支率(%)", category: "Calculated Metrics" },
+  coreProfit: { label: "Core Profit", color: "#67e8f9", zh: "核心利润", category: "Calculated Metrics" },
+  otherProfit: { label: "Other Profit", color: "#c4b5fd", zh: "其他利润", category: "Calculated Metrics" },
+  vasMargin: { label: "VAS Margin (%)", color: "#bae6fd", zh: "增值服务毛利率(%)", category: "Calculated Metrics" },
+  marketingServicesMargin: { label: "Marketing Services Margin (%)", color: "#a7f3d0", zh: "营销服务毛利率(%)", category: "Calculated Metrics" },
+  fintechMargin: { label: "FinTech & Business Services Margin (%)", color: "#fef08a", zh: "金融科技及企业服务毛利率(%)", category: "Calculated Metrics" },
 };
 
 const DATA = [
@@ -307,16 +316,31 @@ export default function Dashboard() {
   const [compositionYear, setCompositionYear] = useState<number>(2024);
   const [chatInput, setChatInput] = useState("");
 
+  // Helper to compute calculated metrics
+  const computeCalculatedMetrics = (d: typeof DATA[0]) => {
+    return {
+      ...d,
+      sellingMarketingExpensesMargin: (d.sellingMarketingExpenses / d.revenue) * 100,
+      generalAdminExpensesMargin: (d.generalAdminExpenses / d.revenue) * 100,
+      coreProfit: d.grossProfit - d.sellingMarketingExpenses - d.generalAdminExpenses,
+      otherProfit: d.netGainsLossesInvestments + d.interestIncome + d.shareOfProfitLossAssociates - d.financeCosts,
+      vasMargin: (d.vasGrossProfit / d.vasRevenue) * 100,
+      marketingServicesMargin: (d.marketingServicesGrossProfit / d.marketingServicesRevenue) * 100,
+      fintechMargin: (d.fintechGrossProfit / d.fintechRevenue) * 100,
+    };
+  };
+
   const filteredData = useMemo(() => {
-    const base = DATA.filter((d) => d.year >= yearRange[0] && d.year <= yearRange[1]).sort((a, b) => a.year - b.year);
+    const base = DATA.filter((d) => d.year >= yearRange[0] && d.year <= yearRange[1]).sort((a, b) => a.year - b.year).map(computeCalculatedMetrics);
     if (plotMode === "yoy") {
       return base.map((d, i, arr) => {
         if (i === 0) {
           const prevYearData = DATA.find(prev => prev.year === d.year - 1);
-          if (!prevYearData) return { ...d, isYoY: true };
+          const prevComputed = prevYearData ? computeCalculatedMetrics(prevYearData) : null;
+          if (!prevComputed) return { ...d, isYoY: true };
           const res: any = { year: d.year, isYoY: true };
           selectedMetrics.forEach(m => {
-             res[m] = ((d[m] - prevYearData[m]) / Math.abs(prevYearData[m] || 1)) * 100;
+             res[m] = ((d[m] - prevComputed[m]) / Math.abs(prevComputed[m] || 1)) * 100;
           });
           return res;
         }
@@ -750,7 +774,7 @@ export default function Dashboard() {
                     <CardContent>
                       <div className="h-[200px]">
                         <ResponsiveContainer width="100%" height="100%">
-                          <LineChart data={DATA.slice().reverse()}>
+                          <LineChart data={DATA.slice().reverse().map(computeCalculatedMetrics)}>
                             <XAxis dataKey="year" fontSize={9} hide />
                             <YAxis fontSize={9} hide />
                             <Tooltip formatter={(v: any) => `${Number(v).toFixed(2)}${UNIT_PERCENT}`} />
@@ -822,11 +846,14 @@ export default function Dashboard() {
                               <span className="text-[10px] text-muted-foreground font-normal">{m.category}</span>
                             </div>
                           </td>
-                          {DATA.map(d => (
-                            <td key={d.year} className="px-6 py-4 text-center tfi-mono text-[13px]">
-                              {formatValue((d as any)[key])}
-                            </td>
-                          ))}
+                          {DATA.map(d => {
+                            const computed = computeCalculatedMetrics(d);
+                            return (
+                              <td key={d.year} className="px-6 py-4 text-center tfi-mono text-[13px]">
+                                {formatValue((computed as any)[key])}
+                              </td>
+                            );
+                          })}
                         </tr>
                       ))}
                     </tbody>

@@ -115,7 +115,7 @@ const DATA = [
   { 
     year: 2024, 
     revenue: 660.3, grossProfit: 349.2, operatingProfit: 208.1, profitBeforeTax: 241.5, profitForYear: 196.5, profitAttrEquity: 194.1,
-    totalCompIncome: 284.3, totalCompIncomeAttrEquity: 279.0, nonIfrsOperatingProfit: 237.8, nonIfrsProfitAttrEquity: 222.7,
+    totalCompIncome: 284.3, totalCompIncomeAttrEquity: 276.4, nonIfrsOperatingProfit: 237.8, nonIfrsProfitAttrEquity: 222.7,
     costOfRevenues: 311.0, sellingMarketingExpenses: 36.4, generalAdminExpenses: 112.8, otherGainsLosses: 8.0, netGainsLossesInvestments: 7.9,
     interestIncome: 16.7, financeCosts: 12.4, shareOfProfitLossAssociates: 25.2, incomeTaxExpense: 45.0,
     vasRevenue: 319.2, domesticGamesRevenue: 140.2, internationalGamesRevenue: 57.2, socialNetworksRevenue: 121.8,
@@ -129,7 +129,7 @@ const DATA = [
   { 
     year: 2023, 
     revenue: 609.0, grossProfit: 293.1, operatingProfit: 160.1, profitBeforeTax: 161.3, profitForYear: 118.0, profitAttrEquity: 115.2,
-    totalCompIncome: 127.6, totalCompIncomeAttrEquity: 124.8, nonIfrsOperatingProfit: 191.9, nonIfrsProfitAttrEquity: 157.7,
+    totalCompIncome: 107.2, totalCompIncomeAttrEquity: 100.0, nonIfrsOperatingProfit: 191.9, nonIfrsProfitAttrEquity: 157.7,
     costOfRevenues: 315.9, sellingMarketingExpenses: 34.2, generalAdminExpenses: 103.5, otherGainsLosses: 4.7, netGainsLossesInvestments: -3.8,
     interestIncome: 14.4, financeCosts: 11.9, shareOfProfitLossAssociates: 5.8, incomeTaxExpense: 43.3,
     vasRevenue: 298.4, domesticGamesRevenue: 127.0, internationalGamesRevenue: 53.2, socialNetworksRevenue: 118.2,
@@ -143,7 +143,7 @@ const DATA = [
   { 
     year: 2022, 
     revenue: 554.6, grossProfit: 238.7, operatingProfit: 113.9, profitBeforeTax: 210.2, profitForYear: 188.7, profitAttrEquity: 188.2,
-    totalCompIncome: 175.4, totalCompIncomeAttrEquity: 172.6, nonIfrsOperatingProfit: 153.6, nonIfrsProfitAttrEquity: 115.6,
+    totalCompIncome: 59.6, totalCompIncomeAttrEquity: 56.2, nonIfrsOperatingProfit: 153.6, nonIfrsProfitAttrEquity: 115.6,
     costOfRevenues: 315.9, sellingMarketingExpenses: 29.4, generalAdminExpenses: 106.5, otherGainsLosses: -7.9, netGainsLossesInvestments: 116.3,
     interestIncome: 8.6, financeCosts: 10.0, shareOfProfitLossAssociates: -16.1, incomeTaxExpense: 21.5,
     vasRevenue: 287.5, domesticGamesRevenue: 123.9, internationalGamesRevenue: 46.8, socialNetworksRevenue: 116.8,
@@ -157,7 +157,7 @@ const DATA = [
   { 
     year: 2021, 
     revenue: 560.1, grossProfit: 245.9, operatingProfit: 123.9, profitBeforeTax: 248.1, profitForYear: 227.8, profitAttrEquity: 224.8,
-    totalCompIncome: 228.2, totalCompIncomeAttrEquity: 224.6, nonIfrsOperatingProfit: 159.8, nonIfrsProfitAttrEquity: 123.8,
+    totalCompIncome: 200.4, totalCompIncomeAttrEquity: 195.7, nonIfrsOperatingProfit: 159.8, nonIfrsProfitAttrEquity: 123.8,
     costOfRevenues: 314.2, sellingMarketingExpenses: 31.3, generalAdminExpenses: 99.1, otherGainsLosses: -8.4, netGainsLossesInvestments: 149.2,
     interestIncome: 7.3, financeCosts: 7.9, shareOfProfitLossAssociates: -16.4, incomeTaxExpense: 20.3,
     vasRevenue: 291.6, domesticGamesRevenue: 129.0, internationalGamesRevenue: 45.4, socialNetworksRevenue: 117.2,
@@ -171,7 +171,7 @@ const DATA = [
   { 
     year: 2020, 
     revenue: 482.1, grossProfit: 221.6, operatingProfit: 125.4, profitBeforeTax: 180.0, profitForYear: 160.1, profitAttrEquity: 159.8,
-    totalCompIncome: 158.4, totalCompIncomeAttrEquity: 154.1, nonIfrsOperatingProfit: 141.6, nonIfrsProfitAttrEquity: 122.7,
+    totalCompIncome: 281.2, totalCompIncomeAttrEquity: 277.0, nonIfrsOperatingProfit: 141.6, nonIfrsProfitAttrEquity: 122.7,
     costOfRevenues: 260.4, sellingMarketingExpenses: 26.6, generalAdminExpenses: 74.8, otherGainsLosses: -5.1, netGainsLossesInvestments: 55.0,
     interestIncome: 8.7, financeCosts: 7.4, shareOfProfitLossAssociates: 3.7, incomeTaxExpense: 19.9,
     vasRevenue: 264.2, domesticGamesRevenue: 125.0, internationalGamesRevenue: 38.0, socialNetworksRevenue: 101.2,

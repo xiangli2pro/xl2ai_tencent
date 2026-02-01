@@ -667,7 +667,7 @@ export default function Dashboard() {
                               fontSize={11} 
                               tickLine={false} 
                               axisLine={false} 
-                              tickFormatter={(v) => plotMode === "yoy" ? `${v}%` : v}
+                              tickFormatter={(v) => (plotMode === "yoy" ? `${Number(v).toFixed(2)}%` : v)}
                             />
                             <Tooltip 
                               contentStyle={{ 
@@ -709,7 +709,7 @@ export default function Dashboard() {
                               fontSize={11} 
                               tickLine={false} 
                               axisLine={false}
-                              tickFormatter={(v) => plotMode === "yoy" ? `${v}%` : v}
+                              tickFormatter={(v) => (plotMode === "yoy" ? `${Number(v).toFixed(2)}%` : v)}
                             />
                             <Tooltip 
                               cursor={{ fill: "rgba(255,255,255,0.05)" }}

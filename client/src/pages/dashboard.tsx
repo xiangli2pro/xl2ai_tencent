@@ -922,20 +922,20 @@ export default function Dashboard() {
                               const total = d.vasRevenue + d.marketingServicesRevenue + d.fintechRevenue + d.othersRevenue;
                               return {
                                 year: d.year,
-                                vas: (d.vasRevenue / total) * 100,
-                                marketing: (d.marketingServicesRevenue / total) * 100,
-                                fintech: (d.fintechRevenue / total) * 100,
-                                others: (d.othersRevenue / total) * 100,
+                                vas: d.vasRevenue / total,
+                                marketing: d.marketingServicesRevenue / total,
+                                fintech: d.fintechRevenue / total,
+                                others: d.othersRevenue / total,
                               };
                             })}
                             margin={{ top: 10, right: 10, left: 0, bottom: 10 }}
                           >
                             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
                             <XAxis dataKey="year" stroke="#6b7280" fontSize={10} tickLine={false} axisLine={false} />
-                            <YAxis stroke="#6b7280" fontSize={10} tickLine={false} axisLine={false} domain={[0, 100]} tickFormatter={(v) => `${v}%`} />
+                            <YAxis stroke="#6b7280" fontSize={10} tickLine={false} axisLine={false} domain={[0, 1]} tickFormatter={(v) => `${(v * 100).toFixed(0)}%`} />
                             <Tooltip 
                               cursor={{ fill: "rgba(255,255,255,0.05)" }}
-                              formatter={(value: any) => `${Number(value).toFixed(1)}%`}
+                              formatter={(value: any) => `${(Number(value) * 100).toFixed(1)}%`}
                               contentStyle={{ 
                                 backgroundColor: "rgba(17, 24, 39, 0.95)", 
                                 borderRadius: "12px", 
@@ -950,16 +950,16 @@ export default function Dashboard() {
                               wrapperStyle={{ paddingTop: "10px", fontSize: "10px" }} 
                             />
                             <Bar dataKey="vas" name={t("VAS", "增值服务")} stackId="a" fill="#3b82f6">
-                              <LabelList dataKey="vas" position="center" fill="#fff" fontSize={8} formatter={(v: number) => v >= 8 ? `${v.toFixed(0)}%` : ""} />
+                              <LabelList dataKey="vas" position="center" fill="#fff" fontSize={8} formatter={(v: number) => v >= 0.08 ? `${(v * 100).toFixed(0)}%` : ""} />
                             </Bar>
                             <Bar dataKey="marketing" name={t("Marketing", "营销服务")} stackId="a" fill="#10b981">
-                              <LabelList dataKey="marketing" position="center" fill="#fff" fontSize={8} formatter={(v: number) => v >= 8 ? `${v.toFixed(0)}%` : ""} />
+                              <LabelList dataKey="marketing" position="center" fill="#fff" fontSize={8} formatter={(v: number) => v >= 0.08 ? `${(v * 100).toFixed(0)}%` : ""} />
                             </Bar>
                             <Bar dataKey="fintech" name={t("FinTech", "金融科技")} stackId="a" fill="#f59e0b">
-                              <LabelList dataKey="fintech" position="center" fill="#fff" fontSize={8} formatter={(v: number) => v >= 8 ? `${v.toFixed(0)}%` : ""} />
+                              <LabelList dataKey="fintech" position="center" fill="#fff" fontSize={8} formatter={(v: number) => v >= 0.08 ? `${(v * 100).toFixed(0)}%` : ""} />
                             </Bar>
                             <Bar dataKey="others" name={t("Others", "其他")} stackId="a" fill="#8b5cf6" radius={[4, 4, 0, 0]}>
-                              <LabelList dataKey="others" position="center" fill="#fff" fontSize={8} formatter={(v: number) => v >= 8 ? `${v.toFixed(0)}%` : ""} />
+                              <LabelList dataKey="others" position="center" fill="#fff" fontSize={8} formatter={(v: number) => v >= 0.08 ? `${(v * 100).toFixed(0)}%` : ""} />
                             </Bar>
                           </BarChart>
                         </ResponsiveContainer>

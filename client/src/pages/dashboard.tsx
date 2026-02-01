@@ -385,6 +385,17 @@ export default function Dashboard() {
     return baseKeys;
   }, []);
 
+  const getMetricInfo = (key: string) => {
+    if (METRICS[key as MetricKey]) {
+      return METRICS[key as MetricKey];
+    }
+    const custom = customMetrics.find((cm) => cm.id === key);
+    if (custom) {
+      return { label: custom.name, zh: custom.nameZh, color: custom.color, category: "Custom" };
+    }
+    return { label: key, zh: key, color: "#888888", category: "Unknown" };
+  };
+
   const filteredData = useMemo(() => {
     const base = DATA.filter((d) => d.year >= yearRange[0] && d.year <= yearRange[1]).sort((a, b) => a.year - b.year).map(computeCalculatedMetrics);
     if (plotMode === "yoy") {
@@ -822,19 +833,22 @@ export default function Dashboard() {
                               iconType="circle"
                               wrapperStyle={{ paddingTop: "0px", paddingBottom: "20px" }}
                             />
-                            {selectedMetrics.map((m) => (
-                              <Line
-                                key={m}
-                                type="monotone"
-                                dataKey={m}
-                                name={t(METRICS[m].label, METRICS[m].zh)}
-                                stroke={METRICS[m].color}
-                                strokeWidth={3}
-                                dot={{ r: 4, strokeWidth: 2, fill: "#111827" }}
-                                activeDot={{ r: 6, strokeWidth: 0 }}
-                                animationDuration={1500}
-                              />
-                            ))}
+                            {selectedMetrics.map((m) => {
+                              const info = getMetricInfo(m);
+                              return (
+                                <Line
+                                  key={m}
+                                  type="monotone"
+                                  dataKey={m}
+                                  name={t(info.label, info.zh)}
+                                  stroke={info.color}
+                                  strokeWidth={3}
+                                  dot={{ r: 4, strokeWidth: 2, fill: "#111827" }}
+                                  activeDot={{ r: 6, strokeWidth: 0 }}
+                                  animationDuration={1500}
+                                />
+                              );
+                            })}
                           </LineChart>
                         ) : (
                           <BarChart data={filteredData}>
@@ -862,16 +876,19 @@ export default function Dashboard() {
                               }}
                             />
                             <Legend verticalAlign="top" align="right" iconType="circle" wrapperStyle={{ paddingBottom: "20px" }} />
-                            {selectedMetrics.map((m) => (
-                              <Bar 
-                                key={m} 
-                                dataKey={m} 
-                                name={t(METRICS[m].label, METRICS[m].zh)} 
-                                fill={METRICS[m].color} 
-                                radius={[4, 4, 0, 0]}
-                                animationDuration={1000}
-                              />
-                            ))}
+                            {selectedMetrics.map((m) => {
+                              const info = getMetricInfo(m);
+                              return (
+                                <Bar 
+                                  key={m} 
+                                  dataKey={m} 
+                                  name={t(info.label, info.zh)} 
+                                  fill={info.color} 
+                                  radius={[4, 4, 0, 0]}
+                                  animationDuration={1000}
+                                />
+                              );
+                            })}
                           </BarChart>
                         )}
                       </ResponsiveContainer>

@@ -48,6 +48,14 @@ OTHER FINANCIAL INFORMATION BY YEAR:
 - 2021: EBITDA 147.0B, Adjusted EBITDA 181.4B, Operating Cash Flow 175.2B, Capital Expenditure 29.3B, Free Cash Flow 145.9B
 - 2020: EBITDA 144.7B, Adjusted EBITDA 154.2B, Operating Cash Flow 194.1B, Capital Expenditure 34.1B, Free Cash Flow 160.0B
 
+DEFERRED REVENUE (RMB Billions):
+- 2024: 100.1B, 2023: 86.2B, 2022: 82.2B, 2021: 87.8B, 2020: 82.8B
+
+OPERATING INFORMATION (User Metrics):
+- Weixin/WeChat Combined MAU (millions): 2024: 1385, 2023: 1343, 2022: 1309, 2021: 1268, 2020: 1225, 2019: 1165, 2018: 1098, 2017: 989, 2016: 846, 2015: 697, 2014: 500
+- QQ Mobile Device MAU (millions): 2024: 524, 2023: 554, 2022: 569, 2021: 552, 2020: 648, 2019: 694, 2018: 700, 2017: 783, 2016: 652, 2015: 641, 2014: 576
+- Fee-based VAS Subscriptions (millions): 2024: 265, 2023: 248, 2022: 236, 2021: 236, 2020: 209, 2019: 185, 2018: 170, 2017: 149, 2016: 133, 2015: 115, 2014: 98
+
 Key Margins (2024):
 - Gross Margin: ~52.9%
 - Operating Margin: ~31.5%

@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line,
-  AreaChart, Area, Cell, ComposedChart, Scatter
+  AreaChart, Area, Cell
 } from "recharts";
 import { 
   TrendingUp, TrendingDown, DollarSign, PieChart, Activity, 
@@ -27,7 +27,6 @@ import {
 import { Label } from "@/components/ui/label";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Checkbox } from "@/components/ui/checkbox";
-import { extent, quantileSorted } from "d3-array";
 
 const UNIT_BILLIONS = "B";
 const UNIT_PERCENT = "%";
@@ -304,7 +303,7 @@ export default function Dashboard() {
   const [selectedMetrics, setSelectedMetrics] = useState<MetricKey[]>(["revenue"]);
   const [yearRange, setYearRange] = useState<[number, number]>([2014, 2024]);
   const [plotMode, setPlotMode] = useState<"level" | "yoy">("level");
-  const [plotType, setPlotType] = useState<"line" | "bar" | "box">("line");
+  const [plotType, setPlotType] = useState<"line" | "bar">("line");
   const [compositionYear, setCompositionYear] = useState<number>(2024);
   const [chatInput, setChatInput] = useState("");
 
@@ -505,7 +504,7 @@ export default function Dashboard() {
                       <Label className="tfi-mono text-[10px] uppercase tracking-widest text-muted-foreground">
                         {t("Chart Type", "图表类型")}
                       </Label>
-                      <div className="grid grid-cols-3 gap-2">
+                      <div className="grid grid-cols-2 gap-2">
                         <Button 
                           data-testid="button-chart-line"
                           variant={plotType === "line" ? "default" : "outline"} 
@@ -523,15 +522,6 @@ export default function Dashboard() {
                           onClick={() => setPlotType("bar")}
                         >
                           <BarChart className="w-4 h-4" />
-                        </Button>
-                        <Button 
-                          data-testid="button-chart-box"
-                          variant={plotType === "box" ? "default" : "outline"} 
-                          size="sm" 
-                          className="flex-1"
-                          onClick={() => setPlotType("box")}
-                        >
-                          <Activity className="w-4 h-4" />
                         </Button>
                       </div>
                     </div>
@@ -574,84 +564,14 @@ export default function Dashboard() {
                         </CardDescription>
                       </div>
                       <Badge variant="outline" className="tfi-mono text-[10px] uppercase py-1 px-3">
-                        {plotMode === "yoy" ? `YoY Change ${UNIT_PERCENT}` : plotType === "box" ? `Distribution (${UNIT_BILLIONS} RMB)` : `Nominal Value (${UNIT_BILLIONS} RMB)`}
+                        {plotMode === "yoy" ? `YoY Change ${UNIT_PERCENT}` : `Nominal Value (${UNIT_BILLIONS} RMB)`}
                       </Badge>
                     </div>
                   </CardHeader>
                   <CardContent className="pt-8">
                     <div className="h-[450px] w-full">
                       <ResponsiveContainer width="100%" height="100%">
-                        {plotType === "box" ? (
-                          <ComposedChart data={filteredData} margin={{ left: 6, right: 16, top: 10, bottom: 8 }}>
-                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
-                            <XAxis dataKey="year" stroke="#6b7280" fontSize={11} tickLine={false} axisLine={false} dy={10} />
-                            <YAxis
-                              stroke="#6b7280"
-                              fontSize={11}
-                              tickLine={false}
-                              axisLine={false}
-                              tickFormatter={(v) => `${v}`}
-                            />
-                            <Tooltip
-                              cursor={{ fill: "rgba(255,255,255,0.05)" }}
-                              contentStyle={{
-                                backgroundColor: "rgba(17, 24, 39, 0.95)",
-                                borderRadius: "12px",
-                                border: "1px solid rgba(255,255,255,0.1)",
-                                fontSize: "12px",
-                              }}
-                            />
-                            {/* Render one box per year for the first selected metric */}
-                            {(() => {
-                              const metric = selectedMetrics[0] ?? "revenue";
-                              const values = filteredData
-                                .map((d: any) => Number(d[metric]))
-                                .filter((n: number) => Number.isFinite(n))
-                                .sort((a: number, b: number) => a - b);
-                              const q1 = values.length ? quantileSorted(values, 0.25) ?? 0 : 0;
-                              const median = values.length ? quantileSorted(values, 0.5) ?? 0 : 0;
-                              const q3 = values.length ? quantileSorted(values, 0.75) ?? 0 : 0;
-                              const min = values.length ? values[0] : 0;
-                              const max = values.length ? values[values.length - 1] : 0;
-
-                              return (
-                                <Scatter
-                                  dataKey="year"
-                                  name={t(METRICS[metric as MetricKey]?.label ?? "Metric", METRICS[metric as MetricKey]?.zh ?? "\u6307\u6807")}
-                                  shape={(props: any) => {
-                                    const { cx, yAxis } = props;
-                                    const boxWidth = 26;
-                                    const yScale = (val: number) => (yAxis?.scale ? yAxis.scale(val) : 0);
-                                    const yMin = yScale(min);
-                                    const yQ1 = yScale(q1);
-                                    const yMed = yScale(median);
-                                    const yQ3 = yScale(q3);
-                                    const yMax = yScale(max);
-                                    return (
-                                      <g>
-                                        <line x1={cx} y1={yMin} x2={cx} y2={yQ1} stroke="rgba(255,255,255,0.55)" strokeWidth={2} />
-                                        <line x1={cx} y1={yQ3} x2={cx} y2={yMax} stroke="rgba(255,255,255,0.55)" strokeWidth={2} />
-                                        <line x1={cx - boxWidth / 3} y1={yMin} x2={cx + boxWidth / 3} y2={yMin} stroke="rgba(255,255,255,0.55)" strokeWidth={2} />
-                                        <line x1={cx - boxWidth / 3} y1={yMax} x2={cx + boxWidth / 3} y2={yMax} stroke="rgba(255,255,255,0.55)" strokeWidth={2} />
-                                        <rect
-                                          x={cx - boxWidth / 2}
-                                          y={Math.min(yQ3, yQ1)}
-                                          width={boxWidth}
-                                          height={Math.abs(yQ1 - yQ3)}
-                                          rx={6}
-                                          fill="rgba(99, 102, 241, 0.35)"
-                                          stroke="rgba(99, 102, 241, 0.8)"
-                                        />
-                                        <line x1={cx - boxWidth / 2} y1={yMed} x2={cx + boxWidth / 2} y2={yMed} stroke="rgba(255,255,255,0.85)" strokeWidth={2} />
-                                      </g>
-                                    );
-                                  }}
-                                  data={filteredData.map((d) => ({ year: d.year }))}
-                                />
-                              );
-                            })()}
-                          </ComposedChart>
-                        ) : plotType === "line" ? (
+                        {plotType === "line" ? (
                           <LineChart data={filteredData}>
                             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
                             <XAxis 

@@ -108,5 +108,31 @@ export async function registerRoutes(
     }
   });
 
+  // Feedback endpoint
+  app.post("/api/feedback", async (req, res) => {
+    try {
+      const { name, email, message } = req.body;
+      
+      if (!message || !message.trim()) {
+        return res.status(400).json({ error: "Message is required" });
+      }
+
+      // Store feedback in database
+      await storage.createFeedback({
+        name: name || "Anonymous",
+        email: email || "",
+        message: message.trim(),
+      });
+
+      // TODO: Send email notification via SendGrid when configured
+      console.log("Feedback received:", { name, email, message: message.substring(0, 50) + "..." });
+      
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Feedback error:", error);
+      res.status(500).json({ error: "Failed to submit feedback" });
+    }
+  });
+
   return httpServer;
 }

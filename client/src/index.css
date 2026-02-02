@@ -341,21 +341,4 @@
     font-family: var(--font-mono);
   }
 
-  .tfi-penguin-bg::after {
-    content: "";
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    pointer-events: none;
-    z-index: 0;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 120' width='80' height='96'%3E%3Cellipse cx='50' cy='70' rx='30' ry='38' fill='%23000000' opacity='0.08'/%3E%3Cellipse cx='50' cy='72' rx='20' ry='28' fill='%23ffffff' opacity='0.06'/%3E%3Ccircle cx='50' cy='30' r='22' fill='%23000000' opacity='0.08'/%3E%3Ccircle cx='42' cy='26' r='4' fill='%23ffffff' opacity='0.06'/%3E%3Ccircle cx='58' cy='26' r='4' fill='%23ffffff' opacity='0.06'/%3E%3Ccircle cx='42' cy='26' r='2' fill='%23000000' opacity='0.08'/%3E%3Ccircle cx='58' cy='26' r='2' fill='%23000000' opacity='0.08'/%3E%3Cellipse cx='50' cy='36' rx='5' ry='4' fill='%23ff9900' opacity='0.12'/%3E%3Cellipse cx='26' cy='60' rx='10' ry='18' fill='%23000000' opacity='0.06' transform='rotate(-20 26 60)'/%3E%3Cellipse cx='74' cy='60' rx='10' ry='18' fill='%23000000' opacity='0.06' transform='rotate(20 74 60)'/%3E%3C/svg%3E");
-    background-repeat: repeat;
-    background-size: 160px 192px;
-  }
-
-  .dark .tfi-penguin-bg::after {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 120' width='80' height='96'%3E%3Cellipse cx='50' cy='70' rx='30' ry='38' fill='%23ffffff' opacity='0.04'/%3E%3Cellipse cx='50' cy='72' rx='20' ry='28' fill='%23000000' opacity='0.03'/%3E%3Ccircle cx='50' cy='30' r='22' fill='%23ffffff' opacity='0.04'/%3E%3Ccircle cx='42' cy='26' r='4' fill='%23000000' opacity='0.03'/%3E%3Ccircle cx='58' cy='26' r='4' fill='%23000000' opacity='0.03'/%3E%3Ccircle cx='42' cy='26' r='2' fill='%23ffffff' opacity='0.04'/%3E%3Ccircle cx='58' cy='26' r='2' fill='%23ffffff' opacity='0.04'/%3E%3Cellipse cx='50' cy='36' rx='5' ry='4' fill='%23ff9900' opacity='0.08'/%3E%3Cellipse cx='26' cy='60' rx='10' ry='18' fill='%23ffffff' opacity='0.03' transform='rotate(-20 26 60)'/%3E%3Cellipse cx='74' cy='60' rx='10' ry='18' fill='%23ffffff' opacity='0.03' transform='rotate(20 74 60)'/%3E%3C/svg%3E");
-  }
 }

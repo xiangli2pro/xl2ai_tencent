@@ -8,7 +8,7 @@ import {
   Download, Filter, Calendar, RefreshCw, ChevronRight, 
   ArrowUpRight, ArrowDownRight, Info, BookOpen,
   LayoutDashboard, Table as TableIcon, Search, Send, User,
-  Globe, Shield, Zap, Target, Plus, Trash2, MessageCircle, Bot, Pencil, MessageSquare
+  Globe, Shield, Zap, Target, Plus, Trash2, MessageCircle, Bot, Pencil
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -322,10 +322,6 @@ export default function Dashboard() {
     operator: "/" as "+" | "-" | "*" | "/",
     metricB: "revenue",
   });
-  const [feedbackDialogOpen, setFeedbackDialogOpen] = useState(false);
-  const [feedbackForm, setFeedbackForm] = useState({ name: "", email: "", message: "" });
-  const [feedbackLoading, setFeedbackLoading] = useState(false);
-  const [feedbackSuccess, setFeedbackSuccess] = useState(false);
 
   // Helper to compute calculated metrics
   const computeCalculatedMetrics = (d: typeof DATA[0]) => {
@@ -397,30 +393,6 @@ export default function Dashboard() {
       setNewCustomMetric({ name: "", nameZh: "", metricA: "revenue", operator: "/", metricB: "revenue" });
     }
     setCustomMetricDialogOpen(open);
-  };
-
-  const submitFeedback = async () => {
-    if (!feedbackForm.message.trim()) return;
-    setFeedbackLoading(true);
-    try {
-      const response = await fetch("/api/feedback", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(feedbackForm),
-      });
-      if (response.ok) {
-        setFeedbackSuccess(true);
-        setFeedbackForm({ name: "", email: "", message: "" });
-        setTimeout(() => {
-          setFeedbackDialogOpen(false);
-          setFeedbackSuccess(false);
-        }, 2000);
-      }
-    } catch (error) {
-      console.error("Failed to submit feedback:", error);
-    } finally {
-      setFeedbackLoading(false);
-    }
   };
 
   const allMetricsForSelect = useMemo(() => {
@@ -550,73 +522,6 @@ export default function Dashboard() {
               <BookOpen className="w-4 h-4 mr-2" />
               {t("Download Reports", "下载报告")}
             </Button>
-            <Dialog open={feedbackDialogOpen} onOpenChange={setFeedbackDialogOpen}>
-              <DialogTrigger asChild>
-                <Button data-testid="button-feedback" variant="outline" size="sm" className="hidden sm:flex">
-                  <MessageSquare className="w-4 h-4 mr-2" />
-                  {t("Feedback", "反馈")}
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-[400px] bg-card/95 backdrop-blur-xl border-card-border">
-                <DialogHeader>
-                  <DialogTitle className="tfi-title text-lg">
-                    {t("Send Feedback", "发送反馈")}
-                  </DialogTitle>
-                  <DialogDescription className="text-xs text-muted-foreground">
-                    {t("Share your thoughts with our development team", "与开发团队分享您的想法")}
-                  </DialogDescription>
-                </DialogHeader>
-                {feedbackSuccess ? (
-                  <div className="py-8 text-center">
-                    <div className="text-green-500 text-4xl mb-2">✓</div>
-                    <p className="text-sm font-medium">{t("Thank you for your feedback!", "感谢您的反馈！")}</p>
-                  </div>
-                ) : (
-                  <div className="space-y-4 py-4">
-                    <div className="space-y-2">
-                      <Label className="text-xs">{t("Name / Nickname (optional)", "名称 / 昵称（可选）")}</Label>
-                      <Input
-                        data-testid="input-feedback-name"
-                        placeholder={t("Your name", "您的名称")}
-                        value={feedbackForm.name}
-                        onChange={(e) => setFeedbackForm({ ...feedbackForm, name: e.target.value })}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label className="text-xs">{t("Email (optional)", "邮箱（可选）")}</Label>
-                      <Input
-                        data-testid="input-feedback-email"
-                        type="email"
-                        placeholder={t("your@email.com", "your@email.com")}
-                        value={feedbackForm.email}
-                        onChange={(e) => setFeedbackForm({ ...feedbackForm, email: e.target.value })}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label className="text-xs">{t("Message", "留言")} *</Label>
-                      <textarea
-                        data-testid="input-feedback-message"
-                        className="w-full min-h-[100px] px-3 py-2 text-sm rounded-md border border-input bg-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-                        placeholder={t("Your feedback or suggestions...", "您的反馈或建议...")}
-                        value={feedbackForm.message}
-                        onChange={(e) => setFeedbackForm({ ...feedbackForm, message: e.target.value })}
-                      />
-                    </div>
-                  </div>
-                )}
-                {!feedbackSuccess && (
-                  <DialogFooter>
-                    <Button 
-                      data-testid="button-submit-feedback" 
-                      onClick={submitFeedback} 
-                      disabled={!feedbackForm.message.trim() || feedbackLoading}
-                    >
-                      {feedbackLoading ? t("Sending...", "发送中...") : t("Submit Feedback", "提交反馈")}
-                    </Button>
-                  </DialogFooter>
-                )}
-              </DialogContent>
-            </Dialog>
           </div>
         </div>
       </header>

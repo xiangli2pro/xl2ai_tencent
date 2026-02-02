@@ -9,6 +9,7 @@ export interface IStorage {
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
   createFeedback(feedback: InsertFeedback): Promise<Feedback>;
+  getAllFeedback(): Promise<Feedback[]>;
 }
 
 export class MemStorage implements IStorage {
@@ -49,6 +50,10 @@ export class MemStorage implements IStorage {
     };
     this.feedbacks.push(feedback);
     return feedback;
+  }
+
+  async getAllFeedback(): Promise<Feedback[]> {
+    return this.feedbacks;
   }
 }
 

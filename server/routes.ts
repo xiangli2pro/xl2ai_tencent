@@ -2,7 +2,6 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import OpenAI from "openai";
-import { sendFeedbackEmail } from "./sendgrid";
 
 const openai = new OpenAI({
   apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY,
@@ -124,18 +123,47 @@ export async function registerRoutes(
         email: email || "",
         message: message.trim(),
       });
-
-      // Send email notification via SendGrid
-      await sendFeedbackEmail({
-        name: name || "Anonymous",
-        email: email || "",
-        message: message.trim(),
-      });
       
+      console.log("Feedback stored successfully");
       res.json({ success: true });
     } catch (error) {
       console.error("Feedback error:", error);
       res.status(500).json({ error: "Failed to submit feedback" });
+    }
+  });
+
+  // Get all feedback as CSV
+  app.get("/api/feedback/export", async (req, res) => {
+    try {
+      const feedbacks = await storage.getAllFeedback();
+      
+      // CSV header
+      let csv = "ID,User Name,User Email,Message,Date-Time\n";
+      
+      // CSV rows
+      feedbacks.forEach((fb) => {
+        const escapedMessage = `"${(fb.message || "").replace(/"/g, '""')}"`;
+        const dateTime = fb.createdAt.toISOString();
+        csv += `${fb.id},"${fb.name}","${fb.email || ""}",${escapedMessage},${dateTime}\n`;
+      });
+      
+      res.setHeader("Content-Type", "text/csv");
+      res.setHeader("Content-Disposition", `attachment; filename=feedback_${new Date().toISOString().split("T")[0]}.csv`);
+      res.send(csv);
+    } catch (error) {
+      console.error("Export feedback error:", error);
+      res.status(500).json({ error: "Failed to export feedback" });
+    }
+  });
+
+  // Get all feedback as JSON
+  app.get("/api/feedback", async (req, res) => {
+    try {
+      const feedbacks = await storage.getAllFeedback();
+      res.json(feedbacks);
+    } catch (error) {
+      console.error("Get feedback error:", error);
+      res.status(500).json({ error: "Failed to get feedback" });
     }
   });
 

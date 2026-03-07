@@ -34,7 +34,13 @@ const UNIT_PERCENT = "%";
 type MetricKey = keyof typeof METRICS;
 
 const METRICS = {
-  // Performance / Profitability
+  // Operating Information (first section)
+  weixinWechatMAU: { label: "Weixin/WeChat Combined MAU (B)", color: "#22c55e", zh: "微信/WeChat合并月活跃用户数（十亿）", category: "Operating" },
+  qqMobileMAU: { label: "QQ Mobile Device MAU (B)", color: "#3b82f6", zh: "QQ移动终端月活跃用户数（十亿）", category: "Operating" },
+  feeBasedVASSubscriptions: { label: "Fee-based VAS Subscriptions (B)", color: "#8b5cf6", zh: "收费增值服务付费会员数（十亿）", category: "Operating" },
+  employeeCount: { label: "Employee Count (Person)", color: "#f59e0b", zh: "员工人数（人）", category: "Operating" },
+
+  // Performance / Profitability (includes Core Profit and Other Profit)
   revenue: { label: "Revenue (B)", color: "#3b82f6", zh: "收入 （十亿）", category: "Performance" },
   grossProfit: { label: "Gross Profit (B)", color: "#10b981", zh: "毛利（十亿）", category: "Performance" },
   operatingProfit: { label: "Operating Profit (B)", color: "#f59e0b", zh: "经营盈利（十亿）", category: "Performance" },
@@ -45,6 +51,8 @@ const METRICS = {
   totalCompIncomeAttrEquity: { label: "Total Comp. Income Attr. to Equity Holders of the Company (B)", color: "#f472b6", zh: "本公司权益持有人应占全面收益总额 （十亿）", category: "Performance" },
   nonIfrsOperatingProfit: { label: "Non-IFRS Operating Profit (B)", color: "#6366f1", zh: "非国际财务报告准则经营盈利（十亿）", category: "Performance" },
   nonIfrsProfitAttrEquity: { label: "Non-IFRS Profit Attr. to Equity Holders of the Company (B)", color: "#06b6d4", zh: "非国际财务报告准则本公司权益持有人应占盈利 （十亿）", category: "Performance" },
+  coreProfit: { label: "Core Profit (B)", color: "#67e8f9", zh: "核心利润=毛利-销售及市场推广开支-一般及行政开支（十亿）", category: "Performance" },
+  otherProfit: { label: "Other Profit (B)", color: "#c4b5fd", zh: "其他利润=投机收益/（亏损）净额+利息收入+分占联营公司及合营公司盈利/（亏损）净额-财务成本（十亿）", category: "Performance" },
 
   // Costs / Income Statement Detail
   costOfRevenues: { label: "Cost of Revenues (B)", color: "#60a5fa", zh: "收入成本（十亿）", category: "Costs" },
@@ -57,11 +65,9 @@ const METRICS = {
   interestIncome: { label: "Interest Income (B)", color: "#22d3ee", zh: "利息收入（十亿）", category: "Costs" },
   financeCosts: { label: "Finance Costs (B)", color: "#38bdf8", zh: "财务成本（十亿）", category: "Costs" },
   shareOfProfitLossAssociates: { label: "Share of Profit/(Loss) of Associates and Joint Ventures, Net (B)", color: "#93c5fd", zh: "分占联营公司和合营公司盈利/（亏损）净额（十亿）", category: "Costs" },
-  coreProfit: { label: "Core Profit (B)", color: "#67e8f9", zh: "核心利润=毛利-销售及市场推广开支-一般及行政开支（十亿）", category: "Costs" },
-  otherProfit: { label: "Other Profit (B)", color: "#c4b5fd", zh: "其他利润=投机收益/（亏损）净额+利息收入+分占联营公司及合营公司盈利/（亏损）净额-财务成本（十亿）", category: "Costs" },
   incomeTaxExpense: { label: "Income Tax Expense (B)", color: "#f87171", zh: "所得税开支（十亿）", category: "Costs" },
 
-  // Segment Revenue
+  // Segments
   vasRevenue: { label: "VAS Revenue (B)", color: "#3b82f6", zh: "增值服务收入（十亿）", category: "Segments" },
   domesticIntlGamesRevenue: { label: "Domestic+International Games Revenue (B)", color: "#818cf8", zh: "国内+国际游戏收入（亿）", category: "Segments" },
   domesticGamesRevenue: { label: "Domestic Games Revenue (B)", color: "#60a5fa", zh: "国内游戏收入（十亿）", category: "Segments" },
@@ -70,46 +76,33 @@ const METRICS = {
   marketingServicesRevenue: { label: "Marketing Services Revenue (B)", color: "#10b981", zh: "营销服务收入（十亿）", category: "Segments" },
   fintechRevenue: { label: "FinTech & Business Services Revenue (B)", color: "#f59e0b", zh: "金融科技及企业服务收入（亿）", category: "Segments" },
   othersRevenue: { label: "Others Revenue (B)", color: "#8b5cf6", zh: "其他收入（十亿）", category: "Segments" },
-
-  // Segment Gross Profit
   vasGrossProfit: { label: "VAS Gross Profit (B)", color: "#60a5fa", zh: "增值服务毛利（十亿）", category: "Segments" },
   marketingServicesGrossProfit: { label: "Marketing Services Gross Profit (B)", color: "#34d399", zh: "营销服务毛利（十亿）", category: "Segments" },
   fintechGrossProfit: { label: "FinTech & Business Services Gross Profit (B)", color: "#fbbf24", zh: "金融科技及企业服务毛利（亿）", category: "Segments" },
   othersGrossProfit: { label: "Others Gross Profit (B)", color: "#a78bfa", zh: "其他毛利（十亿）", category: "Segments" },
-
-  // Segment Margins
   vasGrossMargin: { label: "VAS Gross Margin (%)", color: "#93c5fd", zh: "增值服务毛利率（%）", category: "Segments" },
   marketingServicesGrossMargin: { label: "Marketing Services Gross Margin (%)", color: "#6ee7b7", zh: "营销服务毛利率（%）", category: "Segments" },
   fintechGrossMargin: { label: "FinTech & Business Services Gross Margin (%)", color: "#fde68a", zh: "金融科技及企业服务毛利率（%）", category: "Segments" },
   othersGrossMargin: { label: "Others Gross Margin (%)", color: "#ddd6fe", zh: "其他毛利率 (%)", category: "Segments" },
 
-  // Liquidity / Cash
-  cashCashEquivalents: { label: "Cash & Cash Equivalents (B)", color: "#2dd4bf", zh: "现金及现金等价物（十亿）", category: "Liquidity" },
-  termDepositsOthers: { label: "Term Deposits and Others (B)", color: "#22d3ee", zh: "定期存款及其他（十亿）", category: "Liquidity" },
-  borrowings: { label: "Borrowings (B)", color: "#0891b2", zh: "借款（十亿）", category: "Liquidity" },
-  notesPayable: { label: "Notes Payable (B)", color: "#155e75", zh: "应付票据（十亿）", category: "Liquidity" },
-  netCash: { label: "Net Cash (B)", color: "#0e7490", zh: "现金净额（十亿）", category: "Liquidity" },
-
-  // Other Financial Information
+  // Other Financial (combined Liquidity + Other Financial)
+  cashCashEquivalents: { label: "Cash & Cash Equivalents (B)", color: "#2dd4bf", zh: "现金及现金等价物（十亿）", category: "Other Financial" },
+  termDepositsOthers: { label: "Term Deposits and Others (B)", color: "#22d3ee", zh: "定期存款及其他（十亿）", category: "Other Financial" },
+  borrowings: { label: "Borrowings (B)", color: "#0891b2", zh: "借款（十亿）", category: "Other Financial" },
+  notesPayable: { label: "Notes Payable (B)", color: "#155e75", zh: "应付票据（十亿）", category: "Other Financial" },
+  netCash: { label: "Net Cash (B)", color: "#0e7490", zh: "现金净额（十亿）", category: "Other Financial" },
   operatingCashFlow: { label: "Net Cash Flows Generated from Operating Activities (B)", color: "#14b8a6", zh: "经营活动产生所得现金流量净额（十亿）", category: "Other Financial" },
   capitalExpenditure: { label: "Capital Expenditure (B)", color: "#f97316", zh: "资本开支（十亿）", category: "Other Financial" },
   deferredRevenue: { label: "Deferred Revenue (B)", color: "#dc2626", zh: "递延收入（十亿）", category: "Other Financial" },
   investmentPortfolio: { label: "Investment Portfolio (B)", color: "#22c55e", zh: "投资组合（十亿）", category: "Other Financial" },
-
-  // Operating Information
-  weixinWechatMAU: { label: "Weixin/WeChat Combined MAU (B)", color: "#22c55e", zh: "微信/WeChat合并月活跃用户数（十亿）", category: "Operating" },
-  qqMobileMAU: { label: "QQ Mobile Device MAU (B)", color: "#3b82f6", zh: "QQ移动终端月活跃用户数（十亿）", category: "Operating" },
-  feeBasedVASSubscriptions: { label: "Fee-based VAS Subscriptions (B)", color: "#8b5cf6", zh: "收费增值服务付费会员数（十亿）", category: "Operating" },
-  employeeCount: { label: "Employee Count (Person)", color: "#f59e0b", zh: "员工人数（人）", category: "Operating" },
 };
 
 const CATEGORY_ZH: Record<string, string> = {
+  "Operating": "运营",
   "Performance": "业绩",
   "Costs": "成本",
-  "Segments": "分部",
-  "Liquidity": "流动性",
+  "Segments": "主营业务",
   "Other Financial": "其他财务",
-  "Operating": "运营",
 };
 
 const DATA = [
@@ -580,7 +573,7 @@ export default function Dashboard() {
                       <div className="rounded-xl border border-border bg-muted/10 overflow-hidden">
                         <ScrollArea className="h-[360px]" data-testid="scroll-metric-selection">
                           <div className="p-3">
-                            <Accordion type="multiple" defaultValue={["Performance", "Costs", "Segments", "Liquidity"]} className="w-full">
+                            <Accordion type="multiple" defaultValue={["Operating", "Performance", "Costs", "Segments", "Other Financial"]} className="w-full">
                               {Array.from(
                                 Object.entries(METRICS).reduce((acc, [key, m]) => {
                                   const arr = acc.get(m.category) ?? [];

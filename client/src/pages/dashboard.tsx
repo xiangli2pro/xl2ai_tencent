@@ -1289,7 +1289,7 @@ export default function Dashboard() {
                   <table className="w-full text-sm text-left">
                     <thead className="text-[11px] tfi-mono uppercase text-muted-foreground bg-muted/50 border-b border-border sticky top-0 z-20">
                       <tr>
-                        <th className="px-6 py-4 font-medium sticky left-0 bg-muted/50 z-30">{t("Metric", "指标")}</th>
+                        <th className="px-6 py-4 font-medium sticky left-0 bg-muted/50 z-30 min-w-[240px]">{t("Metric", "指标")}</th>
                         {DATA.filter(d => tableYearFilter.includes(d.year)).map(d => (
                           <th key={d.year} className="px-6 py-4 font-medium text-center bg-muted/50">{d.year}</th>
                         ))}
@@ -1298,7 +1298,7 @@ export default function Dashboard() {
                     <tbody className="divide-y divide-white/5">
                       {Object.entries(METRICS).map(([key, m]) => (
                         <tr key={key} className="hover:bg-white/5 transition-colors group">
-                          <td className="px-6 py-4 font-medium sticky left-0 bg-card z-10 group-hover:bg-muted/30 transition-colors">
+                          <td className="px-6 py-4 font-medium sticky left-0 bg-card z-10 group-hover:bg-muted/30 transition-colors min-w-[240px]">
                             <div className="flex flex-col">
                               <span className="text-foreground">{t(m.label, m.zh)}</span>
                               <span className="text-[10px] text-muted-foreground font-normal">{t(m.category, CATEGORY_ZH[m.category] || m.category)}</span>

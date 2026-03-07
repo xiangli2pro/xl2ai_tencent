@@ -1083,7 +1083,7 @@ export default function Dashboard() {
                         <div className="flex items-start justify-between gap-3">
                           <CardTitle className="text-sm font-bold flex items-center gap-2">
                             <Activity className="w-4 h-4 text-primary" />
-                            {t("Segment Margins", "分部利润率")}
+                            {t("Segment Margins", "主营业务毛利率")}
                           </CardTitle>
                           <Badge variant="outline" className="tfi-mono text-[10px] uppercase py-1 px-3">{t(`Unit: ${UNIT_PERCENT}`, `单位：${UNIT_PERCENT}`)}</Badge>
                         </div>

@@ -103,6 +103,15 @@ const METRICS = {
   employeeCount: { label: "Employee Count (Person)", color: "#f59e0b", zh: "员工人数（人）", category: "Operating" },
 };
 
+const CATEGORY_ZH: Record<string, string> = {
+  "Performance": "业绩",
+  "Costs": "成本",
+  "Segments": "分部",
+  "Liquidity": "流动性",
+  "Other Financial": "其他财务",
+  "Operating": "运营",
+};
+
 const DATA = [
   { 
     year: 2024, 
@@ -587,7 +596,7 @@ export default function Dashboard() {
                             >
                               <span className="flex items-center gap-2">
                                 <span className="inline-block w-2 h-2 rounded-full bg-primary/70" />
-                                {category}
+                                {t(category, CATEGORY_ZH[category] || category)}
                                 <span className="ml-2 text-[10px] tfi-mono text-muted-foreground">({items.length})</span>
                               </span>
                             </AccordionTrigger>
@@ -1299,7 +1308,7 @@ export default function Dashboard() {
                           <td className="px-6 py-4 font-medium sticky left-0 bg-card z-10 group-hover:bg-muted/30 transition-colors">
                             <div className="flex flex-col">
                               <span className="text-foreground">{t(m.label, m.zh)}</span>
-                              <span className="text-[10px] text-muted-foreground font-normal">{m.category}</span>
+                              <span className="text-[10px] text-muted-foreground font-normal">{t(m.category, CATEGORY_ZH[m.category] || m.category)}</span>
                             </div>
                           </td>
                           {DATA.filter(d => tableYearFilter.includes(d.year)).map(d => {

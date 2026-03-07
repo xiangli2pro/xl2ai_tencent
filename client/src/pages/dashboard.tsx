@@ -836,7 +836,7 @@ export default function Dashboard() {
                         </CardDescription>
                       </div>
                       <Badge variant="outline" className="tfi-mono text-[10px] uppercase py-1 px-3">
-                        {plotMode === "yoy" ? `YoY Change ${UNIT_PERCENT}` : `Nominal Value (${UNIT_BILLIONS} RMB)`}
+                        {plotMode === "yoy" ? t(`YoY Change ${UNIT_PERCENT}`, `同比变化 ${UNIT_PERCENT}`) : t(`Nominal Value (${UNIT_BILLIONS} RMB)`, `名义值（${UNIT_BILLIONS} 人民币）`)}
                       </Badge>
                     </div>
                   </CardHeader>
@@ -1044,7 +1044,7 @@ export default function Dashboard() {
                             <Activity className="w-4 h-4 text-primary" />
                             {t("Gross & Operating Margins", "毛利率与经营利润率")}
                           </CardTitle>
-                          <Badge variant="outline" className="tfi-mono text-[10px] uppercase py-1 px-3">{`Unit: ${UNIT_PERCENT}`}</Badge>
+                          <Badge variant="outline" className="tfi-mono text-[10px] uppercase py-1 px-3">{t(`Unit: ${UNIT_PERCENT}`, `单位：${UNIT_PERCENT}`)}</Badge>
                         </div>
                       </CardHeader>
                       <CardContent>
@@ -1085,7 +1085,7 @@ export default function Dashboard() {
                             <Activity className="w-4 h-4 text-primary" />
                             {t("Segment Margins", "分部利润率")}
                           </CardTitle>
-                          <Badge variant="outline" className="tfi-mono text-[10px] uppercase py-1 px-3">{`Unit: ${UNIT_PERCENT}`}</Badge>
+                          <Badge variant="outline" className="tfi-mono text-[10px] uppercase py-1 px-3">{t(`Unit: ${UNIT_PERCENT}`, `单位：${UNIT_PERCENT}`)}</Badge>
                         </div>
                       </CardHeader>
                       <CardContent>

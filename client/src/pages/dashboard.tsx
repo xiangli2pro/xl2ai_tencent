@@ -527,6 +527,29 @@ export default function Dashboard() {
       </header>
 
 
+      <div className="md:hidden sticky top-16 z-40 bg-card/80 backdrop-blur-md border-b px-4 py-2 flex gap-2">
+        <Button 
+          data-testid="button-nav-visualization-mobile"
+          variant={page === 1 ? "secondary" : "ghost"} 
+          size="sm" 
+          onClick={() => setPage(1)}
+          className="flex-1 rounded-full"
+        >
+          <LayoutDashboard className="w-4 h-4 mr-2" />
+          {t("Visualization", "可视化")}
+        </Button>
+        <Button 
+          data-testid="button-nav-data-table-mobile"
+          variant={page === 2 ? "secondary" : "ghost"} 
+          size="sm" 
+          onClick={() => setPage(2)}
+          className="flex-1 rounded-full"
+        >
+          <TableIcon className="w-4 h-4 mr-2" />
+          {t("Data Table", "数据表格")}
+        </Button>
+      </div>
+
       <main className="flex-1 overflow-auto p-4 md:p-8">
         <div className="max-w-7xl mx-auto space-y-8">
           {page === 1 ? (

@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line,
   AreaChart, Area, Cell, LabelList
@@ -324,6 +324,19 @@ export default function Dashboard() {
   const [chatMessages, setChatMessages] = useState<Array<{ role: "user" | "assistant"; content: string }>>([]);
   const [chatLoading, setChatLoading] = useState(false);
   const [tableYearFilter, setTableYearFilter] = useState<number[]>(DATA.map(d => d.year));
+  const [stockPrice, setStockPrice] = useState<{ price: number; change: number; changePct: number } | null>(null);
+
+  useEffect(() => {
+    const fetchStock = async () => {
+      try {
+        const res = await fetch("/api/stock-price");
+        if (res.ok) setStockPrice(await res.json());
+      } catch {}
+    };
+    fetchStock();
+    const interval = setInterval(fetchStock, 60000);
+    return () => clearInterval(interval);
+  }, []);
   const [customMetricDialogOpen, setCustomMetricDialogOpen] = useState(false);
   const [customMetrics, setCustomMetrics] = useState<Array<{
     id: string;
@@ -500,6 +513,19 @@ export default function Dashboard() {
             <h1 className="tfi-title text-xl font-bold tracking-tight">
               {t("Tencent Financial Intelligence", "腾讯财报分析")}
             </h1>
+            {stockPrice ? (
+              <div className="flex items-center gap-1.5 px-3 py-1 rounded-full border border-border bg-muted/20 tfi-mono text-xs">
+                <span className="text-muted-foreground">0700.HK</span>
+                <span className="font-semibold text-foreground">HK${stockPrice.price.toFixed(2)}</span>
+                <span className={stockPrice.change >= 0 ? "text-green-400" : "text-red-400"}>
+                  {stockPrice.change >= 0 ? "▲" : "▼"} {Math.abs(stockPrice.change).toFixed(2)} ({stockPrice.changePct >= 0 ? "+" : ""}{stockPrice.changePct.toFixed(2)}%)
+                </span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-1.5 px-3 py-1 rounded-full border border-border bg-muted/20 tfi-mono text-xs text-muted-foreground animate-pulse">
+                0700.HK …
+              </div>
+            )}
             <nav className="hidden md:flex items-center ml-8 gap-1">
               <Button 
                 data-testid="button-nav-visualization"

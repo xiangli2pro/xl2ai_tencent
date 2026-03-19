@@ -71,10 +71,39 @@ Growth Drivers:
 
 Answer user questions about Tencent's financial performance, trends, segment analysis, margins, and business outlook based on the annual report data. Be concise but insightful.`;
 
+// Fetch Tencent stock price from Yahoo Finance
+async function fetchTencentStockPrice(): Promise<{ price: number; change: number; changePct: number } | null> {
+  try {
+    const response = await fetch(
+      "https://query1.finance.yahoo.com/v8/finance/chart/0700.HK?interval=1m&range=1d",
+      { headers: { "User-Agent": "Mozilla/5.0" } }
+    );
+    if (!response.ok) return null;
+    const data = await response.json();
+    const result = data?.chart?.result?.[0];
+    if (!result) return null;
+    const price = result.meta?.regularMarketPrice ?? null;
+    const prevClose = result.meta?.chartPreviousClose ?? result.meta?.previousClose ?? null;
+    if (price === null) return null;
+    const change = prevClose ? +(price - prevClose).toFixed(2) : 0;
+    const changePct = prevClose ? +((change / prevClose) * 100).toFixed(2) : 0;
+    return { price: +price.toFixed(2), change, changePct };
+  } catch {
+    return null;
+  }
+}
+
 export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
+  // Stock price endpoint
+  app.get("/api/stock-price", async (_req, res) => {
+    const data = await fetchTencentStockPrice();
+    if (!data) return res.status(503).json({ error: "Unable to fetch stock price" });
+    res.json(data);
+  });
+
   // Financial chatbot API
   app.post("/api/chat", async (req, res) => {
     try {

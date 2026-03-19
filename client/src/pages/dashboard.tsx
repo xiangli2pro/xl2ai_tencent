@@ -106,6 +106,23 @@ const CATEGORY_ZH: Record<string, string> = {
 };
 
 const DATA = [
+  {
+    year: 2025,
+    revenue: 751.8, grossProfit: 422.6, operatingProfit: 241.6, profitBeforeTax: 277.2, profitForYear: 229.8, profitAttrEquity: 224.8,
+    totalCompIncome: 275.4, totalCompIncomeAttrEquity: 267.8, nonIfrsOperatingProfit: 280.7, nonIfrsProfitAttrEquity: 259.6,
+    costOfRevenues: 329.2, sellingMarketingExpenses: 41.7, generalAdminExpenses: 136.1,
+    sellingMarketingExpensesMargin: 0.06, generalAdminExpensesMargin: 0.18,
+    otherGainsLosses: -3.2, netGainsLossesInvestments: 10.2,
+    interestIncome: 16.9, financeCosts: 15.1, shareOfProfitLossAssociates: 23.7,
+    coreProfit: 244.8, otherProfit: 35.7, incomeTaxExpense: 47.4,
+    vasRevenue: 369.3, domesticIntlGamesRevenue: 241.6, domesticGamesRevenue: 164.2, internationalGamesRevenue: 77.4, socialNetworksRevenue: 127.7,
+    marketingServicesRevenue: 145.0, fintechRevenue: 229.4, othersRevenue: 8.1,
+    vasGrossProfit: 222.3, marketingServicesGrossProfit: 83.4, fintechGrossProfit: 116.6, othersGrossProfit: 0.3,
+    vasGrossMargin: 0.60, marketingServicesGrossMargin: 0.58, fintechGrossMargin: 0.51, othersGrossMargin: 0.04,
+    cashCashEquivalents: 141.0, termDepositsOthers: 353.8, borrowings: 251.0, notesPayable: 136.7, netCash: 107.1,
+    operatingCashFlow: 303.1, capitalExpenditure: 79.2, deferredRevenue: 112.5, investmentPortfolio: null,
+    weixinWechatMAU: 1.42, qqMobileMAU: 0.51, feeBasedVASSubscriptions: 0.27, employeeCount: 116000
+  },
   { 
     year: 2024, 
     revenue: 660.3, grossProfit: 349.2, operatingProfit: 208.1, profitBeforeTax: 241.5, profitForYear: 196.5, profitAttrEquity: 194.1,
@@ -299,10 +316,10 @@ export default function Dashboard() {
   const [page, setPage] = useState<1 | 2>(1);
   const [lang, setLang] = useState<"en" | "zh">("en");
   const [selectedMetrics, setSelectedMetrics] = useState<MetricKey[]>(["revenue"]);
-  const [yearRange, setYearRange] = useState<[number, number]>([2014, 2024]);
+  const [yearRange, setYearRange] = useState<[number, number]>([2014, 2025]);
   const [plotMode, setPlotMode] = useState<"level" | "yoy">("level");
   const [plotType, setPlotType] = useState<"line" | "bar">("line");
-  const [compositionYear, setCompositionYear] = useState<number>(2024);
+  const [compositionYear, setCompositionYear] = useState<number>(2025);
   const [chatInput, setChatInput] = useState("");
   const [chatMessages, setChatMessages] = useState<Array<{ role: "user" | "assistant"; content: string }>>([]);
   const [chatLoading, setChatLoading] = useState(false);
@@ -778,9 +795,9 @@ export default function Dashboard() {
                       <div className="px-2 pt-2">
                         <Slider 
                           data-testid="slider-year-range"
-                          defaultValue={[2014, 2024]} 
+                          defaultValue={[2014, 2025]} 
                           min={2014} 
-                          max={2024} 
+                          max={2025} 
                           step={1}
                           onValueChange={(v) => setYearRange([v[0], v[1]])}
                         />
@@ -831,8 +848,8 @@ export default function Dashboard() {
                         </CardTitle>
                         <CardDescription className="tfi-mono text-[10px] uppercase tracking-wider">
                           {plotMode === "yoy"
-                            ? t(`Unit: ${UNIT_PERCENT} • 2014-2024`, `单位：${UNIT_PERCENT} • 2014-2024`)
-                            : t(`Unit: RMB ${UNIT_BILLIONS} • 2014-2024`, `单位：人民币 ${UNIT_BILLIONS} • 2014-2024`)}
+                            ? t(`Unit: ${UNIT_PERCENT} • 2014-2025`, `单位：${UNIT_PERCENT} • 2014-2025`)
+                            : t(`Unit: RMB ${UNIT_BILLIONS} • 2014-2025`, `单位：人民币 ${UNIT_BILLIONS} • 2014-2025`)}
                         </CardDescription>
                       </div>
                       <Badge variant="outline" className="tfi-mono text-[10px] uppercase py-1 px-3">
@@ -1216,7 +1233,7 @@ export default function Dashboard() {
                 <div>
                   <CardTitle className="tfi-title text-2xl">{t("Financial Data Repository", "财务数据仓库")}</CardTitle>
                   <CardDescription className="tfi-mono text-[10px] uppercase tracking-widest pt-1">
-                    {t("Comprehensive Metrics 2014–2024 • RMB Billions", "2014–2024 全面指标 • 人民币 十亿元")}
+                    {t("Comprehensive Metrics 2014–2025 • RMB Billions", "2014–2025 全面指标 • 人民币 十亿元")}
                   </CardDescription>
                 </div>
                 <div className="flex items-center gap-3">

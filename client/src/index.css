@@ -174,69 +174,70 @@
 }
 
 .dark {
-  --button-outline: rgba(255, 255, 255, 0.1);
+  --button-outline: rgba(255, 255, 255, 0.08);
   --badge-outline: rgba(255, 255, 255, 0.05);
 
-  --opaque-button-border-intensity: 9; /* In terms of percentages */
+  --opaque-button-border-intensity: 9;
 
-  /* Backgrounds applied on top of other backgrounds when hovered/active */
-  --elevate-1: rgba(255, 255, 255, 0.05);
-  --elevate-2: rgba(255, 255, 255, 0.1);
+  --elevate-1: rgba(255, 255, 255, 0.04);
+  --elevate-2: rgba(255, 255, 255, 0.08);
 
-  --background: 223 28% 8%;
-  --foreground: 220 18% 92%;
+  /* Tencent deep navy blue background */
+  --background: 218 72% 7%;
+  --foreground: 210 30% 92%;
 
-  --border: 220 16% 18%;
+  --border: 216 45% 18%;
 
-  --card: 223 26% 10%;
-  --card-foreground: 220 18% 92%;
-  --card-border: 220 16% 18%;
+  --card: 218 65% 10%;
+  --card-foreground: 210 30% 92%;
+  --card-border: 216 45% 16%;
 
-  --sidebar: 223 28% 8%;
-  --sidebar-foreground: 220 18% 92%;
-  --sidebar-border: 220 16% 18%;
-  --sidebar-primary: 208 90% 60%;
-  --sidebar-primary-foreground: 223 28% 8%;
-  --sidebar-accent: 223 22% 12%;
-  --sidebar-accent-foreground: 220 18% 92%;
-  --sidebar-ring: 208 90% 60%;
+  --sidebar: 218 72% 7%;
+  --sidebar-foreground: 210 30% 92%;
+  --sidebar-border: 216 45% 18%;
+  --sidebar-primary: 210 85% 58%;
+  --sidebar-primary-foreground: 218 72% 7%;
+  --sidebar-accent: 218 55% 13%;
+  --sidebar-accent-foreground: 210 30% 92%;
+  --sidebar-ring: 210 85% 58%;
 
-  --popover: 223 24% 10%;
-  --popover-foreground: 220 18% 92%;
-  --popover-border: 220 16% 18%;
+  --popover: 218 65% 9%;
+  --popover-foreground: 210 30% 92%;
+  --popover-border: 216 45% 18%;
 
-  --primary: 208 90% 60%;
-  --primary-foreground: 223 28% 8%;
+  /* Tencent accent blue */
+  --primary: 210 85% 58%;
+  --primary-foreground: 218 72% 7%;
 
-  --secondary: 223 22% 14%;
-  --secondary-foreground: 220 18% 92%;
+  --secondary: 218 55% 14%;
+  --secondary-foreground: 210 30% 92%;
 
-  --muted: 223 22% 14%;
-  --muted-foreground: 220 10% 64%;
+  --muted: 218 50% 13%;
+  --muted-foreground: 215 18% 60%;
 
-  --accent: 195 90% 22%;
-  --accent-foreground: 220 18% 92%;
+  --accent: 212 80% 20%;
+  --accent-foreground: 210 30% 92%;
 
-  --destructive: 0 78% 60%;
-  --destructive-foreground: 223 28% 8%;
+  --destructive: 0 72% 58%;
+  --destructive-foreground: 218 72% 7%;
 
-  --input: 220 16% 24%;
-  --ring: 208 90% 60%;
+  --input: 216 42% 20%;
+  --ring: 210 85% 58%;
 
-  --chart-1: 208 90% 60%;
+  --chart-1: 210 85% 58%;
   --chart-2: 168 72% 44%;
-  --chart-3: 282 70% 64%;
+  --chart-3: 270 70% 65%;
   --chart-4: 34 95% 58%;
-  --chart-5: 0 78% 60%;
+  --chart-5: 0 78% 62%;
 
-  --shadow-2xs: 0px 2px 0px 0px hsl(208 90% 60% / 0.03);
-  --shadow-xs: 0px 2px 0px 0px hsl(208 90% 60% / 0.04);
-  --shadow-sm: 0px 2px 0px 0px hsl(208 90% 60% / 0.05), 0px 1px 2px -1px hsl(0 0% 0% / 0.35);
-  --shadow: 0px 2px 0px 0px hsl(208 90% 60% / 0.06), 0px 1px 2px -1px hsl(0 0% 0% / 0.4);
-  --shadow-md: 0px 2px 0px 0px hsl(208 90% 60% / 0.06), 0px 10px 22px -12px hsl(0 0% 0% / 0.55);
-  --shadow-lg: 0px 2px 0px 0px hsl(208 90% 60% / 0.06), 0px 22px 50px -26px hsl(0 0% 0% / 0.65);
-  --shadow-xl: 0px 2px 0px 0px hsl(208 90% 60% / 0.07), 0px 34px 70px -40px hsl(0 0% 0% / 0.75);
-  --shadow-2xl: 0px 2px 0px 0px hsl(208 90% 60% / 0.07);
+  --shadow-2xs: 0px 2px 0px 0px hsl(218 72% 4% / 0.6);
+  --shadow-xs: 0px 2px 0px 0px hsl(218 72% 4% / 0.7);
+  --shadow-sm: 0px 2px 4px 0px hsl(218 72% 4% / 0.5), 0px 1px 2px -1px hsl(218 72% 4% / 0.6);
+  --shadow: 0px 2px 4px 0px hsl(218 72% 4% / 0.55), 0px 1px 2px -1px hsl(218 72% 4% / 0.65);
+  --shadow-md: 0px 2px 4px 0px hsl(218 72% 4% / 0.6), 0px 10px 22px -12px hsl(218 72% 4% / 0.75);
+  --shadow-lg: 0px 2px 4px 0px hsl(218 72% 4% / 0.65), 0px 22px 50px -26px hsl(218 72% 4% / 0.85);
+  --shadow-xl: 0px 2px 4px 0px hsl(218 72% 4% / 0.7), 0px 34px 70px -40px hsl(218 72% 4% / 0.9);
+  --shadow-2xl: 0px 2px 0px 0px hsl(218 72% 4% / 0.7);
 }
 
 @layer base {

@@ -1188,7 +1188,7 @@ export default function Dashboard() {
                       </div>
                       <div>
                         <CardTitle className="tfi-title text-lg">
-                          {t("Financial Analyst AI", "财务分析AI")}
+                          {t("Financial Analyst AI (Supported by GPT-5.2)", "财务分析AI（由GPT-5.2驱动）")}
                         </CardTitle>
                         <CardDescription className="tfi-mono text-[10px] uppercase tracking-wider">
                           {t("Ask questions about Tencent's financial data", "询问腾讯财务数据相关问题")}

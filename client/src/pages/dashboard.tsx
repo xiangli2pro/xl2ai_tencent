@@ -600,7 +600,7 @@ export default function Dashboard() {
           {page === 1 ? (
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
               {/* Controls */}
-              <div className="lg:col-span-1 space-y-6">
+              <div className="lg:col-span-1 space-y-6 lg:sticky lg:top-24 lg:self-start lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto">
                 <Card className="bg-card/50 backdrop-blur-sm">
                   <CardHeader className="pb-4">
                     <CardTitle className="text-sm font-bold flex items-center gap-2">
@@ -863,7 +863,64 @@ export default function Dashboard() {
               </div>
 
               {/* Visualization Area */}
-              <div className="lg:col-span-3 space-y-8">
+              <div className="lg:col-span-3 space-y-6">
+                {/* KPI Snapshot Strip */}
+                {(() => {
+                  const d25 = DATA.find(d => d.year === 2025);
+                  const d24 = DATA.find(d => d.year === 2024);
+                  if (!d25 || !d24) return null;
+                  const revGrowth = ((d25.revenue - d24.revenue) / d24.revenue) * 100;
+                  const grossMargin = (d25.grossProfit / d25.revenue) * 100;
+                  const netProfit = d25.nonIfrsProfitAttrEquity;
+                  const mau = d25.weixinWechatMAU;
+                  const kpis = [
+                    {
+                      label: t("2025 Revenue", "2025年收入"),
+                      value: `¥${d25.revenue.toFixed(0)}B`,
+                      sub: revGrowth >= 0 ? `+${revGrowth.toFixed(1)}% YoY` : `${revGrowth.toFixed(1)}% YoY`,
+                      up: revGrowth >= 0,
+                      color: "#3b82f6",
+                    },
+                    {
+                      label: t("Non-IFRS Net Profit", "非国际准则净利润"),
+                      value: netProfit != null ? `¥${netProfit.toFixed(0)}B` : "—",
+                      sub: t("2025 FY", "2025财年"),
+                      up: true,
+                      color: "#10b981",
+                    },
+                    {
+                      label: t("Gross Margin", "毛利率"),
+                      value: `${grossMargin.toFixed(1)}%`,
+                      sub: t("2025 FY", "2025财年"),
+                      up: true,
+                      color: "#f59e0b",
+                    },
+                    {
+                      label: t("Weixin/WeChat MAU", "微信月活用户"),
+                      value: mau != null ? `${mau.toFixed(2)}B` : "—",
+                      sub: t("2025 FY", "2025财年"),
+                      up: true,
+                      color: "#8b5cf6",
+                    },
+                  ];
+                  return (
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                      {kpis.map((kpi, i) => (
+                        <Card key={i} className="bg-card/40 backdrop-blur-sm border-card-border relative overflow-hidden">
+                          <div className="absolute inset-0 opacity-5" style={{ background: `radial-gradient(circle at top right, ${kpi.color}, transparent 70%)` }} />
+                          <CardContent className="p-4 space-y-1">
+                            <p className="tfi-mono text-[10px] uppercase tracking-widest text-muted-foreground">{kpi.label}</p>
+                            <p className="text-xl font-bold tracking-tight" style={{ color: kpi.color }}>{kpi.value}</p>
+                            <p className={`text-[10px] tfi-mono flex items-center gap-1 ${kpi.up ? "text-emerald-400" : "text-red-400"}`}>
+                              {kpi.up ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
+                              {kpi.sub}
+                            </p>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  );
+                })()}
                 {/* Main Chart */}
                 <Card className="border-card-border overflow-hidden bg-card/30 backdrop-blur-xl">
                   <CardHeader className="border-b border-white/5 pb-4">
@@ -1006,7 +1063,7 @@ export default function Dashboard() {
                 </Card>
 
                 {/* Sub-metrics Grid */}
-                <div className="grid grid-cols-1 gap-6">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                   {/* Revenue Composition - Stacked Bar Chart Over Time */}
                   <Card className="bg-card/20 backdrop-blur-sm border-card-border">
                     <CardHeader className="space-y-3">
@@ -1077,10 +1134,8 @@ export default function Dashboard() {
                     </CardContent>
                   </Card>
 
-                  {/* Margins Row */}
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    {/* Gross & Operating Margins */}
-                    <Card className="bg-card/20 backdrop-blur-sm border-card-border">
+                  {/* Gross & Operating Margins */}
+                  <Card className="bg-card/20 backdrop-blur-sm border-card-border">
                       <CardHeader>
                         <div className="flex items-start justify-between gap-3">
                           <CardTitle className="text-sm font-bold flex items-center gap-2">
@@ -1176,7 +1231,6 @@ export default function Dashboard() {
                         </div>
                       </CardContent>
                     </Card>
-                  </div>
                 </div>
 
                 {/* AI Chatbox */}
